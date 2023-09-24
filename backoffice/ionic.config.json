@@ -1,0 +1,7 @@
+{
+  "name": "com.pp.crabo",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}

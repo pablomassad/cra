@@ -1,0 +1,79 @@
+
+Prototipo activación de DECO HD - CABLEMODEM WIFI
+https://xd.adobe.com/view/a31adeab-1608-472d-b7d2-e4eea50945c8-f649/
+
+Prototipo activación de DECO FULL IP - ONT FTTH
+https://xd.adobe.com/view/69d393b8-9831-4cb2-a506-69e8f692a781-3c80/
+
+Prototipo  activación de TOIP - INTERNET - TELEFONIA
+https://xd.adobe.com/view/d48cd7fe-f422-4fce-9788-858c061eb6e1-81df/
+
+Prototipo activación de TOIP - TELEFONIA
+https://xd.adobe.com/view/742ec278-2098-495e-a423-9d7b2ee40604-217d/
+
+node js version 14+
+npm install -g @quasar/cli
+
+npm init quasar
+
+npm i  // instala node_modules
+quasar build  // compila y copia en dist/spa
+quasar dev // arranca la app
+
+
+quasar mode add capacitor
+quasar dev -m capacitor -T android
+
+
+// ORIG WAY
+npx cap add android  // instala plataforma android
+npx cap sync  // sincroniza plugins con android studio
+npx cap open android  // abre android studio y compila apk
+
+Dentro de android studio, SDK Manager => platform tools 31xxxx
+
+
+
+
+
+/usr/libexec/java_home -V     => devuelve listado de versiones de jdk instaladas
+java -version                 => muestra version jdk actual
+export JAVA_HOME=`/usr/libexec/java_home -v 1.8`  => cambia de version de jdk
+// en el archivo .zshrc
+alias j10="export JAVA_HOME=`/usr/libexec/java_home -v 10`; java -version"
+alias j9="export JAVA_HOME=`/usr/libexec/java_home -v 9`; java -version"
+alias j8="export JAVA_HOME=`/usr/libexec/java_home -v 1.8`; java -version"
+
+gradle --version              => muestra info del gradle con jdk
+
+ ./gradlew wrapper --gradle-version=7.2 --distribution-type=bin      => cambia gradle version del proyecto actual
+
+/Users/pablomassad/Library/Android/sdk
+
+
+////////////////////////////////////////////////////
+DEJAR JDK 1.8 con el gradle nativo de quasar 5.6.4
+////////////////////////////////////////////////////
+
+@capacitor/android": "^3.2.5",
+        "@capacitor/app": "^1.0.5",
+        "@capacitor/core": "^3.2.5",
+
+npm i
+
+npx cap init
+
+npx cap add android
+
+npx cap ls // lista de plugins instalados
+
+npx cap sync  // sincroniza con android studio
+
+npx cap open android  // abre android studio y compila apk
+
+
+keytool -genkey -v -keystore diagnostico-key.jks -keyalg RSA -keysize 1024 -validity 10000 -alias diagnostico.desa -sigalg MD5withRSA
+(Cambiar diagnostico.ENV para cada ambiente antes de generar apk)
+
+
+icongenie g -i src/assets/icons/favicon-128x128.png

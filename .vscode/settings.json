@@ -1,0 +1,194 @@
+{
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "vue"
+  ],
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "javascript.showUnused": false,
+  "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
+  "javascript.format.placeOpenBraceOnNewLineForControlBlocks": false,
+  "javascript.format.placeOpenBraceOnNewLineForFunctions": false,
+  "typescript.format.insertSpaceBeforeFunctionParenthesis": true,
+  "typescript.format.placeOpenBraceOnNewLineForControlBlocks": false,
+  "typescript.format.placeOpenBraceOnNewLineForFunctions": false,
+  "[vue]": {
+    "editor.defaultFormatter": "Vue.volar"
+  },
+  "powermode.enabled": false,
+  // "editor.fontFamily": "Varela Round', monospace",
+  "editor.fontFamily": "'Ubuntu', monospace",
+  //"editor.fontFamily": "'Fira Code', monospace",
+  //"editor.fontFamily": "'Comic Sans MS', regular",
+  // "editor.fontFamily": "'Droid Sans Mono Dotted for Powerline', monospace",
+  "editor.fontSize": 17,
+  //"terminal.integrated.fontFamily": "'Varela Round', monospace",
+  "terminal.integrated.fontFamily": "'Droid Sans Mono Dotted for Powerline', monospace",
+  "terminal.integrated.fontSize": 14,
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "javascript.format.insertSpaceAfterConstructor": true,
+  "html.format.wrapLineLength": 0,
+  "editor.wordWrap": "wordWrapColumn",
+  "diffEditor.wordWrap": "inherit",
+  "editor.wordWrapColumn": 140,
+  "eslint.alwaysShowStatus": true,
+  "eslint.format.enable": true,
+  "eslint.lintTask.enable": true,
+  "editor.comments.insertSpace": false,
+  "vetur.format.options.tabSize": 4,
+  "vetur.validation.template": false,
+  "vetur.validation.script": true,
+  "vetur.validation.style": true,
+  "vetur.format.enable": true,
+  "vetur.experimental.templateInterpolationService": false,
+  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces": false,
+  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": false,
+  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": false,
+  "git.autofetch": true,
+  "typescript.preferences.quoteStyle": "single",
+  "prettier.jsxSingleQuote": true,
+  "prettier.singleQuote": true,
+  "javascript.preferences.quoteStyle": "single",
+  "vueCompilerOptions.experimentalDisableTemplateSupport": true,
+  "workbench.colorCustomizations": {
+    "editor.selectionBackground": "#ffffff50",
+    "editor.wordHighlightBackground": "#39dfd746"
+  },
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": [
+          "keyword.control.import.js"
+        ],
+        "settings": {
+          "foreground": "#1b9c2e",
+        }
+      },
+      {
+        "scope": [
+          "entity.name.function.js"
+        ],
+        "settings": {
+          "foreground": "#2c8d32",
+        }
+      },
+      {
+        "scope": [
+          "storage.type.js"
+        ],
+        "settings": {
+          "foreground": "#2c8d32",
+        }
+      },
+      {
+        "scope": [
+          "entity.other.attribute-name.class.css"
+        ],
+        "settings": {
+          "foreground": "#2c8d32",
+        }
+      },
+      {
+        "scope": [
+          "variable.other.readwrite.ts"
+        ],
+        "settings": {
+          "foreground": "#2c8d32",
+        }
+      },
+      {
+        "scope": [
+          "keyword.control.from.js"
+        ],
+        "settings": {
+          "foreground": "#2c8d32",
+        }
+      },
+      {
+        "scope": [
+          "variable.other.object.js"
+        ],
+        "settings": {
+          "foreground": "#b3c9b5",
+        }
+      },
+      {
+        "scope": [
+          "variable.other.readwrite.alias.js"
+        ],
+        "settings": {
+          "foreground": "#b3c9b5",
+        }
+      },
+      {
+        "scope": [
+          "meta.attribute.directive.vue"
+        ],
+        "settings": {
+          "foreground": "#829bb3",
+        }
+      },
+      {
+        "scope": [
+          "entity.other.attribute-name.html"
+        ],
+        "settings": {
+          "foreground": "#9d9d9d"
+        }
+      },
+      {
+        "scope": [
+          "keyword.control.loop.vue"
+        ],
+        "settings": {
+          "foreground": "#989898"
+        }
+      },
+      {
+        "scope": [
+          "keyword.control.conditional.vue"
+        ],
+        "settings": {
+          "foreground": "#989898"
+        }
+      },
+      {
+        "scope": [
+          "string.quoted.double.html"
+        ],
+        "settings": {
+          "foreground": "#d3446c"
+        }
+      },
+      {
+        "scope": [
+          "string.quoted.single.js"
+        ],
+        "settings": {
+          "foreground": "#b5476f"
+        }
+      },
+      {
+        "scope": [
+          "variable.other.readwrite.ts"
+        ],
+        "settings": {
+          "foreground": "#f9ff55"
+        }
+      }
+    ]
+  }
+}

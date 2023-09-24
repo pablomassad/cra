@@ -1,0 +1,7 @@
+{
+  "name": "com.pp.cra",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}
