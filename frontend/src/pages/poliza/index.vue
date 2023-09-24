@@ -1,6 +1,6 @@
 <template>
     <div class="backIntegralmente">
-        <div class="tituloPoliza">Datos de POLIZA</div>
+        <div class="tituloCliente">Datos de POLIZA</div>
         <div class="polizaFrame">
             <div class="label">Asegurado</div>
             <div class="value">{{ pol.nombre }}</div>
@@ -27,35 +27,36 @@
             <div class="label">Vencimiento de cuotas</div>
             <div class="value">{{ pol.vencimientos }}</div>
         </div>
-        <q-btn label="Descargar" icon="picture_as_pdf" @click="download"></q-btn>
+        <div class="listFrame">
+            <q-btn color="primary" label="Descargar" icon="picture_as_pdf" @click="download" class="btnDownload"></q-btn>
+        </div>
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { ui } from 'fwk-q-ui'
 import appStore from 'src/pages/appStore'
 
 const pol = appStore.state.selVehiculo
 
 onMounted(async () => {
-
+    ui.actions.setTitle('Póliza')
 })
 </script>
 
 <style scoped>
-.tituloPoliza {
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-}
-
 .polizaFrame {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    margin: 8px;
-    padding: 8px;
+    background: white;
+    margin: 16px;
+    padding: 16px;
     box-shadow: 1px 1px 5px gray;
     border-radius: 10px;
+    row-gap: 10px;
+    max-width: 600px;
+    margin: auto 16px;
 }
 
 .label {
@@ -68,5 +69,11 @@ onMounted(async () => {
     color: #757575;
     font-size: 0.75rem;
     text-align: right;
+}
+
+.btnDownload {
+    width: 300px;
+    margin: 20px auto;
+    text-align: center;
 }
 </style>

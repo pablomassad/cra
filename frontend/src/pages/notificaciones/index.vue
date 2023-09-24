@@ -2,9 +2,12 @@
     <div class="backIntegralmente">
         <div class="tituloCliente">{{ appStore.state.userData[0].nombre }}</div>
         <br />
-        <div v-for="v in appStore.state.notificaciones" :key="v">
-            <div class="mensaje">
-                {{ `${v.fechaEmision} ${v.mensaje}` }}
+        <div class="listFrame">
+            <div v-for="v in appStore.state.notificaciones" :key="v">
+                <div class="mensaje">
+                    <div class="fechahora">{{ v.fhEmision }}</div>
+                    <div class="msg">{{ v.mensaje }}</div>
+                </div>
             </div>
         </div>
     </div>
@@ -12,10 +15,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { ui } from 'fwk-q-ui'
 import appStore from 'src/pages/appStore'
 
 onMounted(async () => {
-    await appStore.actions.init()
+    ui.actions.setTitle('Mensajes')
 })
 </script>
 
@@ -26,7 +30,7 @@ onMounted(async () => {
 }
 
 .mensaje {
-    background-color: green;
+    background-color: rgb(76, 144, 76);
     border-radius: 10px;
     box-shadow: 1px 1px 3px gray;
     padding: 8px;
