@@ -2,7 +2,7 @@
   "name": "com.pp.cra",
   "version": "1.00",
   "description": "CRA Frontend",
-  "productName": "ppcra",
+  "productName": "CRA",
   "author": "Pablo Massad <pamassad@teco.com.ar>",
   "private": true,
   "scripts": {

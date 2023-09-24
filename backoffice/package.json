@@ -2,7 +2,7 @@
   "name": "com.pp.crabo",
   "version": "1.00",
   "description": "CRA Backoffice",
-  "productName": "ppcrabo",
+  "productName": "CRA Backoffice",
   "author": "Pablo Massad <pamassad@teco.com.ar>",
   "private": true,
   "scripts": {
