@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import firebase from 'firebase/compat/app'
-import { getFirestore, onSnapshot, collection, getDocs, doc, addDoc, deleteDoc, updateDoc, getDoc, setDoc, query } from 'firebase/firestore'
+import { getFirestore, onSnapshot, collection, getDocs, doc, addDoc, deleteDoc, updateDoc, getDoc, setDoc, query, where } from 'firebase/firestore'
 import { getStorage, ref, uploadBytes, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage'
 import { ENVIRONMENTS } from '../environments'
 
@@ -104,6 +104,7 @@ const fb = {
     getCurrentUserQuote,
     getCollection,
     getCollectionRef,
+    getCollectionByCriteria,
     getDocument,
     setDocument,
     addDocument,

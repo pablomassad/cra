@@ -3,30 +3,35 @@ import axios from 'redaxios'
 import fb from 'src/boot/firebase'
 
 const state = reactive({
+    document: undefined,
     selVehiculo: undefined,
-    vehiculos: undefined,
+    userData: undefined,
     notificaciones: undefined
 })
 const actions = {
+    setDocument (doc) {
+        console.log('store setDocument:', doc)
+        state.document = doc
+    },
     setSelVehiculo (v) {
         console.log('store setSelVehiculo:', v)
         state.selVehiculo = v
     },
-    setVehiculos (data) {
-        console.log('store setVehiculos:', data)
-        state.vehiculos = data
+    setUserData (data) {
+        console.log('store setUserData:', data)
+        state.userData = data
     },
     setNotificaciones (msgs) {
         console.log('store setNotificaciones:', msgs)
         state.notificaciones = msgs
     },
-    async getVehiculosByUser (dni) {
-        const data = await fb.getCollectionByCriteria('clientes', 'dni', dni)
-        actions.setVehiculos(res)
+    async getDataByUser () {
+        const data = await fb.getCollectionByCriteria('clientes', 'documento', Number(state.document))
+        actions.setUserData(data)
     },
-    async getNotificacionesByUser (dni) {
-        const data = await fb.getCollectionByCriteria('notificaciones', 'dni', dni)
-        actions.setNotificaciones(res)
+    async getNotificacionesByUser () {
+        const data = await fb.getCollectionByCriteria('notificaciones', 'documento', Number(state.document))
+        actions.setNotificaciones(data)
     }
 }
 

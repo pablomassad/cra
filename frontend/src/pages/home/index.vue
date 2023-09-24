@@ -1,12 +1,12 @@
 <template>
-    <div class="backIntegralmente">
+    <div class="backIntegralmente" v-if="appStore.state.userData?.length && appStore.state.notificaciones?.length">
         <div class="tituloCliente">{{ appStore.state.userData[0].nombre }}</div>
         <div class="notificaciones">
-            <q-btn :label="Mensajes" icon="mail"></q-btn>
+            <q-btn label="Mensajes" icon="mail"></q-btn>
             <div class="contadorMensajes">{{ appStore.state.notificaciones.length }}</div>
         </div>
         <br />
-        <div v-for="v in appStore.state.userData">
+        <div v-for="v in appStore.state.userData" :key="v">
             <q-btn :label="`${v.marca} ${v.dominio}`" icon="directions_car" @click="onCarSelected(v)"></q-btn>
         </div>
     </div>
@@ -20,8 +20,8 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 onMounted(async () => {
-    appStore.actions.getDataByUser(appStore.state.clientId)
-    appStore.actions.getNotificacionesByUser(appStore.state.clientId)
+    appStore.actions.getDataByUser()
+    appStore.actions.getNotificacionesByUser()
 })
 const onCarSelected = (v) => {
     appStore.actions.setSelVehiculo(v)

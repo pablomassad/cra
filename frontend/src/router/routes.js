@@ -11,7 +11,7 @@ const routes = [
         children: [
             { path: '/home', component: Home },
             { path: '/poliza', component: Poliza },
-            { path: '/notificaciones', component: Notificaciones },
+            { path: '/notificaciones', component: Notificaciones }
         ]
     },
     { path: '/login', component: Login },

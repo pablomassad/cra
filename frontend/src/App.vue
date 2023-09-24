@@ -19,7 +19,7 @@ onMounted(() => {
             isMobile: false,
             appname: 'cra',
             origApp: 'cra',
-            tool: '/home'
+            tool: '/login'
         },
         data: {}
     }

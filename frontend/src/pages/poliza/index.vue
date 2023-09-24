@@ -50,6 +50,8 @@ onMounted(async () => {
 }
 
 .polizaFrame {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     margin: 8px;
     padding: 8px;
     box-shadow: 1px 1px 5px gray;

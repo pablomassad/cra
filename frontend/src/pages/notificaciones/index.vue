@@ -2,7 +2,7 @@
     <div class="backIntegralmente">
         <div class="tituloCliente">{{ appStore.state.userData[0].nombre }}</div>
         <br />
-        <div v-for="v in appStore.state.notificaciones">
+        <div v-for="v in appStore.state.notificaciones" :key="v">
             <div class="mensaje">
                 {{ `${v.fechaEmision} ${v.mensaje}` }}
             </div>
