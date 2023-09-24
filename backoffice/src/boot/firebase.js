@@ -1,9 +1,10 @@
+import firebase from 'firebase/compat/app'
+import { getMessaging } from 'firebase/messaging'
 import { initializeApp } from 'firebase/app'
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
-import firebase from 'firebase/compat/app'
-import { getFirestore, onSnapshot, collection, getDocs, doc, addDoc, deleteDoc, updateDoc, getDoc, setDoc } from 'firebase/firestore'
+import { getFirestore, onSnapshot, collection, getDocs, doc, addDoc, deleteDoc, updateDoc, getDoc, setDoc, query, where } from 'firebase/firestore'
 import { getStorage, ref, uploadBytes, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage'
-import { ENVIRONMENTS } from '../environments'
+import { ENVIRONMENTS } from 'src/environments'
 
 const firebaseApp = initializeApp(ENVIRONMENTS.firebase)
 
@@ -50,6 +51,14 @@ const getCollection = async (colName) => {
     const result = colSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }))
     return result
 }
+const getCollectionByCriteria = async (colName, field, val, op) => {
+    let operator = '=='
+    if (op) operator = op
+    const q = query(collection(db, colName), where(field, operator, val))
+    const querySnapshot = await getDocs(q)
+    const result = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }))
+    return result
+}
 const getCollectionRef = (colName) => {
     const colRef = collection(db, colName)
     return colRef
@@ -79,6 +88,20 @@ const uploadFile = (dest, f) => {
     const uploadTask = uploadBytesResumable(storageRef, f)
     return uploadTask
 }
+const sendMessage = async (dest, titulo, descripcion) => {
+    const message = {
+        title: titulo,
+        body: descripcion,
+        data: {},
+        topic: dest
+    }
+    try {
+        await getMessaging().send(message)
+        return true
+    } catch (error) {
+        return false
+    }
+}
 const fb = {
     db,
     sto,
@@ -96,10 +119,12 @@ const fb = {
     getCurrentUserQuote,
     getCollection,
     getCollectionRef,
+    getCollectionByCriteria,
     getDocument,
     setDocument,
     addDocument,
-    deleteDocument
+    deleteDocument,
+    sendMessage
 }
 
 export default fb

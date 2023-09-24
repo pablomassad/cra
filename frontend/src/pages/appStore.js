@@ -1,5 +1,5 @@
 import { reactive, readonly } from 'vue'
-import axios from 'redaxios'
+import { ui } from 'fwk-q-ui'
 import fb from 'src/boot/firebase'
 
 const state = reactive({
@@ -26,12 +26,16 @@ const actions = {
         state.notificaciones = msgs
     },
     async getDataByUser () {
+        ui.actions.showLoading()
         const data = await fb.getCollectionByCriteria('clientes', 'documento', Number(state.document))
         actions.setUserData(data)
+        ui.actions.hideLoading()
     },
     async getNotificacionesByUser () {
+        ui.actions.showLoading()
         const data = await fb.getCollectionByCriteria('notificaciones', 'documento', Number(state.document))
         actions.setNotificaciones(data)
+        ui.actions.hideLoading()
     }
 }
 
