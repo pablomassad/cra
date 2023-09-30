@@ -13,6 +13,9 @@ const actions = {
         console.log('store setDocument:', doc)
         state.document = doc
     },
+    async updateFieldsOrder (fieldsOrder) {
+        await fb.setDocument('opciones', fieldsOrder, 'polizas')
+    },
     async sendNotificacions () {
         console.log('store sendNotificacions:', state.notificaciones.length)
         ui.actions.showLoading({

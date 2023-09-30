@@ -1,5 +1,5 @@
 <template>
-    <div class="backIntegralmente">
+    <div class="backIntegralmente" v-if="localData.Asegurado">
         <CardList :objectToMap="localData" split defValue=''>
             <template #header>
                 <div class="grdTitle">
@@ -21,13 +21,18 @@ import { ref, onMounted } from 'vue'
 import { ui } from 'fwk-q-ui'
 import CardList from 'fwk-q-cardlist'
 import appStore from 'src/pages/appStore'
+import store from '../notificaciones/store'
 
-const tmp = { ...appStore.state.selVehiculo }
-delete tmp.id
-const localData = tmp
+const localData = ref({})
 
 onMounted(async () => {
     ui.actions.setTitle('Póliza')
+    const tmp = { ...appStore.state.selVehiculo }
+    delete tmp.id
+    appStore.state.fieldsOrder.forEach((f, i) => {
+        localData.value[f] = tmp[f]
+    })
+    console.log('localData:', localData.value)
 })
 </script>
 
@@ -45,11 +50,12 @@ onMounted(async () => {
     text-align: center;
     font-weight: bold;
     text-shadow: 1px 1px 1px gray;
+    margin: 20px 0;
 }
 
 .carIcon {
     font-size: 30px;
-    text-shadow: 1px 1px 1px white;
+    text-shadow: 1px 1px 3px gray;
     color: rgb(106, 60, 191);
 }
 

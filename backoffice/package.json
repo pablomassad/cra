@@ -49,6 +49,7 @@
     "fwk-q-progresscounter": "0.0.2",
     "fwk-q-saf": "0.0.30",
     "fwk-q-tabs": "0.0.11",
+    "fwk-quasar": "0.3.69",
     "fwk-q-ui": "0.0.9",
     "fwk-q-uselocation": "0.0.4",
     "gsap": "^3.12.2",

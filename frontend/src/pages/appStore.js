@@ -6,7 +6,8 @@ const state = reactive({
     document: undefined,
     selVehiculo: undefined,
     userData: undefined,
-    notificaciones: undefined
+    notificaciones: undefined,
+    fieldsOrder: undefined
 })
 const actions = {
     setDocument (doc) {
@@ -21,12 +22,19 @@ const actions = {
         console.log('store setUserData:', data)
         state.userData = data
     },
+    setFieldsOrder (fo) {
+        console.log('store setFieldsOrder:', fo)
+        state.fieldsOrder = fo
+    },
     setNotificaciones (msgs) {
         console.log('store setNotificaciones:', msgs)
         state.notificaciones = msgs
     },
     async getDataByUser () {
         ui.actions.showLoading()
+        const res = await fb.getDocument('opciones', 'polizas')
+        actions.setFieldsOrder(res.orden)
+
         const data = await fb.getCollectionFlex('clientes', { field: 'Documento', op: '==', val: state.document })
         if (data?.length) {
             actions.setUserData(data)

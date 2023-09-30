@@ -47,19 +47,28 @@ const onUploadClients = (e) => {
         const fieldsArr = fieldsStr.split(';')
         console.log('FieldsArray:', fieldsArr)
 
-        await appStore.actions.deleteCollection()
+        const polizas = {
+            orden: []
+        }
+        for (let i = 1; i <= orderArr.length; i++) {
+            const idx = orderArr.indexOf(i.toString())
+            polizas.orden.push(fieldsArr[idx])
+        }
+        await appStore.actions.updateFieldsOrder(polizas)
         data.shift() // borra Orden de campos
         data.shift() // borra cabecera del data
 
-        const clientesDocs = data.map((str, i) => {
-            const valuesArray = str.split(';')
-            const doc = {}
-            fieldsArr.forEach((f, i) => {
-                doc[f] = valuesArray[i]
-            })
-            return doc
-        })
-        await appStore.actions.insertCollection('clientes', clientesDocs)
+        // await appStore.actions.deleteCollection()
+
+        // const clientesDocs = data.map((str, i) => {
+        //    const valuesArray = str.split(';')
+        //    const doc = {}
+        //    fieldsArr.forEach((f, i) => {
+        //        doc[f] = valuesArray[i]
+        //    })
+        //    return doc
+        // })
+        // await appStore.actions.insertCollection('clientes', clientesDocs)
     }
 }
 const uploadNotifications = () => {
