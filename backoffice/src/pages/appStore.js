@@ -1,6 +1,6 @@
 import { reactive, readonly } from 'vue'
 import { ui } from 'fwk-q-ui'
-import fb from 'src/boot/firebase'
+import fb from 'fwk-q-firebase'
 
 const MSG_DELAY = 1
 
@@ -25,6 +25,18 @@ const actions = {
             await sleep(MSG_DELAY)
         }
         ui.actions.hideLoading()
+    },
+    async deleteCollection () {
+        console.log('store deleteCollection')
+        console.time('deleteCol')
+        await fb.emptyCollection('clientes')
+        console.timeEnd('deleteCol')
+    },
+    async insertCollection (col, data) {
+        console.log('store insertCollection')
+        console.time('createCol')
+        await fb.batchInsert(col, data)
+        console.timeEnd('createCol')
     }
 }
 

@@ -1,4 +1,4 @@
-import { main } from 'fwk-quasar'
+import { main } from 'fwk-q-main'
 import Home from '../pages/home/index.vue'
 import Login from '../pages/login/index.vue'
 

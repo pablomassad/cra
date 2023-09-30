@@ -13,7 +13,7 @@
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
 $typography-font-family: 'Titillium Web',
-sans-serif;
+    sans-serif;
 
 $primary : #0066a4;
 $secondary : #26A69A;
@@ -25,3 +25,12 @@ $positive : #21BA45;
 $negative : #C10015;
 $info : #31CCEC;
 $warning : #F2C037;
+
+$toolbox-primary: #2572b0;
+$toolbox-secondary: #3172a6;
+$toolbox-green: #45B000;
+$toolbox-dark-grey: #464646;
+$toolbox-light-grey: rgba($color: #D8D9E2, $alpha: 0.4);
+$toolbox-primary-light: rgba($color: #2572b0, $alpha: 0.3);
+$toolbox-background: #d8d9e2;
+$toolbox-background-dark: #282828;

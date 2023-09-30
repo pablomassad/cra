@@ -4,7 +4,7 @@
 
 <script setup>
 import { onMounted, watch } from 'vue'
-import { main } from 'fwk-quasar'
+import { main } from 'fwk-q-main'
 import { useRouter } from 'vue-router'
 import { ENVIRONMENTS } from './environments'
 
@@ -20,10 +20,9 @@ onMounted(() => {
             appname: 'crabo',
             origApp: 'crabo',
             tool: '/login'
-        },
-        data: {}
+        }
     }
-    main.actions.init(ENVIRONMENTS, pl, true, true)
+    main.actions.init(ENVIRONMENTS, pl, true)
 })
 
 watch(() => main.state.info, async (newVal, oldVal) => {

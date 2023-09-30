@@ -1,6 +1,6 @@
 import { reactive, readonly } from 'vue'
 import axios from 'redaxios'
-import fb from 'src/boot/firebase'
+import fb from 'fwk-q-firebase'
 
 const state = reactive({
 })

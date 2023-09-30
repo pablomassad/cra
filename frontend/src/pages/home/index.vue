@@ -1,14 +1,14 @@
 <template>
-    <div class="backIntegralmente" v-if="appStore.state.userData?.length && appStore.state.notificaciones?.length">
+    <div class="backIntegralmente" v-if="appStore.state.userData?.length">
         <div class="tituloCliente">{{ appStore.state.userData[0].nombre }}</div>
         <div class="notificaciones">
             <q-btn color="primary" label="Mensajes" icon="mail" class="btnMensajes" @click="gotoMensajes"></q-btn>
-            <div class="contadorMensajes">{{ appStore.state.notificaciones.length }}</div>
+            <div class="contadorMensajes" v-if="appStore.state.notificaciones?.length > 0">{{ appStore.state.notificaciones?.length }}</div>
         </div>
         <br />
         <div class="listFrame">
             <div v-for="v in appStore.state.userData" :key="v">
-                <q-btn color="primary" :label="`${v.marca}   /  ${v.dominio}`" icon="directions_car" @click="onCarSelected(v)" class="btnVehiculo"></q-btn>
+                <q-btn color="primary" :label="`${v.Marca}   /  ${v.Patente}`" icon="directions_car" @click="onCarSelected(v)" class="btnVehiculo"></q-btn>
             </div>
         </div>
     </div>
@@ -24,7 +24,6 @@ const router = useRouter()
 
 onMounted(async () => {
     ui.actions.setTitle('Informacion')
-    appStore.actions.getDataByUser()
     appStore.actions.getNotificacionesByUser()
 })
 const onCarSelected = (v) => {

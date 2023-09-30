@@ -3,7 +3,7 @@
         <img src="cra.png" class="logo">
         <div class="grdLogin">
             <q-input color="black" bg-color="white" filled v-model="dni" label="Ingrese documento" @keyup.enter="validateDocument" class="doc" />
-            <q-btn color="warning" icon="login" @click="validateDocument" class="login" />
+            <q-btn color="warning" icon="login" @click="validateDocument" class="login" :disable="!dni" />
         </div>
     </div>
 </template>
@@ -20,6 +20,7 @@ const dni = ref()
 onMounted(async () => {
 })
 const validateDocument = () => {
+    appStore.actions.setDocument(dni.value)
     router.push('/home')
 }
 </script>

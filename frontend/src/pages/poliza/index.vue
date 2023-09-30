@@ -1,44 +1,30 @@
 <template>
     <div class="backIntegralmente">
-        <div class="tituloCliente">Datos de POLIZA</div>
-        <div class="polizaFrame">
-            <div class="label">Asegurado</div>
-            <div class="value">{{ pol.nombre }}</div>
-            <div class="label">Compañia</div>
-            <div class="value">{{ pol.compania }}</div>
-            <div class="label">Poliza</div>
-            <div class="value">{{ pol.poliza }}</div>
-            <div class="label">Vigencia</div>
-            <div class="value">{{ `${pol.fechaInicio} - ${pol.fechaVto}` }}</div>
-            <div class="label">Vehiculo</div>
-            <div class="value">{{ `${pol.marca} - ${pol.modelo}` }}</div>
-            <div class="label">Tipo</div>
-            <div class="value">{{ pol.tipo }}</div>
-            <div class="label">Año</div>
-            <div class="value">{{ pol.año }}</div>
-            <div class="label">Patente</div>
-            <div class="value">{{ pol.dominio }}</div>
-            <div class="label">Cobertura</div>
-            <div class="value">{{ pol.cobertura }}</div>
-            <div class="label">Suma asegurada</div>
-            <div class="value">{{ pol.sumaAsegurada }}</div>
-            <div class="label">Uso</div>
-            <div class="value">{{ pol.uso }}</div>
-            <div class="label">Vencimiento de cuotas</div>
-            <div class="value">{{ pol.vencimientos }}</div>
-        </div>
-        <div class="listFrame">
+        <CardList :objectToMap="localData" split defValue=''>
+            <template #header>
+                <div class="grdTitle">
+                    <div></div>
+                    <q-icon name="directions_car" class="carIcon" />
+                    <div class="title">{{ localData.Patente }}</div>
+                    <div></div>
+                </div>
+            </template>
+        </CardList>
+        <!--<div class="listFrame">
             <q-btn color="primary" label="Descargar" icon="picture_as_pdf" @click="download" class="btnDownload"></q-btn>
-        </div>
+        </div>-->
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ui } from 'fwk-q-ui'
+import CardList from 'fwk-q-cardlist'
 import appStore from 'src/pages/appStore'
 
-const pol = appStore.state.selVehiculo
+const tmp = { ...appStore.state.selVehiculo }
+delete tmp.id
+const localData = tmp
 
 onMounted(async () => {
     ui.actions.setTitle('Póliza')
@@ -46,6 +32,27 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.grdTitle {
+    display: grid;
+    grid-template-columns: 1fr 50px 120px 1fr;
+    width: 100%;
+    justify-items: center;
+    align-items: center;
+}
+
+.title {
+    font-size: 25px;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px gray;
+}
+
+.carIcon {
+    font-size: 30px;
+    text-shadow: 1px 1px 1px white;
+    color: rgb(106, 60, 191);
+}
+
 .polizaFrame {
     display: grid;
     grid-template-columns: 1fr 1fr;

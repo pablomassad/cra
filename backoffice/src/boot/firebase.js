@@ -112,17 +112,17 @@ const emptyCollection = async (col) => {
 
     ui.actions.showLoading({
         type: 'progressCounter',
-        color: 'blue',
+        color: 'red',
         total: documents.length,
         value: 0
     })
     let i = 0
     for (const d of documents) {
         await deleteDocument(col, d.id)
-        await sleep(5)
+        // await sleep(5)
         ui.actions.setLoaderOps({
             type: 'progressCounter',
-            color: 'blue',
+            color: 'red',
             total: documents.length,
             value: i++
         })
@@ -180,6 +180,7 @@ const batchInsert = async (col, data) => {
         ui.actions.setLoaderOps({
             type: 'progressCounter',
             color: 'blue',
+            total: filteredData.length,
             value: i++
         })
         batch.set(docRef, d) // batch.set(docRef, d) // batch.create(docRef, d)

@@ -3,7 +3,7 @@
         <img src="cra.png" class="logo">
         <div class="grdLogin">
             <q-input color="black" bg-color="white" filled v-model="dni" label="Ingrese documento" @keyup.enter="validateDocument" class="doc" />
-            <q-btn color="warning" icon="login" @click="validateDocument" class="login" />
+            <q-btn color="warning" icon="login" @click="validateDocument" class="login" :disable="!dni" />
         </div>
     </div>
 </template>
@@ -12,16 +12,22 @@
 import { ref, onMounted } from 'vue'
 import appStore from 'src/pages/appStore'
 import { useRouter } from 'vue-router'
+import { LocalStorage } from 'quasar'
 
 const router = useRouter()
 
-const dni = ref()
+const dni = ref(LocalStorage.getItem('currUser'))
 
 onMounted(async () => {
+    if (dni.value) validateDocument()
 })
-const validateDocument = () => {
-    appStore.actions.setDocument(dni.value || 20005205)
-    router.push('/home')
+const validateDocument = async () => {
+    appStore.actions.setDocument(dni.value)
+    const data = await appStore.actions.getDataByUser()
+    if (data.length) {
+        LocalStorage.set('currUser', dni.value)
+        router.push('/home')
+    }
 }
 </script>
 

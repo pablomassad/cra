@@ -18,13 +18,14 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ui } from 'fwk-q-ui'
-import fb from 'src/boot/firebase'
+import fb from 'fwk-q-firebase'
+import appStore from 'src/pages/appStore'
 
 const refFileClients = ref()
 const refFileNoti = ref()
 
 onMounted(async () => {
-
+    ui.actions.setTitle('Backoffice')
 })
 
 const uploadClients = () => {
@@ -46,12 +47,7 @@ const onUploadClients = (e) => {
         const fieldsArr = fieldsStr.split(';')
         console.log('FieldsArray:', fieldsArr)
 
-        console.time('deleteCol')
-        await fb.emptyCollection('clientes')
-        console.timeEnd('deleteCol')
-
-        console.log('Collection clientes deleted OK')
-
+        await appStore.actions.deleteCollection()
         data.shift() // borra Orden de campos
         data.shift() // borra cabecera del data
 
@@ -63,11 +59,7 @@ const onUploadClients = (e) => {
             })
             return doc
         })
-        console.log('clientesDocs array created:', clientesDocs)
-
-        console.time('createCol')
-        await fb.batchInsert('clientes', clientesDocs)
-        console.timeEnd('createCol')
+        await appStore.actions.insertCollection('clientes', clientesDocs)
     }
 }
 const uploadNotifications = () => {
@@ -97,9 +89,7 @@ const onUploadNotifications = (e) => {
         })
         console.log('notiDocs array created:', notiDocs)
 
-        console.time('createCol')
-        await fb.batchInsert('notificaciones', notiDocs)
-        console.timeEnd('createCol')
+        await appStore.actions.insertCollection('notificaciones', notiDocs)
     }
 }
 
