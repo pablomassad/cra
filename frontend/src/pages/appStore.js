@@ -9,46 +9,57 @@ const state = reactive({
     notificaciones: undefined,
     fieldsOrder: undefined
 })
-const actions = {
-    setDocument (doc) {
+const set = {
+    document (doc) {
         console.log('store setDocument:', doc)
         state.document = doc
     },
-    setSelVehiculo (v) {
+    vehiculo (v) {
         console.log('store setSelVehiculo:', v)
         state.selVehiculo = v
     },
-    setUserData (data) {
-        console.log('store setUserData:', data)
-        state.userData = data
+    userData (ud) {
+        console.log('store setUserData:', ud)
+        state.userData = ud
     },
-    setFieldsOrder (fo) {
+    fieldsOrder (fo) {
         console.log('store setFieldsOrder:', fo)
         state.fieldsOrder = fo
     },
-    setNotificaciones (msgs) {
+    notificaciones (msgs) {
         console.log('store setNotificaciones:', msgs)
         state.notificaciones = msgs
-    },
+    }
+}
+const actions = {
     async getDataByUser () {
         ui.actions.showLoading()
         const res = await fb.getDocument('opciones', 'polizas')
-        actions.setFieldsOrder(res.orden)
+        set.fieldsOrder(res.orden)
 
-        const data = await fb.getCollectionFlex('clientes', { field: 'Documento', op: '==', val: state.document })
-        if (data?.length) {
-            actions.setUserData(data)
+        const dataArr = await fb.getCollectionFlex('clientes', { field: 'Documento', op: '==', val: state.document })
+        const arr = []
+        if (dataArr?.length) {
+            dataArr.forEach((doc, i) => {
+                delete doc.id
+                const o = {}
+                state.fieldsOrder.forEach(f => {
+                    o[f] = dataArr[i][f]
+                })
+                arr.push(o)
+            })
+            set.userData(arr)
         } else {
             ui.actions.notify('El usuario no existe!. Pruebe con otro documento.', 'error')
         }
         ui.actions.hideLoading()
-        return data
+        return arr
     },
     async getNotificacionesByUser () {
         ui.actions.showLoading()
         const data = await fb.getCollectionFlex('notificaciones', { field: 'N De documento', op: '==', val: state.document })
         if (data?.length) {
-            actions.setNotificaciones(data)
+            set.notificaciones(data)
         } else {
             ui.actions.notify('No hay nuevas notificaciones', 'info')
         }
@@ -66,6 +77,7 @@ const actions = {
 }
 
 export default {
+    set,
     state: readonly(state),
     actions
 }

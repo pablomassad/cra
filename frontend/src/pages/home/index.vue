@@ -1,26 +1,35 @@
 <template>
     <div class="backIntegralmente" v-if="appStore.state.userData?.length">
-        <div class="tituloCliente">{{ appStore.state.userData[0].nombre }}</div>
+        <!--<q-carousel v-model="slide" transition-prev="jump-right" transition-next="jump-left" swipeable animated control-color="gray" prev-icon="arrow_left" next-icon="arrow_right" navigation-icon="radio_button_unchecked" navigation padding arrows class="text-gray shadow-4 rounded-borders carousel" @change="onChange">-->
+        <q-carousel v-model="slide" transition-prev="jump-right" transition-next="jump-left" swipeable animated control-color="black" navigation-icon="radio_button_checked" navigation class="carousel" @change="onChange">
+
+            <q-carousel-slide v-for="v in appStore.state.userData" :key="v" name="v.Patente">
+                <div class="grdTitle">
+                    <div></div>
+                    <div class="title">{{ v.Patente }}</div>
+                    <div></div>
+                </div>
+                <CardList :objectToMap="v" split defValue='' class="cardList" no-padding>
+                </CardList>
+            </q-carousel-slide>
+        </q-carousel>
+
         <div class="notificaciones">
-            <q-btn color="primary" label="Mensajes" icon="mail" class="btnMensajes" @click="gotoMensajes"></q-btn>
+            <q-btn round color="primary" icon="mail" class="btnMensajes" @click="gotoMensajes"></q-btn>
             <div class="contadorMensajes" v-if="appStore.state.notificaciones?.length > 0">{{ appStore.state.notificaciones?.length }}</div>
-        </div>
-        <br />
-        <div class="listFrame">
-            <div v-for="v in appStore.state.userData" :key="v">
-                <q-btn color="primary" :label="`${v.Marca}   /  ${v.Patente}`" icon="directions_car" @click="onCarSelected(v)" class="btnVehiculo"></q-btn>
-            </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { ui } from 'fwk-q-ui'
 import appStore from '../appStore'
 import { useRouter } from 'vue-router'
+import CardList from 'src/components/fwk-q-cardlist/index.vue'
 
 const router = useRouter()
+const slide = ref(appStore.state.userData[0].Patente)
 
 onMounted(async () => {
     ui.actions.setTitle('Informacion')
@@ -34,12 +43,53 @@ const onCarSelected = (v) => {
 const gotoMensajes = () => {
     router.push('/notificaciones')
 }
+const onChange = (ev) => {
+    console.log('onChange slide:', ev)
+}
 </script>
 
 <style scoped>
+.cardList {
+    border-right: none;
+    max-width: 600px;
+    max-height: calc(100vh - 227px);
+    overflow: auto;
+    margin: auto;
+    border-radius: 20px;
+    box-shadow: 2px 2px 10px #555;
+}
+
+.carousel {
+    height: calc(100vh - 50px);
+    background: pink;
+}
+
+.grdTitle {
+    display: grid;
+    grid-template-columns: 1fr 120px 1fr;
+    width: 100%;
+    justify-items: center;
+    align-items: center;
+}
+
+.title {
+    font-size: 25px;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px gray;
+    margin: 20px 0;
+}
+
+.carIcon {
+    font-size: 30px;
+    text-shadow: 1px 1px 3px gray;
+    color: rgb(106, 60, 191);
+}
+
 .notificaciones {
-    position: relative;
-    width: 300px;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
     margin: auto;
 }
 
@@ -63,7 +113,7 @@ const gotoMensajes = () => {
     font-size: 12px;
     position: absolute;
     padding-left: 6px;
-    top: -9px;
-    left: 287px;
+    bottom: 27px;
+    right: -7px;
 }
 </style>
