@@ -6,7 +6,21 @@
             <q-carousel-slide v-for="v in appStore.state.userData" :key="v" name="v.Patente">
                 <div class="grdTitle">
                     <div></div>
-                    <div class="title">{{ v.Patente }}</div>
+                    <div v-if="v.Patente.length === 6">
+                        <img src="images/patVieja.jpg" class="patViejaImg" />
+                        <div class="patVieja">
+                            <div>{{ v.Patente.substr(0, 3) }}</div>
+                            <div>{{ v.Patente.substr(3, 3) }}</div>
+                        </div>
+                    </div>
+                    <div v-if="v.Patente.length !== 6">
+                        <img src="images/patNueva.png" class="patNuevaImg" />
+                        <div class="patNueva">
+                            <div>{{ v.Patente.substr(0, 2) }}</div>
+                            <div>{{ v.Patente.substr(2, 3) }}</div>
+                            <div>{{ v.Patente.substr(5, 2) }}</div>
+                        </div>
+                    </div>
                     <div></div>
                 </div>
                 <CardList :objectToMap="v" split defValue='' class="cardList" no-padding>
@@ -61,23 +75,52 @@ const onChange = (ev) => {
 
 .carousel {
     height: calc(100vh - 50px);
-    background: pink;
+    background: #b8b0de;
 }
 
 .grdTitle {
     display: grid;
     grid-template-columns: 1fr 120px 1fr;
-    width: 100%;
     justify-items: center;
-    align-items: center;
+    padding-top: 16px;
 }
 
-.title {
-    font-size: 25px;
+.patViejaImg {
+    width: 130px;
+    border-radius: 5px;
+}
+
+.patVieja {
+    position: relative;
+    top: -56px;
+    left: 0px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 10px;
+    font-size: 31px;
     text-align: center;
     font-weight: bold;
     text-shadow: 1px 1px 1px gray;
-    margin: 20px 0;
+    color: #ffffff;
+}
+
+.patNuevaImg {
+    width: 175px;
+    border-radius: 5px;
+}
+
+.patNueva {
+    position: relative;
+    top: -53px;
+    left: 0px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 10px;
+    font-size: 31px;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px gray;
+    color: rgb(45, 45, 45);
 }
 
 .carIcon {

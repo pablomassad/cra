@@ -185,7 +185,7 @@ const setMockMode = () => {
 }
 
 .tbxFrame {
-    background: -webkit-linear-gradient(#2675b5, #004f7d) !important;
+    background: -webkit-linear-gradient(#4d0195, #c03ccf) !important;
     font-size: 2rem;
 }
 
