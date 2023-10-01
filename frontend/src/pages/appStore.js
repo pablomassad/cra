@@ -46,13 +46,22 @@ const actions = {
     },
     async getNotificacionesByUser () {
         ui.actions.showLoading()
-        const data = await fb.getCollectionFlex('notificaciones', { field: 'Documento', op: '==', val: state.document })
+        const data = await fb.getCollectionFlex('notificaciones', { field: 'N De documento', op: '==', val: state.document })
         if (data?.length) {
             actions.setNotificaciones(data)
         } else {
             ui.actions.notify('No hay nuevas notificaciones', 'info')
         }
         ui.actions.hideLoading()
+    },
+    async updateNotifications (field) {
+        console.log('store updateNotifications:', field)
+        for (const n of state.notificaciones) {
+            if (!n[field]) {
+                n[field] = new Date().getTime()
+                await fb.setDocument('notificaciones', n, n.id)
+            }
+        }
     }
 }
 

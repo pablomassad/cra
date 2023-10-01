@@ -6,7 +6,7 @@
             <div v-for="v in appStore.state.notificaciones" :key="v">
                 <div class="mensaje">
                     <div class="fechahora">{{ v.fhEmision }}</div>
-                    <div class="msg">{{ v.mensaje }}</div>
+                    <div class="msg">{{ v.Mensaje }}</div>
                 </div>
             </div>
         </div>
@@ -20,6 +20,7 @@ import appStore from 'src/pages/appStore'
 
 onMounted(async () => {
     ui.actions.setTitle('Mensajes')
+    appStore.actions.updateNotifications('fhLectura')
 })
 </script>
 

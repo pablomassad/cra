@@ -21,7 +21,6 @@ import { ref, onMounted } from 'vue'
 import { ui } from 'fwk-q-ui'
 import CardList from 'fwk-q-cardlist'
 import appStore from 'src/pages/appStore'
-import store from '../notificaciones/store'
 
 const localData = ref({})
 

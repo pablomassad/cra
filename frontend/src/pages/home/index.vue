@@ -24,7 +24,8 @@ const router = useRouter()
 
 onMounted(async () => {
     ui.actions.setTitle('Informacion')
-    appStore.actions.getNotificacionesByUser()
+    await appStore.actions.getNotificacionesByUser()
+    appStore.actions.updateNotifications('fhRecepcion')
 })
 const onCarSelected = (v) => {
     appStore.actions.setSelVehiculo(v)

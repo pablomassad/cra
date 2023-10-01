@@ -18,7 +18,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ui } from 'fwk-q-ui'
-import fb from 'fwk-q-firebase'
 import appStore from 'src/pages/appStore'
 
 const refFileClients = ref()
@@ -58,17 +57,17 @@ const onUploadClients = (e) => {
         data.shift() // borra Orden de campos
         data.shift() // borra cabecera del data
 
-        // await appStore.actions.deleteCollection()
+        await appStore.actions.deleteCollection()
 
-        // const clientesDocs = data.map((str, i) => {
-        //    const valuesArray = str.split(';')
-        //    const doc = {}
-        //    fieldsArr.forEach((f, i) => {
-        //        doc[f] = valuesArray[i]
-        //    })
-        //    return doc
-        // })
-        // await appStore.actions.insertCollection('clientes', clientesDocs)
+        const clientesDocs = data.map((str, i) => {
+            const valuesArray = str.split(';')
+            const doc = {}
+            fieldsArr.forEach((f, i) => {
+                doc[f] = valuesArray[i]
+            })
+            return doc
+        })
+        await appStore.actions.insertCollection('clientes', clientesDocs)
     }
 }
 const uploadNotifications = () => {
@@ -82,15 +81,21 @@ const onUploadNotifications = (e) => {
     reader.onload = async () => {
         const data = reader.result.split('\r\n')
 
-        const fieldsStr = data[0]
+        const tmpStr = data[0]
+        const tmpArr = tmpStr.split(';')
+
+        const fieldsStr = data[1]
         const fieldsArr = fieldsStr.split(';')
         console.log('FieldsArray:', fieldsArr)
 
         data.shift() // borra cabecera del data
+        data.shift() // borra campos tabla
 
         const notiDocs = data.map((str, i) => {
             const valuesArray = str.split(';')
-            const doc = {}
+            const doc = {
+                fhEmision: new Date().getTime()
+            }
             fieldsArr.forEach((f, i) => {
                 doc[f] = valuesArray[i]
             })
