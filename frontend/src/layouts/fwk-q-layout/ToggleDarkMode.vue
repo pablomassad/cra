@@ -21,6 +21,5 @@ const changeMode = (val) => {
 .infoFrame {
     padding-top: 5px;
     min-width: 145px;
-    text-align: center;
 }
 </style>

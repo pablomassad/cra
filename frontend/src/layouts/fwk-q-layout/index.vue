@@ -13,7 +13,7 @@
                     <q-icon name="person" class="avatarIcon" />
                     <slot name="states">
                     </slot>
-                    <q-menu transition-show="jump-down" transition-hide="jump-up" fit>
+                    <q-menu transition-show="jump-down" transition-hide="jump-up" fit style="width='200px'">
                         <q-item-section v-close-popup>
                             <toggle-dark-mode v-if="!disableDark" :mode="darkmode" label="Modo Oscuro" @change="toggleMode"></toggle-dark-mode>
                             <slot name="drawer">

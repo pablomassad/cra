@@ -28,7 +28,7 @@ onMounted(async () => {
     ui.actions.setTitle('Póliza')
     const tmp = { ...appStore.state.selVehiculo }
     delete tmp.id
-    appStore.state.fieldsOrder.forEach((f, i) => {
+    appStore.state.opciones.orden.forEach((f, i) => {
         localData.value[f] = tmp[f]
     })
     console.log('localData:', localData.value)

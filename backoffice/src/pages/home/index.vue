@@ -46,14 +46,14 @@ const onUploadClients = (e) => {
         const fieldsArr = fieldsStr.split(';')
         console.log('FieldsArray:', fieldsArr)
 
-        const polizas = {
+        const config = {
             orden: []
         }
         for (let i = 1; i <= orderArr.length; i++) {
             const idx = orderArr.indexOf(i.toString())
-            polizas.orden.push(fieldsArr[idx])
+            config.orden.push(fieldsArr[idx])
         }
-        await appStore.actions.updateFieldsOrder(polizas)
+        await appStore.actions.updateFieldsOrder(config)
         data.shift() // borra Orden de campos
         data.shift() // borra cabecera del data
 

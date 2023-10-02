@@ -7,7 +7,7 @@ const state = reactive({
     selVehiculo: undefined,
     userData: undefined,
     notificaciones: undefined,
-    fieldsOrder: undefined
+    opciones: undefined
 })
 const set = {
     document (doc) {
@@ -22,20 +22,22 @@ const set = {
         console.log('store setUserData:', ud)
         state.userData = ud
     },
-    fieldsOrder (fo) {
-        console.log('store setFieldsOrder:', fo)
-        state.fieldsOrder = fo
-    },
     notificaciones (msgs) {
         console.log('store setNotificaciones:', msgs)
         state.notificaciones = msgs
+    },
+    opciones (ops) {
+        console.log('store set.opciones:', ops)
+        state.opciones = ops
     }
 }
 const actions = {
+    async getOpciones () {
+        const res = await fb.getDocument('opciones', 'config')
+        set.opciones(res)
+    },
     async getDataByUser () {
         ui.actions.showLoading()
-        const res = await fb.getDocument('opciones', 'polizas')
-        set.fieldsOrder(res.orden)
 
         const dataArr = await fb.getCollectionFlex('clientes', { field: 'Documento', op: '==', val: state.document })
         const arr = []
@@ -43,7 +45,7 @@ const actions = {
             dataArr.forEach((doc, i) => {
                 delete doc.id
                 const o = {}
-                state.fieldsOrder.forEach(f => {
+                state.opciones.orden.forEach(f => {
                     o[f] = dataArr[i][f]
                 })
                 arr.push(o)
@@ -59,7 +61,7 @@ const actions = {
         ui.actions.showLoading()
         const data = await fb.getCollectionFlex('notificaciones', { field: 'N De documento', op: '==', val: state.document })
         if (!data?.length) {
-            ui.actions.notify('No hay nuevas notificaciones', 'info', false, { position: 'center' })
+            ui.actions.notify('No hay nuevas notificaciones', 'info', { position: 'center' })
         }
         set.notificaciones(data)
         ui.actions.hideLoading()

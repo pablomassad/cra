@@ -1,6 +1,6 @@
 <template>
     <div class="backLogin">
-        <img src="cra.png" class="logo">
+        <!--<img src="cra.png" class="logo">-->
         <div class="grdLogin">
             <q-input color="black" bg-color="white" filled v-model="dni" label="Ingrese documento" @keyup.enter="validateDocument" class="doc" />
             <q-btn color="warning" icon="login" @click="validateDocument" class="login" :disable="!dni" />
@@ -23,6 +23,7 @@ onMounted(async () => {
 })
 const validateDocument = async () => {
     appStore.set.document(dni.value)
+    await appStore.actions.getOpciones()
     const data = await appStore.actions.getDataByUser()
     if (data.length) {
         LocalStorage.set('CRA_currUser', dni.value)

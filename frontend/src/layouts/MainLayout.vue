@@ -1,20 +1,20 @@
 <template>
     <Layout>
         <template #drawer>
-            <div class="menuRow">
+            <q-separator />
+            <div class="menuRow" @click="searchUpdates()">
                 <q-icon name="update" class="iconMenu" />
-                <div class="rowText" @click="searchUpdates()">Buscar actualización</div>
+                <div class="rowText">Buscar actualización</div>
             </div>
             <q-separator />
-            <div class="menuRow">
+            <div class="menuRow" @click="logout()">
                 <q-icon name="logout" class="iconMenu" />
-                <div class="rowText" @click="logout()">Salir</div>
+                <div class="rowText">Salir</div>
             </div>
             <q-separator />
         </template>
     </Layout>
-
-    <ConfirmDialog v-if="prompt" :prompt="prompt" :message="dialogMessage" :onCancel="onCancelDialog" :onAccept="onAcceptDialog" />
+    <ConfirmDialog :prompt="prompt" :message="dialogMessage" :onCancel="onCancelDialog" :onAccept="onAcceptDialog" />
 </template>
 
 <script setup>
@@ -24,6 +24,7 @@ import appStore from 'src/pages/appStore'
 import ConfirmDialog from 'fwk-q-confirmdialog'
 import { ENVIRONMENTS } from 'src/environments'
 import { LocalStorage } from 'quasar'
+import { ui } from 'fwk-q-ui'
 
 const prompt = ref(false)
 const dialogMessage = ref('')
@@ -31,16 +32,16 @@ const onAcceptDialog = ref()
 const onCancelDialog = ref()
 
 const searchUpdates = () => {
-    if (ENVIRONMENTS.versionName < appStore.state.config.version) {
+    if (ENVIRONMENTS.versionName < appStore.state.opciones.version) {
         prompt.value = true
         dialogMessage.value = 'Hay una nueva version de la aplicación, desea instalarla?'
         onAcceptDialog.value = async () => {
-            window.open(ENVIRONMENTS.url, '_system')
+            window.open(appStore.state.opciones.url, '_system')
         }
         onCancelDialog.value = () => {
             prompt.value = false
         }
-    }
+    } else { ui.actions.notify('No hay nuevas actualizaciones!', 'info', { position: 'center' }) }
 }
 const logout = () => {
     LocalStorage.set('CRA_currUser', '')
@@ -53,6 +54,7 @@ const logout = () => {
     display: flex;
     align-items: center;
     margin: 10px;
+    width: 200px;
 }
 
 .rowText {

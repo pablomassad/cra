@@ -1,7 +1,7 @@
 <template>
     <div class="backIntegralmente" v-if="appStore.state.userData?.length">
-        <q-carousel v-model="activeIndex" transition-prev="jump-right" transition-next="jump-left" swipeable animated control-color="purple" arrows navigation class="carousel" @change="onChange">
-            <q-carousel-slide v-for="(v, i) in appStore.state.userData" :key="i" name="i">
+        <q-carousel v-model="activeIndex" transition-prev="jump-right" transition-next="jump-left" swipeable animated control-color="purple" navigation class="carousel" @change="onChange">
+            <q-carousel-slide v-for="(v, i) in appStore.state.userData" :key="i" :name="v.Patente">
                 <div class="grdTitle">
                     <div></div>
                     <div v-if="v.Patente.length === 6">
@@ -41,7 +41,9 @@ import { useRouter } from 'vue-router'
 import CardList from 'src/components/fwk-q-cardlist/index.vue'
 
 const router = useRouter()
-const activeIndex = ref(0)
+const activeIndex = ref(appStore.state.userData[0].Patente)
+const slide = ref('style')
+const lorem = 'lorem'
 
 onMounted(async () => {
     ui.actions.setTitle('Informacion')
