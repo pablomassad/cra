@@ -58,11 +58,10 @@ const actions = {
     async getNotificacionesByUser () {
         ui.actions.showLoading()
         const data = await fb.getCollectionFlex('notificaciones', { field: 'N De documento', op: '==', val: state.document })
-        if (data?.length) {
-            set.notificaciones(data)
-        } else {
-            ui.actions.notify('No hay nuevas notificaciones', 'info')
+        if (!data?.length) {
+            ui.actions.notify('No hay nuevas notificaciones', 'info', false, { position: 'center' })
         }
+        set.notificaciones(data)
         ui.actions.hideLoading()
     },
     async updateNotifications (field) {

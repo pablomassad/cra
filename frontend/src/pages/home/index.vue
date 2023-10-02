@@ -1,9 +1,7 @@
 <template>
     <div class="backIntegralmente" v-if="appStore.state.userData?.length">
-        <!--<q-carousel v-model="slide" transition-prev="jump-right" transition-next="jump-left" swipeable animated control-color="gray" prev-icon="arrow_left" next-icon="arrow_right" navigation-icon="radio_button_unchecked" navigation padding arrows class="text-gray shadow-4 rounded-borders carousel" @change="onChange">-->
-        <q-carousel v-model="slide" transition-prev="jump-right" transition-next="jump-left" swipeable animated control-color="black" navigation-icon="radio_button_checked" navigation class="carousel" @change="onChange">
-
-            <q-carousel-slide v-for="v in appStore.state.userData" :key="v" name="v.Patente">
+        <q-carousel v-model="activeIndex" transition-prev="jump-right" transition-next="jump-left" swipeable animated control-color="purple" arrows navigation class="carousel" @change="onChange">
+            <q-carousel-slide v-for="(v, i) in appStore.state.userData" :key="i" name="i">
                 <div class="grdTitle">
                     <div></div>
                     <div v-if="v.Patente.length === 6">
@@ -29,7 +27,7 @@
         </q-carousel>
 
         <div class="notificaciones">
-            <q-btn round color="primary" icon="mail" class="btnMensajes" @click="gotoMensajes"></q-btn>
+            <q-btn round color="purple" icon="mail" class="btnMensajes" @click="gotoMensajes"></q-btn>
             <div class="contadorMensajes" v-if="appStore.state.notificaciones?.length > 0">{{ appStore.state.notificaciones?.length }}</div>
         </div>
     </div>
@@ -43,7 +41,7 @@ import { useRouter } from 'vue-router'
 import CardList from 'src/components/fwk-q-cardlist/index.vue'
 
 const router = useRouter()
-const slide = ref(appStore.state.userData[0].Patente)
+const activeIndex = ref(0)
 
 onMounted(async () => {
     ui.actions.setTitle('Informacion')
@@ -71,6 +69,7 @@ const onChange = (ev) => {
     margin: auto;
     border-radius: 20px;
     box-shadow: 2px 2px 10px #555;
+    padding-top: 16px;
 }
 
 .carousel {
@@ -83,6 +82,7 @@ const onChange = (ev) => {
     grid-template-columns: 1fr 120px 1fr;
     justify-items: center;
     padding-top: 16px;
+    height: 90px;
 }
 
 .patViejaImg {

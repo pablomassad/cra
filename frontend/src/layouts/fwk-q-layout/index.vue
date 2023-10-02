@@ -10,10 +10,7 @@
                 </q-toolbar-title>
                 <SAF :completeMsg="completeMsg" :appName="main.state.info?.appName" v-if="showSAF"></SAF>
                 <q-avatar color="grey" class="avatarInitials">
-                    <img v-if="main.state.userInfoMsg?.photo" :src="main.state.userInfoMsg.photo" style="boxShadow: 1px 1px 3px #3a3a3a">
-                    <div v-else>
-                        {{ main.state.userInfoMsg?.firstName?.charAt(0)?.toUpperCase() }} {{ main.state.userInfoMsg?.lastName?.charAt(0)?.toUpperCase() }}
-                    </div>
+                    <q-icon name="person" class="avatarIcon" />
                     <slot name="states">
                     </slot>
                     <q-menu transition-show="jump-down" transition-hide="jump-up" fit>
@@ -22,7 +19,6 @@
                             <slot name="drawer">
                             </slot>
                             <div class="env">v{{ main.state.environment.versionName }}</div>
-                            <div v-if="main.state.environment.environment !== 'PROD'" class="env">Ambiente = {{ main.state.environment.environment }}</div>
                         </q-item-section>
                     </q-menu>
                 </q-avatar>
@@ -153,6 +149,11 @@ const setMockMode = () => {
 </script>
 
 <style lang="scss" scoped>
+.avatarIcon {
+    color: purple;
+    font-size: 35px;
+}
+
 .avatarInitials {
     margin: 0 -5px 0 10px;
     background: radial-gradient(gray, #aaa);

@@ -4,7 +4,7 @@ import { initializeApp } from 'firebase/app'
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { getFirestore, onSnapshot, collection, getDocs, doc, addDoc, deleteDoc, updateDoc, getDoc, setDoc, query, where } from 'firebase/firestore'
 import { getStorage, ref, uploadBytes, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage'
-import { ENVIRONMENTS } from 'src/environments'
+import { ENVIRONMENTS } from 'src/environments.desa'
 
 const firebaseApp = initializeApp(ENVIRONMENTS.firebase)
 

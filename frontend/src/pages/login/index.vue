@@ -16,7 +16,7 @@ import { LocalStorage } from 'quasar'
 
 const router = useRouter()
 
-const dni = ref(LocalStorage.getItem('currUser'))
+const dni = ref(LocalStorage.getItem('CRA_currUser'))
 
 onMounted(async () => {
     if (dni.value) validateDocument()
@@ -25,7 +25,7 @@ const validateDocument = async () => {
     appStore.set.document(dni.value)
     const data = await appStore.actions.getDataByUser()
     if (data.length) {
-        LocalStorage.set('currUser', dni.value)
+        LocalStorage.set('CRA_currUser', dni.value)
         router.push('/home')
     }
 }
