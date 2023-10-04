@@ -10,7 +10,10 @@
         </div>
         <div>
             <div class="title">Gráfico de Notificaciones</div>
-            <div ref="refChart" id="chart" style="position: relative;"></div>
+            <div ref="refChart" style="position: relative;" v-if="chartEnabled"></div>
+            <div class="refreshButton" @click="refreshStats">
+                <q-icon name="refresh" class="refreshIcon"></q-icon>
+            </div>
             <div class="legendFrame">
                 <div class="legend" :style="{background: colorEnviados}"></div>
                 <div class="legendText">Enviados</div>
@@ -36,18 +39,32 @@ import * as d3 from 'd3'
 const refFileClients = ref()
 const refFileNoti = ref()
 
+const chartEnabled = ref(false)
 const refChart = ref()
 const colorEnviados = '#166498'
 const colorRecibidos = '#639bbf'
 const colorLeidos = '#b3c0c8'
 
-onMounted(async () => {
-    ui.actions.setTitle('Backoffice')
-    drawPie()
+onMounted(() => {
+    // ui.actions.setTitle('Backoffice')
+    refreshStats()
 })
-const drawPie = () => {
-    const data = [220, 200, 130]
-
+const refreshStats = async () => {
+    chartEnabled.value = false
+    const now = new Date()
+    now.setHours(0)
+    const notiStat = await appStore.actions.statNotificationsFromDate(now.getTime())
+    const totEmitidos = notiStat.filter(x => x.fhEmision).length
+    const totRecibidos = notiStat.filter(x => x.fhRecepcion).length
+    const totLeidos = notiStat.filter(x => x.fhLectura).length
+    chartEnabled.value = true
+    setTimeout(() => {
+        drawPie([totEmitidos, totRecibidos, totLeidos])
+    }, 10)
+}
+const drawPie = (data) => {
+    // d3.select('.notiPie').remove()
+    console.log('drawPie:', data)
     const width = 300
     const height = 300
     const radius = Math.min(width, height) / 2
@@ -61,6 +78,7 @@ const drawPie = () => {
         .attr('style', 'position:absolute;right:0;left:0;margin:auto;filter: drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.5));')
         .attr('width', width)
         .attr('height', height)
+        // .attr('id', 'notiPie')
         .append('g')
         .attr('transform', `translate(${width / 2},${height / 2})`)
 
@@ -141,15 +159,11 @@ const onUploadNotifications = (e) => {
     reader.onload = async () => {
         const data = reader.result.split('\r\n')
 
-        const tmpStr = data[0]
-        const tmpArr = tmpStr.split(';')
-
-        const fieldsStr = data[1]
+        const fieldsStr = data[0]
         const fieldsArr = fieldsStr.split(';')
         console.log('FieldsArray:', fieldsArr)
 
         data.shift() // borra cabecera del data
-        data.shift() // borra campos tabla
 
         const notiDocs = data.map((str, i) => {
             const valuesArray = str.split(';')
@@ -169,6 +183,31 @@ const onUploadNotifications = (e) => {
 </script>
 
 <style scoped>
+.refreshButton {
+    z-index: 10000;
+    position: relative;
+    top: 115px;
+    border-radius: 50%;
+    background: radial-gradient(farthest-corner at 0% 0%, rgb(191, 216, 251), rgb(20, 85, 170));
+    border: 2px solid #e2f3ff;
+    box-shadow: 2px 2px 10px gray;
+    width: 70px;
+    height: 70px;
+    margin: auto;
+}
+
+.refreshButton:active {
+    box-shadow: inset 3px 3px 10px;
+    border: none;
+}
+
+.refreshIcon {
+    font-size: 45px;
+    text-shadow: 1px 1px 2px gray;
+    padding: 12px;
+    color: #bdd6ff;
+}
+
 .legendFrame {
     position: relative;
     display: grid;
@@ -177,7 +216,7 @@ const onUploadNotifications = (e) => {
     align-items: center;
     width: 350px;
     margin: auto;
-    padding-top: 330px;
+    padding-top: 260px;
     padding-left: 16px;
 }
 

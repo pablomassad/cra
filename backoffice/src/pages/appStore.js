@@ -48,6 +48,15 @@ const actions = {
     async getOpciones () {
         const res = await fb.getDocument('opciones', 'backoffice')
         set.opciones(res)
+    },
+    async statNotificationsFromDate (d) {
+        const ops = {
+            field: 'fhEmision',
+            op: '>',
+            val: d
+        }
+        const res = await fb.getCollectionFlex('notificaciones', ops)
+        return res
     }
 }
 

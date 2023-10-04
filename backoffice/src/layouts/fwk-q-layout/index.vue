@@ -2,7 +2,7 @@
     <q-layout view="lHh Lpr lFf" class="frameLayout">
         <q-header elevated class="tbxFrame">
             <q-toolbar>
-                <q-icon v-show="!(isInitPage && isRoot)" name="arrow_back_ios" @click="onBack" />
+                <!--<q-icon v-show="!(isInitPage && isRoot)" name="arrow_back_ios" @click="onBack" />-->
                 <q-toolbar-title :class="`title ${main.state.mockmode ? 'mockModeOn' : ''}`">
                     <slot name="title">
                         <div @click="showInfo" v-touch-swipe.mouse.right="setMockMode" class="text-h6 title">{{ ui.state.title }}</div>
@@ -149,8 +149,9 @@ const setMockMode = () => {
 
 <style lang="scss" scoped>
 .avatarIcon {
-    color: #004bb8;
+    color: #3b6097;
     font-size: 35px;
+    top: -2px;
 }
 
 .avatarInitials {

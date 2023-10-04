@@ -149,8 +149,9 @@ const setMockMode = () => {
 
 <style lang="scss" scoped>
 .avatarIcon {
-    color: #004bb8;
+    color: #3b6097;
     font-size: 35px;
+    top: -2px;
 }
 
 .avatarInitials {
