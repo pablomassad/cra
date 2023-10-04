@@ -1,9 +1,9 @@
 <template>
     <div class="backLogin">
-        <!--<img src="cra.png" class="logo">-->
+        <img src="images/cra.png" class="logo">
         <div class="grdLogin">
-            <q-input color="black" bg-color="white" filled v-model="dni" label="Ingrese documento" @keyup.enter="validateDocument" class="doc" />
-            <q-btn color="warning" icon="login" @click="validateDocument" class="login" :disable="!dni" />
+            <q-input color="black" bg-color="white" type="number" filled v-model="dni" label="Ingrese documento" @keyup.enter="validateDocument" class="doc" />
+            <q-btn color="blue-10" icon="login" @click="validateDocument" class="login" :disable="!dni" />
         </div>
     </div>
 </template>
@@ -39,12 +39,12 @@ const validateDocument = async () => {
     right: 0;
     left: 0;
     margin: auto;
-    width: 220px;
+    width: 70vw;
     max-width: 500px;
 }
 
 .backLogin {
-    background: linear-gradient(#5a00db, #f300bc);
+    background: linear-gradient(#a9b0ff, #303294);
     margin: 0;
     padding: 0;
 }

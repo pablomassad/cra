@@ -1,9 +1,9 @@
 <template>
     <div class="backLogin">
-        <img src="cra.png" class="logo">
+        <img src="images/cra.png" class="logo">
         <div class="grdLogin">
-            <q-input color="black" bg-color="white" filled v-model="dni" label="Ingrese documento" @keyup.enter="validateDocument" class="doc" />
-            <q-btn color="warning" icon="login" @click="validateDocument" class="login" :disable="!dni" />
+            <q-input color="black" bg-color="white" type="number" filled v-model="dni" label="Ingrese documento" @keyup.enter="validateDocument" class="doc" />
+            <q-btn color="blue-10" icon="login" @click="validateDocument" class="login" :disable="!dni" />
         </div>
     </div>
 </template>
@@ -12,15 +12,19 @@
 import { ref, onMounted } from 'vue'
 import appStore from 'src/pages/appStore'
 import { useRouter } from 'vue-router'
+import { LocalStorage } from 'quasar'
 
 const router = useRouter()
 
-const dni = ref()
+const dni = ref(LocalStorage.getItem('CRA_currUser'))
 
 onMounted(async () => {
+    if (dni.value) validateDocument()
 })
-const validateDocument = () => {
-    appStore.actions.setDocument(dni.value)
+const validateDocument = async () => {
+    appStore.set.document(dni.value)
+    await appStore.actions.getOpciones()
+    LocalStorage.set('CRA_currUser', dni.value)
     router.push('/home')
 }
 </script>
@@ -32,12 +36,12 @@ const validateDocument = () => {
     right: 0;
     left: 0;
     margin: auto;
-    width: 220px;
+    width: 70vw;
     max-width: 500px;
 }
 
 .backLogin {
-    background: linear-gradient(#7939d3, #de97cd);
+    background: linear-gradient(#a9b0ff, #303294);
     margin: 0;
     padding: 0;
 }

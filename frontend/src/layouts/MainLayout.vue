@@ -14,6 +14,9 @@
             <q-separator />
         </template>
     </Layout>
+    <div class="logoFrame">
+        <img src="images/cra.png" class="logo" />
+    </div>
     <ConfirmDialog :prompt="prompt" :message="dialogMessage" :onCancel="onCancelDialog" :onAccept="onAcceptDialog" />
 </template>
 
@@ -50,6 +53,22 @@ const logout = () => {
 </script>
 
 <style scoped>
+.logoFrame {
+    position: absolute;
+    top: -15px;
+    left: 0;
+    right: 0;
+    width: 130px;
+    height: 60px;
+    overflow: hidden;
+    margin: auto;
+    z-index: 10000;
+}
+
+.logo {
+    width: 135px;
+}
+
 .menuRow {
     display: flex;
     align-items: center;
@@ -66,6 +85,6 @@ const logout = () => {
     font-size: 26px;
     text-shadow: 1px 1px 1px gray;
     margin-right: 10px;
-    color: purple
+    color: rgb(38, 81, 181);
 }
 </style>

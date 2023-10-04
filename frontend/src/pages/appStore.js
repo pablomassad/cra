@@ -63,16 +63,25 @@ const actions = {
         if (!data?.length) {
             ui.actions.notify('No hay nuevas notificaciones', 'info', { position: 'center' })
         }
-        set.notificaciones(data)
+        const msgArr = processMessages(data)
+        console.log(msgArr)
+        set.notificaciones(msgArr)
         ui.actions.hideLoading()
+        return msgArr
     },
     async updateNotifications (field) {
         console.log('store updateNotifications:', field)
         for (const n of state.notificaciones) {
+            const fh = {}
             if (!n[field]) {
-                n[field] = new Date().getTime()
-                await fb.setDocument('notificaciones', n, n.id)
+                fh[field] = new Date().getTime()
+                await fb.setDocument('notificaciones', fh, n.id)
             }
+        }
+    },
+    async deleteNotifications (arr) {
+        for (const n of arr) {
+            await fb.deleteDocument('notificaciones', n.id)
         }
     }
 }
@@ -81,4 +90,24 @@ export default {
     set,
     state: readonly(state),
     actions
+}
+
+function processMessages (data) {
+    const notiArray = []
+    data.forEach(noti => {
+        // <a href="tel:1234567890">1234567890</a>.
+        const regTel = /@T(.*?)@/gm
+        noti.Mensaje = noti.Mensaje.replace(regTel, ($0, $1) => {
+            const replaceStr = '<a href="tel:' + $1 + '">' + $1 + '</a>'
+            return replaceStr
+        })
+        const regLink = /@L(.*?)@/gm
+        noti.Mensaje = noti.Mensaje.replace(regLink, ($0, $1) => {
+            const replaceStr = '<a href="' + $1 + '">' + $1 + '</a>'
+            return replaceStr
+        })
+        noti.forDelete = false
+        notiArray.push(noti)
+    })
+    return notiArray
 }

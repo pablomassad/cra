@@ -1,6 +1,6 @@
 <template>
     <div class="backIntegralmente" v-if="appStore.state.userData?.length">
-        <q-carousel v-model="activeIndex" transition-prev="jump-right" transition-next="jump-left" swipeable animated control-color="purple" navigation class="carousel" @change="onChange">
+        <q-carousel v-model="activeIndex" transition-prev="jump-right" transition-next="jump-left" swipeable animated control-color="blue-8" navigation class="carousel" @change="onChange">
             <q-carousel-slide v-for="(v, i) in appStore.state.userData" :key="i" :name="v.Patente">
                 <div class="grdTitle">
                     <div></div>
@@ -21,13 +21,14 @@
                     </div>
                     <div></div>
                 </div>
+                <div class="title">POLIZA SEGURO AUTOMOTOR</div>
                 <CardList :objectToMap="v" split defValue='' class="cardList" no-padding>
                 </CardList>
             </q-carousel-slide>
         </q-carousel>
 
         <div class="notificaciones">
-            <q-btn round color="purple" icon="mail" class="btnMensajes" @click="gotoMensajes"></q-btn>
+            <q-btn round color="blue-9" icon="mail" class="btnMensajes" @click="gotoMensajes"></q-btn>
             <div class="contadorMensajes" v-if="appStore.state.notificaciones?.length > 0">{{ appStore.state.notificaciones?.length }}</div>
         </div>
     </div>
@@ -42,11 +43,9 @@ import CardList from 'src/components/fwk-q-cardlist/index.vue'
 
 const router = useRouter()
 const activeIndex = ref(appStore.state.userData[0].Patente)
-const slide = ref('style')
-const lorem = 'lorem'
 
 onMounted(async () => {
-    ui.actions.setTitle('Informacion')
+    // ui.actions.setTitle('Informacion')
     await appStore.actions.getNotificacionesByUser()
     appStore.actions.updateNotifications('fhRecepcion')
 })
@@ -63,6 +62,13 @@ const onChange = (ev) => {
 </script>
 
 <style scoped>
+.title {
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px white;
+    text-align: center;
+}
+
 .cardList {
     border-right: none;
     max-width: 600px;
@@ -83,8 +89,8 @@ const onChange = (ev) => {
     display: grid;
     grid-template-columns: 1fr 120px 1fr;
     justify-items: center;
-    padding-top: 16px;
-    height: 90px;
+    padding-top: 4px;
+    height: 64px;
 }
 
 .patViejaImg {
