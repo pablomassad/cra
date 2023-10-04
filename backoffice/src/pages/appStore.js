@@ -2,17 +2,21 @@ import { reactive, readonly } from 'vue'
 import { ui } from 'fwk-q-ui'
 import fb from 'fwk-q-firebase'
 
-const MSG_DELAY = 1
-
 const state = reactive({
     document: undefined,
     notificaciones: undefined
 })
-const actions = {
-    setDocument (doc) {
+const set = {
+    document (doc) {
         console.log('store setDocument:', doc)
         state.document = doc
     },
+    opciones (ops) {
+        console.log('store set.opciones:', ops)
+        state.opciones = ops
+    }
+}
+const actions = {
     async updateFieldsOrder (fieldsOrder) {
         await fb.setDocument('opciones', fieldsOrder, 'config')
     },
@@ -21,11 +25,11 @@ const actions = {
         ui.actions.showLoading({
             type: 'progressBar',
             color: 'blue',
-            timeout: state.notificaciones.length * MSG_DELAY
+            timeout: state.notificaciones.length * state.opciones.backoffice.fcmDelay
         })
         for (const msg in state.notificaciones) {
             await fb.sendMessage(state.document, 'CRA Aviso', msg)
-            await sleep(MSG_DELAY)
+            await sleep(state.opciones.backoffice.fcmDelay)
         }
         ui.actions.hideLoading()
     },
@@ -40,10 +44,15 @@ const actions = {
         console.time('createCol')
         await fb.batchInsert(col, data)
         console.timeEnd('createCol')
+    },
+    async getOpciones () {
+        const res = await fb.getDocument('opciones', 'backoffice')
+        set.opciones(res)
     }
 }
 
 export default {
+    set,
     state: readonly(state),
     actions
 }

@@ -2,7 +2,7 @@
     <div class="backLogin">
         <img src="images/cra.png" class="logo">
         <div class="grdLogin">
-            <q-input color="black" bg-color="white" type="number" filled v-model="dni" label="Ingrese documento" @keyup.enter="validateDocument" class="doc" />
+            <q-input color="black" bg-color="white" type="text" filled v-model="dni" label="Ingrese constraseña" @keyup.enter="validateDocument" class="doc" />
             <q-btn color="blue-10" icon="login" @click="validateDocument" class="login" :disable="!dni" />
         </div>
     </div>
