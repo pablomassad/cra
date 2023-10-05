@@ -45,7 +45,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { main } from 'fwk-quasar'
+import { main } from 'fwk-q-main'
 import { ui } from 'fwk-q-ui'
 import { useRouter } from 'vue-router'
 import ProgBarLoader from 'fwk-q-progressbar'
@@ -53,7 +53,6 @@ import ProgCounterLoader from 'fwk-q-progresscounter'
 import ConfirmDialog from 'fwk-q-confirmdialog'
 import ToggleDarkMode from './ToggleDarkMode.vue'
 import { useQuasar } from 'quasar'
-import SAF from 'fwk-q-saf'
 
 const $q = useQuasar()
 const props = defineProps({
@@ -155,7 +154,7 @@ const setMockMode = () => {
 }
 
 .avatarInitials {
-    margin: 0 -5px 0 10px;
+    margin: 8px 0px 0 10px;
     background: radial-gradient(gray, #aaa);
     box-shadow: inset 1px 1px 2px #616161;
     color: white;
@@ -188,6 +187,7 @@ const setMockMode = () => {
 .tbxFrame {
     background: -webkit-linear-gradient(#2c328f, #1f6bc2) !important;
     font-size: 2rem;
+    height: 64px;
 }
 
 .tbxFrameNew {
@@ -198,7 +198,7 @@ const setMockMode = () => {
 .body--light {
     .frameLayout {
         //background: -webkit-radial-gradient(#fff, #737373 115%) !important;
-        background: lightgray;
+        background: #e0e6ef;
     }
 }
 

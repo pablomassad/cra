@@ -65,6 +65,9 @@ const refreshStats = async () => {
 const drawPie = (data) => {
     // d3.select('.notiPie').remove()
     console.log('drawPie:', data)
+    const total = data[0] + data[1] + data[2]
+    const percents = data.map(x => x * 100 / total)
+
     const width = 300
     const height = 300
     const radius = Math.min(width, height) / 2
@@ -182,7 +185,7 @@ const onUploadNotifications = (e) => {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .refreshButton {
     z-index: 10000;
     position: relative;
@@ -277,5 +280,27 @@ const onUploadNotifications = (e) => {
     padding: 10px;
     margin: 20px auto;
     box-shadow: 3px 3px 8px #8c8a8a;
+}
+
+.uploader:active {
+    box-shadow: inset 1px 1px 3px;
+    padding-top: 12px;
+}
+
+.body--dark {
+    .uploader {
+        background: #8aa4b1;
+        color: #ace0ff;
+        box-shadow: none;
+    }
+
+    .title {
+        color: #e9edf3;
+        text-shadow: 1px 1px 1px #5c85f1;
+    }
+
+    .legendText {
+        color: #e7eaeb;
+    }
 }
 </style>

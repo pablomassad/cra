@@ -5,11 +5,11 @@
 ⏰ Mostrar version(incremental con cada deploy)
 ⏰ Adaptar estilos al modo Oscuro
 
-Notificaciones:
+Frontend:
+🗓 Notificaciones:
 👍 Boton de borrado Individual y Global x usuario
 ⏰ borrado logico en cliente ? por cuanto tiempo ?
 👍 Pull to refresh en notificaciones
-
 
 Backoffice:
 ⏰ Tiempo de calculo de grafico de torta (tiempo o cant de registros)

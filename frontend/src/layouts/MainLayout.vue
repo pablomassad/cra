@@ -52,21 +52,21 @@ const logout = () => {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .logoFrame {
     position: absolute;
-    top: -15px;
+    top: -12px;
     left: 0;
     right: 0;
     width: 130px;
-    height: 60px;
+    height: 65px;
     overflow: hidden;
     margin: auto;
     z-index: 10000;
 }
 
 .logo {
-    width: 135px;
+    width: 150px;
 }
 
 .menuRow {
@@ -86,5 +86,21 @@ const logout = () => {
     text-shadow: 1px 1px 1px gray;
     margin-right: 10px;
     color: rgb(38, 81, 181);
+}
+
+.body--dark {
+
+    .iconMenu {
+        color: #97b6ff;
+    }
+
+    .rowText {
+        color: white;
+    }
+
+    .env {
+        color: white;
+    }
+
 }
 </style>

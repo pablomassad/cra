@@ -11,7 +11,7 @@ String.prototype.lpad = function (padString, length) {
     return str.valueOf()
 }
 
-const apkName = 'cra'
+const apkName = 'crabo'
 
 let opt = process.argv[2]
 // OPTIONS:
