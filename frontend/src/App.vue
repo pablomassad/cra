@@ -19,7 +19,7 @@ onMounted(() => {
             isMobile: false,
             appname: 'cra',
             origApp: 'cra',
-            tool: '/login'
+            tool: '/home'
         }
     }
     main.actions.init(ENVIRONMENTS, pl, true)
