@@ -2,8 +2,8 @@
     <div class="backLogin">
         <img src="images/cra.png" class="logo">
         <div class="grdLogin">
-            <q-input color="black" bg-color="white" type="text" filled v-model="dni" label="Ingrese constraseña" @keyup.enter="validateDocument" class="doc" />
-            <q-btn color="blue-10" icon="login" @click="validateDocument" class="login" :disable="!dni" />
+            <q-input color="black" bg-color="white" type="text" filled v-model="pass" label="Ingrese constraseña" @keyup.enter="validate" class="doc" />
+            <q-btn color="blue-10" icon="login" @click="validate" class="login" :disable="!pass" />
         </div>
     </div>
 </template>
@@ -13,19 +13,27 @@ import { ref, onMounted } from 'vue'
 import appStore from 'src/pages/appStore'
 import { useRouter } from 'vue-router'
 import { LocalStorage } from 'quasar'
+import { ui } from 'fwk-q-ui'
 
 const router = useRouter()
 
-const dni = ref(LocalStorage.getItem('CRA_currUser'))
+const pass = ref(LocalStorage.getItem('CRA_BO_pw'))
 
 onMounted(async () => {
-    if (dni.value) validateDocument()
+    if (pass.value) validate()
 })
-const validateDocument = async () => {
-    appStore.set.document(dni.value)
-    await appStore.actions.getOpciones()
-    LocalStorage.set('CRA_currUser', dni.value)
-    router.push('/home')
+const validate = async () => {
+    ui.actions.showLoading()
+    const ops = await appStore.actions.getOpciones()
+    if (ops.password === pass.value) {
+        appStore.set.pass(pass.value)
+        LocalStorage.set('CRA_BO_pw', pass.value)
+        ui.actions.hideLoading()
+        router.push('/home')
+    } else {
+        ui.actions.notify('Contraseña incorrecta!', 'error')
+        ui.actions.hideLoading()
+    }
 }
 </script>
 

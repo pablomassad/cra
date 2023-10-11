@@ -47,7 +47,7 @@ const searchUpdates = () => {
     } else { ui.actions.notify('No hay nuevas actualizaciones!', 'info', { position: 'center' }) }
 }
 const logout = () => {
-    LocalStorage.set('CRA_currUser', '')
+    LocalStorage.set('CRA_doc', '')
     window.location.reload()
 }
 </script>

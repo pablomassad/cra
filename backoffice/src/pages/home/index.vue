@@ -171,6 +171,7 @@ const onUploadNotifications = (e) => {
         const notiDocs = data.map((str, i) => {
             const valuesArray = str.split(';')
             const doc = {
+                id: new Date().getTime(),
                 fhEmision: new Date().getTime()
             }
             fieldsArr.forEach((f, i) => {
@@ -179,7 +180,6 @@ const onUploadNotifications = (e) => {
             return doc
         })
         console.log('notiDocs array created:', notiDocs)
-
         await appStore.actions.insertCollection('notificaciones', notiDocs)
     }
 }

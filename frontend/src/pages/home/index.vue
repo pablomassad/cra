@@ -36,7 +36,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { ui } from 'fwk-q-ui'
 import appStore from '../appStore'
 import { useRouter } from 'vue-router'
 import CardList from 'src/components/fwk-q-cardlist/index.vue'
@@ -82,7 +81,7 @@ const onChange = (ev) => {
 
 .carousel {
     height: calc(100vh - 50px);
-    background: #b8b0de;
+    background: #cacaca;
 }
 
 .grdTitle {

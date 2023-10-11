@@ -3,13 +3,14 @@ import { ui } from 'fwk-q-ui'
 import fb from 'fwk-q-firebase'
 
 const state = reactive({
-    document: undefined,
+    opciones: undefined,
+    pass: undefined,
     notificaciones: undefined
 })
 const set = {
-    document (doc) {
-        console.log('store setDocument:', doc)
-        state.document = doc
+    pass (doc) {
+        console.log('store pass:', doc)
+        state.pass = doc
     },
     opciones (ops) {
         console.log('store set.opciones:', ops)
@@ -28,7 +29,7 @@ const actions = {
             timeout: state.notificaciones.length * state.opciones.backoffice.fcmDelay
         })
         for (const msg in state.notificaciones) {
-            await fb.sendMessage(state.document, 'CRA Aviso', msg)
+            await fb.sendMessage(msg.document, 'CRA Aviso', msg)
             await sleep(state.opciones.backoffice.fcmDelay)
         }
         ui.actions.hideLoading()
@@ -42,12 +43,16 @@ const actions = {
     async insertCollection (col, data) {
         console.log('store insertCollection')
         console.time('createCol')
-        await fb.batchInsert(col, data)
+        for (const doc of data) {
+            await fb.setDocument('notificaciones', doc)
+            sleep(1000)
+        }
         console.timeEnd('createCol')
     },
     async getOpciones () {
         const res = await fb.getDocument('opciones', 'backoffice')
         set.opciones(res)
+        return res
     },
     async statNotificationsFromDate (d) {
         const ops = {
