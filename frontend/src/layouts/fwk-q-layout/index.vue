@@ -81,6 +81,7 @@ const onCancelDialog = ref()
 const darkmode = ref()
 
 const isInitPage = computed(() => router.currentRoute.value.path.indexOf(main.state.info?.tool) !== -1)
+console.log('IsInitPage: =>', isInitPage)
 
 onMounted(() => {
     main.actions.setValidatePendings(async (to, from, next) => {

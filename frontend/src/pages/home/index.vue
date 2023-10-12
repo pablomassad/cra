@@ -41,17 +41,21 @@ import { useRouter } from 'vue-router'
 import CardList from 'src/components/fwk-q-cardlist/index.vue'
 
 const router = useRouter()
-const activeIndex = ref(appStore.state.userData[0].Patente)
+const activeIndex = ref(0)
 
 onMounted(async () => {
     // ui.actions.setTitle('Informacion')
-    await appStore.actions.getNotificacionesByUser()
-    appStore.actions.updateNotifications('fhRecepcion')
+    if (!appStore.state.document) {
+        router.push('/login')
+    } else {
+        await appStore.actions.subscribeToTopic()
+        await appStore.actions.getOpciones()
+        await appStore.actions.getDataByUser()
+        await appStore.actions.getNotificacionesByUser()
+        activeIndex.value = appStore.state.userData[0].Patente
+        appStore.actions.updateNotifications('fhRecepcion')
+    }
 })
-const onCarSelected = (v) => {
-    appStore.actions.setSelVehiculo(v)
-    router.push('/poliza')
-}
 const gotoMensajes = () => {
     router.push('/notificaciones')
 }

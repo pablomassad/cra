@@ -23,6 +23,10 @@ const config: CapacitorConfig = {
       iconColor: "#488AFF",
       sound: "beep.wav",
     },
+    PushNotifications: {
+      android: {},
+      ios: {}
+    }
   },
 }
 

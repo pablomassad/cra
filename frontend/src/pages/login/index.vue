@@ -12,22 +12,19 @@
 import { ref, onMounted } from 'vue'
 import appStore from 'src/pages/appStore'
 import { useRouter } from 'vue-router'
-import { LocalStorage } from 'quasar'
 
 const router = useRouter()
 
-const dni = ref(LocalStorage.getItem('CRA_doc'))
+const dni = ref(appStore.state.document)
 
 onMounted(async () => {
     if (dni.value) validateDocument()
 })
 const validateDocument = async () => {
     appStore.set.document(dni.value)
-    await appStore.actions.getOpciones()
-    const data = await appStore.actions.getDataByUser()
+    const data = await appStore.actions.validateUser()
     if (data.length) {
-        LocalStorage.set('CRA_doc', dni.value)
-        router.push('/home')
+        router.go(-1)
     }
 }
 </script>

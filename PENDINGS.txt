@@ -1,10 +1,12 @@
 Frontend:
 ⏰ Adaptar estilos al modo Oscuro
 ⏰ Subscribe to topic en cliente
+⏰ Actualizacion de APK desde menu (url != de BO)
 
 🗓 Notificaciones:
     👍 Boton de borrado Individual y Global x usuario (NO implementado)
     👍 Pull to refresh en notificaciones
+    ⏰ Cartel cuando no hay notificaciones en el listado
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 

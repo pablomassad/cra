@@ -1,5 +1,5 @@
 <template>
-    <Layout>
+    <Layout isRoot>
         <template #drawer>
             <q-separator />
             <div class="menuRow" @click="searchUpdates()">

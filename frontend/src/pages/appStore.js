@@ -1,9 +1,10 @@
 import { reactive, readonly } from 'vue'
 import { ui } from 'fwk-q-ui'
 import fb from 'fwk-q-firebase'
+import { LocalStorage } from 'quasar'
 
 const state = reactive({
-    document: undefined,
+    document: LocalStorage.getItem('CRA_doc'),
     selVehiculo: undefined,
     userData: undefined,
     notificaciones: undefined,
@@ -13,6 +14,7 @@ const set = {
     document (doc) {
         console.log('store setDocument:', doc)
         state.document = doc
+        LocalStorage.set('CRA_doc', doc)
     },
     vehiculo (v) {
         console.log('store setSelVehiculo:', v)
@@ -32,14 +34,27 @@ const set = {
     }
 }
 const actions = {
+    async getToken () {
+        const token = await fb.getFCMToken('BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP - CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4')
+        console.log('CRA client token:', token)
+    },
+    async subscribeToTopic () {
+        const result = await fb.subscribeToTopic(state.document, 'AAAAc787IoI:APA91bHogsWCGsk8LDJvjUTstI1k0bRvnC2G21wzrg93mCr_6bARKS5xoD45br-zDwvC-lh8-4mkAs9kVn0am2VjbZ2soBDMUs7Kj9K_II19AHkP_u3CZYN47xajg4Z_NLHb8wNM9t87')
+        console.log('CRA client subscribeToTopic:', state.document)
+        return result
+    },
     async getOpciones () {
         const res = await fb.getDocument('opciones', 'config')
         set.opciones(res)
     },
+    async validateUser () {
+        const dataArr = await fb.getCollectionFlex('clientes', { field: 'Documento', op: '==', val: state.document })
+        return dataArr
+    },
     async getDataByUser () {
         ui.actions.showLoading()
 
-        const dataArr = await fb.getCollectionFlex('clientes', { field: 'Documento', op: '==', val: state.document })
+        const dataArr = await actions.validateUser()
         const arr = []
         if (dataArr?.length) {
             dataArr.forEach((doc, i) => {
