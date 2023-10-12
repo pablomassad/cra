@@ -1,5 +1,5 @@
 <template>
-    <div :class="(split) ? 'row no-wrap' : 'column'" class="justify-between square q-gutter-sm" :style="{padding: (noPadding) ? '4px 10px' : '10px'}">
+    <div :class="(split) ? 'row no-wrap' : 'column'" class="justify-between square q-gutter-sm" :style="{padding: (noPadding) ? '2px 10px' : '10px'}">
         <div class=" text-subtitle2 text-weight-bold cardListLabel">{{ title }}</div>
         <div :class="(split) ? 'text-right' : 'text-left'" class="text-caption text-weight-medium multipleLines cardListVal">{{ description }}</div>
     </div>

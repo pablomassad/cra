@@ -29,13 +29,13 @@
 
         <div class="notificaciones">
             <q-btn round color="blue-9" icon="mail" class="btnMensajes" @click="gotoMensajes"></q-btn>
-            <div class="contadorMensajes" v-if="appStore.state.notificaciones?.length > 0">{{ appStore.state.notificaciones?.length }}</div>
+            <div class="contadorMensajes" v-if="unreadCounter > 0">{{ unreadCounter }}</div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import appStore from '../appStore'
 import { useRouter } from 'vue-router'
 import CardList from 'src/components/fwk-q-cardlist/index.vue'
@@ -43,12 +43,18 @@ import CardList from 'src/components/fwk-q-cardlist/index.vue'
 const router = useRouter()
 const activeIndex = ref(0)
 
+const unreadCounter = computed(() => {
+    if (!appStore.state.notificaciones) return 0
+    const result = appStore.state.notificaciones.filter(x => !x.fhLectura)
+    return result.length
+})
+
 onMounted(async () => {
     // ui.actions.setTitle('Informacion')
     if (!appStore.state.document) {
         router.push('/login')
     } else {
-        await appStore.actions.subscribeToTopic()
+        // await appStore.actions.subscribeToTopic()
         await appStore.actions.getOpciones()
         await appStore.actions.getDataByUser()
         await appStore.actions.getNotificacionesByUser()
@@ -90,7 +96,7 @@ const onChange = (ev) => {
 
 .grdTitle {
     display: grid;
-    grid-template-columns: 1fr 120px 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     justify-items: center;
     padding-top: 4px;
     height: 64px;

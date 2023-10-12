@@ -12,6 +12,7 @@
 import { ref, onMounted } from 'vue'
 import appStore from 'src/pages/appStore'
 import { useRouter } from 'vue-router'
+import { ui } from 'fwk-q-ui'
 
 const router = useRouter()
 
@@ -25,6 +26,8 @@ const validateDocument = async () => {
     const data = await appStore.actions.validateUser()
     if (data.length) {
         router.go(-1)
+    } else {
+        ui.actions.notify('DNI no encontrado. Por favor comunicarse con CRA Asociados.', 'error')
     }
 }
 </script>

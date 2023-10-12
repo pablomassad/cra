@@ -1,7 +1,10 @@
 Frontend:
 ⏰ Adaptar estilos al modo Oscuro
 ⏰ Subscribe to topic en cliente
-⏰ Actualizacion de APK desde menu (url != de BO)
+👍 Arreglar scroll en browser movil (se debe ver las notificaciones, achicar tabla)
+👍 Login: si ingreso un DNI que no existe que aparezca el cartel de cliente no registrado
+👍 En el menu validar que no tenga version actual y que permita bajarla
+👍 Actualizacion de APK desde menu (url != de BO)
 
 🗓 Notificaciones:
     👍 Boton de borrado Individual y Global x usuario (NO implementado)

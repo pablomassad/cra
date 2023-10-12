@@ -58,7 +58,7 @@ const logout = () => {
     top: -12px;
     left: 0;
     right: 0;
-    width: 130px;
+    width: 145px;
     height: 65px;
     overflow: hidden;
     margin: auto;
