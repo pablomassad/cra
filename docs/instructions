@@ -24,11 +24,24 @@ quasar dev // arranca la app
 quasar mode add capacitor
 quasar dev -m capacitor -T android
 
-
+// PARA ANDROID npx
 // ORIG WAY
+
 npx cap add android  // instala plataforma android
 npx cap sync  // sincroniza plugins con android studio
 npx cap open android  // abre android studio y compila apk
+
+npm install @capacitor/assets --save-dev
+
+resources/
+├── icon-only.png
+├── icon-foreground.png
+├── icon-background.png
+├── splash.png
+└── splash-dark.png
+
+npx capacitor-assets generate
+
 
 Dentro de android studio, SDK Manager => platform tools 31xxxx
 
