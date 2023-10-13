@@ -53,7 +53,7 @@ let newVersionName$ = ''
 switch (opt) {
     case 'p':
         pointTo()
-        initApk()
+        updateVersionPkg()
         // initAndroid()
         break
 
@@ -71,7 +71,7 @@ switch (opt) {
 
     case 'fapk':
         pointTo()
-        initApk()
+        updateVersionPkg()
         // initAndroid()
         buildApk()
         signApk()
@@ -85,7 +85,7 @@ switch (opt) {
 
     case 'full':
         pointTo()
-        initApk()
+        updateVersionPkg()
         // initAndroid()
         buildApk()
         signApk()
@@ -129,22 +129,17 @@ function pointTo () {
         }
     })
 }
-function initApk () {
+function updateVersionPkg () {
     /// /////////////////////////////////////////////////////////////////////////////
-    // Actualiza package.json => productName
+    // Actualiza package.json => version
     /// /////////////////////////////////////////////////////////////////////////////
     const bufPkg = fs.readFileSync(path.join(__dirname, '/package.json'))
     const strPkg = bufPkg.toString()
     const pkgJson = JSON.parse(strPkg)
-
-    pkgJson.productName = apkName
-    console.log('Actualiza package.json')
-    console.log('productName: ', pkgJson.productName)
-
     pkgJson.version = newVersionName$
 
     fs.writeFileSync(path.join(__dirname, '/package.json'), JSON.stringify(pkgJson), err => {
-        if (err === null) { console.log('Actualizacion package.json OK') } else { console.log('Error actualizando package.json: ', err) }
+        if (err === null) { console.log('Actualizacion package.json version') } else { console.log('Error actualizando package.json version: ', err) }
     })
 }
 function initAndroid () {
