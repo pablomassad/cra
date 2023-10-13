@@ -1,13 +1,13 @@
 {
     "name": "com.pp.crabo",
-    "version": "1.00.07",
+    "version": "1.00.08",
     "description": "CRA Backoffice",
     "productName": "crabo",
     "author": "Pablo Massad <pamassad@teco.com.ar>",
     "private": true,
     "scripts": {
         "lint": "eslint --ext .js,.vue ./",
-        "test": "echo \"No test specified\" && exit 0",
+        "icons": "icongenie g -i ./public/images/cra.png  --skip-trim --theme-color ddddff",
         "preview": "vite preview --port 8080",
         "ionic:build": "quasar build",
         "ionic:serve": "quasar dev"
@@ -61,18 +61,25 @@
         "vue-router": "^4.2.4"
     },
     "devDependencies": {
-        "copy-dir": "^1.3.0",
         "@capacitor/cli": "5.0.0",
         "@quasar/app-vite": "1.4.3",
         "@quasar/cli": "2.2.1",
         "autoprefixer": "10.4.14",
+        "copy-dir": "^1.3.0",
         "eslint": "^8.10.0",
         "eslint-config-standard": "^17.0.0",
         "eslint-plugin-import": "^2.19.1",
         "eslint-plugin-n": "^15.0.0",
         "eslint-plugin-promise": "^6.0.0",
         "eslint-plugin-vue": "^8.5.0",
-        "typescript": "5.1.6"
+        "typescript": "5.1.6",
+        "workbox-build": "^6.6.0",
+        "workbox-cacheable-response": "^6.6.0",
+        "workbox-core": "^6.6.0",
+        "workbox-expiration": "^6.6.0",
+        "workbox-precaching": "^6.6.0",
+        "workbox-routing": "^6.6.0",
+        "workbox-strategies": "^6.6.0"
     },
     "engines": {
         "node": "^18 || ^16 || ^14.19",
