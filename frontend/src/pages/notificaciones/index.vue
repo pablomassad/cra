@@ -1,13 +1,16 @@
 <template>
-    <div class="backIntegralmente">
-        <q-pull-to-refresh v-if="appStore.state.notificaciones" @refresh="refresh">
-            <div class="listFrame">
+    <div class="backIntegralmente frame">
+        <q-pull-to-refresh @refresh="refresh" style="height: 100px;">
+            <div class="listFrame" v-if="appStore.state.notificaciones.length">
                 <div v-for="v in appStore.state.notificaciones" :key="v" class="noti">
                     <div class="mensaje">
                         <div class="fechahora">{{ moment(v.fhEmision).format('DD/MM/YYYY HH:mm') }}</div>
                         <div class="msgText" v-html="v.Mensaje"></div>
                     </div>
                 </div>
+            </div>
+            <div v-else class="noData">
+                Por el momento no hay notificaciones!
             </div>
         </q-pull-to-refresh>
     </div>
@@ -22,6 +25,7 @@ onMounted(async () => {
     appStore.actions.updateNotifications('fhLectura')
 })
 const refresh = async (done) => {
+    appStore.actions.getNotificacionesByUser()
     setTimeout(() => {
         done()
     }, 1000)
@@ -29,6 +33,29 @@ const refresh = async (done) => {
 </script>
 
 <style scoped>
+.frame {
+    height: calc(100vh - 50px);
+}
+
+.noData {
+    position: absolute;
+    left: 0;
+    right: 0;
+    /*border: 1px solid rgb(64, 64, 64);*/
+    border-radius: 20px;
+    height: 150px;
+    width: 300px;
+    background: #c7ecff;
+    color: #0082cf;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    padding: 42px 10px;
+    margin: 150px auto;
+    box-shadow: inset 3px 3px 8px #8c8a8a;
+    text-shadow: 1px 1px 1px white;
+}
+
 .delAllBar {
     background: #934293;
     display: flex;

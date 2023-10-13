@@ -5,11 +5,12 @@ Frontend:
 👍 Login: si ingreso un DNI que no existe que aparezca el cartel de cliente no registrado
 👍 En el menu validar que no tenga version actual y que permita bajarla
 👍 Actualizacion de APK desde menu (url != de BO)
+👍 Nueva URL para la nueva apk renombrada de cra.apk
 
 🗓 Notificaciones:
     👍 Boton de borrado Individual y Global x usuario (NO implementado)
     👍 Pull to refresh en notificaciones
-    ⏰ Cartel cuando no hay notificaciones en el listado
+    👍 Cartel cuando no hay notificaciones en el listado
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -17,6 +18,7 @@ Backoffice:
 👍 Tiempo de calculo de grafico de torta (tiempo o cant de registros)
 👍 Estilos azules / dark mode
 ⏰ Input de fecha desde para consulta de grafico torta
+⏰ Query para eliminar notificaciones mayores a 6 meses con el arranque de la app
 
 
 

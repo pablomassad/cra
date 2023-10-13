@@ -28,7 +28,6 @@ let mode = process.argv[3]
 // d
 // r
 
-const defEnv = 'desa'
 const defOpt = 'full'
 const optArr = ['p', 'b', 's', 'd', 'fapk', 'fweb', 'full']
 
@@ -305,11 +304,11 @@ function deployApk () {
     /// /////////////////////////////////////////////////////////////////////////////
     // COPIA APK al destino
     /// /////////////////////////////////////////////////////////////////////////////
-    const dest = `/Users/pablin/My Drive/Work/PyP Soft/CRA/${apkName.toLocaleLowerCase()}.apk`
+    const dest = `/Users/pablin/My Drive/pp/P♡P/P&P Soft/CRA/${apkName}.apk`
     console.log('Copiando apk a: ', dest)
     if (mode === 'r') {
         fs.copyFileSync(
-            `./android/app/build/outputs/apk/release/${apkName.toLocaleLowerCase()}.apk`,
+            `./android/app/build/outputs/apk/release/${apkName}.apk`,
             dest
         )
     }

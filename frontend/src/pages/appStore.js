@@ -8,7 +8,8 @@ const state = reactive({
     selVehiculo: undefined,
     userData: undefined,
     notificaciones: undefined,
-    opciones: undefined
+    fieldsOrder: undefined,
+    settings: undefined
 })
 const set = {
     document (doc) {
@@ -28,9 +29,13 @@ const set = {
         console.log('store setNotificaciones:', msgs)
         state.notificaciones = msgs
     },
-    opciones (ops) {
-        console.log('store set.opciones:', ops)
-        state.opciones = ops
+    fieldsOrder (arr) {
+        console.log('store set.fieldsOrder:', arr)
+        state.fieldsOrder = arr
+    },
+    settings (settings) {
+        console.log('store set.settings:', settings)
+        state.settings = settings
     }
 }
 const actions = {
@@ -43,9 +48,13 @@ const actions = {
         console.log('CRA client subscribeToTopic:', state.document)
         return result
     },
-    async getOpciones () {
+    async getFieldsOrder () {
         const res = await fb.getDocument('opciones', 'config')
-        set.opciones(res)
+        set.fieldsOrder(res)
+    },
+    async getSettings () {
+        const res = await fb.getDocument('opciones', 'frontend')
+        set.settings(res)
     },
     async validateUser () {
         const dataArr = await fb.getCollectionFlex('clientes', { field: 'Documento', op: '==', val: state.document })
@@ -60,7 +69,7 @@ const actions = {
             dataArr.forEach((doc, i) => {
                 delete doc.id
                 const o = {}
-                state.opciones.orden.forEach(f => {
+                state.fieldsOrder.orden.forEach(f => {
                     o[f] = dataArr[i][f]
                 })
                 arr.push(o)
