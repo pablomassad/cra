@@ -28,6 +28,7 @@ import ConfirmDialog from 'fwk-q-confirmdialog'
 import { ENVIRONMENTS } from 'src/environments'
 import { LocalStorage } from 'quasar'
 import { ui } from 'fwk-q-ui'
+import { main } from 'fwk-q-main'
 
 const prompt = ref(false)
 const dialogMessage = ref('')
@@ -35,11 +36,11 @@ const onAcceptDialog = ref()
 const onCancelDialog = ref()
 
 const searchUpdates = () => {
-    if (ENVIRONMENTS.versionName < appStore.state.opciones.version) {
+    if (ENVIRONMENTS.versionName < appStore.state.settings.version || !main.state.isMobile) {
         prompt.value = true
         dialogMessage.value = 'Hay una nueva version de la aplicación, desea instalarla?'
         onAcceptDialog.value = async () => {
-            window.open(appStore.state.opciones.url, '_system')
+            window.open(appStore.state.settings.url, '_system')
         }
         onCancelDialog.value = () => {
             prompt.value = false

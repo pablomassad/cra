@@ -43,13 +43,11 @@ if (optArr.indexOf(opt) === -1) {
     console.log('Debe elegir algun parametro: p / b / s / d / fapk / fweb / full')
     exit()
 }
-
 if (modeArr.indexOf(mode) === -1) {
     console.log('ATENCION!')
     console.log('Debe elegir algun modo (d=debug / r=release): d / r')
     exit()
 }
-
 let newVersionName$ = ''
 
 switch (opt) {
@@ -94,6 +92,9 @@ switch (opt) {
         deployApk()
         buildWeb()
         deployWeb()
+        console.log('#############################')
+        console.log('VERSION crabo.apk:  ' + newVersionName$)
+        console.log('#############################')
         break
 }
 
@@ -146,7 +147,6 @@ function initApk () {
         if (err === null) { console.log('Actualizacion package.json OK') } else { console.log('Error actualizando package.json: ', err) }
     })
 }
-
 function initAndroid () {
     /// /////////////////////////////////////////////////////////////////////////////////
     // Actualizar en android/app/src/main/AndroidManifext.xml
@@ -356,7 +356,6 @@ function deployWeb () {
     console.log('FIN SCRIPT WEB')
     console.log('##############')
 }
-
 function generateVersionCode (vn) {
     const nums = vn.split('.') // vn.split('-')[0].split('.')
     let vc = 0

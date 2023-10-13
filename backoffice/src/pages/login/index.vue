@@ -24,7 +24,7 @@ onMounted(async () => {
 })
 const validate = async () => {
     ui.actions.showLoading()
-    const ops = await appStore.actions.getOpciones()
+    const ops = await appStore.actions.getSettings()
     if (ops.password === pass.value) {
         appStore.set.pass(pass.value)
         LocalStorage.set('CRA_BO_pw', pass.value)

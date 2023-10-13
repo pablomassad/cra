@@ -2,7 +2,7 @@ import {CapacitorConfig} from '@capacitor/cli'
 
 const config: CapacitorConfig = {
   appId: 'com.pp.crabo',
-  appName: 'ppcrabo.desa',
+  appName: 'ppcrabo',
   webDir: 'dist/spa',
   bundledWebRuntime: false,
   server: {hostname: "localhost:8080", androidScheme: "http", cleartext: true},

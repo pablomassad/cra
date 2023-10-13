@@ -3,7 +3,7 @@ import { ui } from 'fwk-q-ui'
 import fb from 'fwk-q-firebase'
 
 const state = reactive({
-    opciones: undefined,
+    settings: undefined,
     pass: undefined,
     notificaciones: undefined
 })
@@ -12,9 +12,9 @@ const set = {
         console.log('store pass:', doc)
         state.pass = doc
     },
-    opciones (ops) {
-        console.log('store set.opciones:', ops)
-        state.opciones = ops
+    settings (o) {
+        console.log('store set.settings:', o)
+        state.settings = o
     }
 }
 const actions = {
@@ -26,11 +26,11 @@ const actions = {
         ui.actions.showLoading({
             type: 'progressBar',
             color: 'blue',
-            timeout: state.notificaciones.length * state.opciones.backoffice.fcmDelay
+            timeout: state.notificaciones.length * state.settings.fcmDelay
         })
         for (const msg in state.notificaciones) {
             await fb.sendMessage(msg.document, 'CRA Aviso', msg)
-            await sleep(state.opciones.backoffice.fcmDelay)
+            await sleep(state.settings.fcmDelay)
         }
         ui.actions.hideLoading()
     },
@@ -49,9 +49,9 @@ const actions = {
         }
         console.timeEnd('createCol')
     },
-    async getOpciones () {
+    async getSettings () {
         const res = await fb.getDocument('opciones', 'backoffice')
-        set.opciones(res)
+        set.settings(res)
         return res
     },
     async statNotificationsFromDate (d) {

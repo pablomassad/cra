@@ -33,9 +33,9 @@ const set = {
         console.log('store set.fieldsOrder:', arr)
         state.fieldsOrder = arr
     },
-    settings (settings) {
-        console.log('store set.settings:', settings)
-        state.settings = settings
+    settings (o) {
+        console.log('store set.settings:', o)
+        state.settings = o
     }
 }
 const actions = {
@@ -55,6 +55,7 @@ const actions = {
     async getSettings () {
         const res = await fb.getDocument('opciones', 'frontend')
         set.settings(res)
+        return res
     },
     async validateUser () {
         const dataArr = await fb.getCollectionFlex('clientes', { field: 'Documento', op: '==', val: state.document })

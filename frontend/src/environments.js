@@ -1,8 +1,8 @@
 export const ENVIRONMENTS = {
     versionCode: 1,
-    versionName: '1.00.06',
+    versionName: '1.00.08',
     productName: 'CRA',
-    packageName: 'com.pp.cra.desa',
+    packageName: 'com.pp.cra',
     appName: 'CRA',
     firebase: {
         apiKey: 'AIzaSyAFDptydb7gENL28UOfRCd2Uygbb3bYzRc',
