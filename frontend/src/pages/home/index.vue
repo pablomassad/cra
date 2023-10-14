@@ -54,7 +54,7 @@ onMounted(async () => {
     if (!appStore.state.document) {
         router.push('/login')
     } else {
-        // await appStore.actions.subscribeToTopic()
+        await appStore.actions.subscribeToFCM()
         await appStore.actions.getFieldsOrder()
         await appStore.actions.getSettings()
         await appStore.actions.getDataByUser()

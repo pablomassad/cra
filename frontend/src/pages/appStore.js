@@ -2,12 +2,14 @@ import { reactive, readonly } from 'vue'
 import { ui } from 'fwk-q-ui'
 import fb from 'fwk-q-firebase'
 import { LocalStorage } from 'quasar'
+// import srvAcc from 'srv/service-account.json'
 
 const state = reactive({
     document: LocalStorage.getItem('CRA_doc'),
     selVehiculo: undefined,
     userData: undefined,
     notificaciones: undefined,
+    notification: undefined,
     fieldsOrder: undefined,
     settings: undefined
 })
@@ -29,6 +31,10 @@ const set = {
         console.log('store setNotificaciones:', msgs)
         state.notificaciones = msgs
     },
+    notification (n) {
+        console.log('store setNotification:', n)
+        state.notification = n
+    },
     fieldsOrder (arr) {
         console.log('store set.fieldsOrder:', arr)
         state.fieldsOrder = arr
@@ -39,14 +45,14 @@ const set = {
     }
 }
 const actions = {
-    async getToken () {
-        const token = await fb.getFCMToken('BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP - CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4')
-        console.log('CRA client token:', token)
+    async subscribeToFCM () {
+        await fb.subscribePushForNotifications(state.document, (n) => {
+            set.notification(n)
+            ui.actions.notify('Ha recibido una notificacion!', 'success')
+        })
     },
-    async subscribeToTopic () {
-        const result = await fb.subscribeToTopic(state.document, 'AAAAc787IoI:APA91bHogsWCGsk8LDJvjUTstI1k0bRvnC2G21wzrg93mCr_6bARKS5xoD45br-zDwvC-lh8-4mkAs9kVn0am2VjbZ2soBDMUs7Kj9K_II19AHkP_u3CZYN47xajg4Z_NLHb8wNM9t87')
-        console.log('CRA client subscribeToTopic:', state.document)
-        return result
+    async unsubscribeFromFCM () {
+        await fb.unsubscribePushAllTopics()
     },
     async getFieldsOrder () {
         const res = await fb.getDocument('opciones', 'config')
@@ -58,7 +64,9 @@ const actions = {
         return res
     },
     async validateUser () {
+        ui.actions.showLoading()
         const dataArr = await fb.getCollectionFlex('clientes', { field: 'Documento', op: '==', val: state.document })
+        ui.actions.hideLoading()
         return dataArr
     },
     async getDataByUser () {
@@ -135,4 +143,16 @@ function processMessages (data) {
         notiArray.push(noti)
     })
     return notiArray
+}
+// function InitFCM () {
+//    fb.initFCM(srvAcc)
+// }
+async function getToken () {
+    const token = await fb.getFCMToken('BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP - CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4')
+    console.log('CRA client token:', token)
+}
+async function subscribeToTopic () {
+    const result = await fb.subscribeToTopic(state.document, 'AAAAc787IoI:APA91bHogsWCGsk8LDJvjUTstI1k0bRvnC2G21wzrg93mCr_6bARKS5xoD45br-zDwvC-lh8-4mkAs9kVn0am2VjbZ2soBDMUs7Kj9K_II19AHkP_u3CZYN47xajg4Z_NLHb8wNM9t87')
+    console.log('CRA client subscribeToTopic:', state.document)
+    return result
 }

@@ -29,7 +29,14 @@ const actions = {
             timeout: state.notificaciones.length * state.settings.fcmDelay
         })
         for (const msg in state.notificaciones) {
-            await fb.sendMessage(msg.document, 'CRA Aviso', msg)
+            const o = {
+                topic: msg['N De documento'],
+                title: 'CRA Aviso',
+                body: msg.Mensaje,
+                img: 'https://pp-cra.web.app/images/craLoRes.png',
+                tokenKey: 'c9d19f3de37737eceb9daadf9f359f08a6ea4f1d'
+            }
+            await fb.sendFcmMessage(o)
             await sleep(state.settings.fcmDelay)
         }
         ui.actions.hideLoading()

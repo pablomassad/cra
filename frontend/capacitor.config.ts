@@ -11,7 +11,7 @@ const config: CapacitorConfig = {
     webContentsDebuggingEnabled: true
   },
   plugins: {
-    FirebaseMessaging: {
+    PushNotifications: {
       presentationOptions: ["badge", "sound", "alert"],
     },
     Badge: {
@@ -23,7 +23,6 @@ const config: CapacitorConfig = {
       iconColor: "#488AFF",
       sound: "beep.wav",
     }
-  },
+  }
 }
-
 export default config
