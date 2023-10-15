@@ -40,7 +40,7 @@ import appStore from '../appStore'
 import { useRouter } from 'vue-router'
 import CardList from 'src/components/fwk-q-cardlist/index.vue'
 import { ui } from 'fwk-q-ui'
-// import { saveMessagingDeviceToken } from 'src/firebase/messaging'
+import { saveMessagingDeviceToken } from 'src/firebase/messaging'
 
 const router = useRouter()
 const activeIndex = ref(0)
@@ -56,7 +56,7 @@ onMounted(async () => {
     if (!appStore.state.document) {
         router.push('/login')
     } else {
-        // saveMessagingDeviceToken(appStore.state.document)
+        saveMessagingDeviceToken(appStore.state.document)
         await appStore.actions.getFieldsOrder()
         await appStore.actions.getSettings()
         await appStore.actions.getDataByUser()
