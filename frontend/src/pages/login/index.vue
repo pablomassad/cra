@@ -19,7 +19,7 @@ const router = useRouter()
 const dni = ref(appStore.state.document)
 
 onMounted(async () => {
-    await appStore.unsubscribeFromFCM()
+    // await appStore.actions.unsubscribeFromFCM()
     if (dni.value) validateDocument()
 })
 const validateDocument = async () => {

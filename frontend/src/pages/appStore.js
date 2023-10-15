@@ -2,7 +2,7 @@ import { reactive, readonly } from 'vue'
 import { ui } from 'fwk-q-ui'
 import fb from 'fwk-q-firebase'
 import { LocalStorage } from 'quasar'
-// import srvAcc from 'srv/service-account.json'
+import { main } from 'fwk-q-main'
 
 const state = reactive({
     document: LocalStorage.getItem('CRA_doc'),
@@ -46,21 +46,27 @@ const set = {
 }
 const actions = {
     async subscribeToFCM () {
+        if (!main.state.isMobile) return
         await fb.subscribePushForNotifications(state.document, (n) => {
             set.notification(n)
             ui.actions.notify('Ha recibido una notificacion!', 'success')
         })
     },
     async unsubscribeFromFCM () {
-        await fb.unsubscribePushAllTopics()
+        if (!main.state.isMobile) return
+        await fb.unsubscribePushAllTopics(state.document)
     },
     async getFieldsOrder () {
+        ui.actions.showLoading()
         const res = await fb.getDocument('opciones', 'config')
         set.fieldsOrder(res)
+        ui.actions.hideLoading()
     },
     async getSettings () {
+        ui.actions.showLoading()
         const res = await fb.getDocument('opciones', 'frontend')
         set.settings(res)
+        ui.actions.hideLoading()
         return res
     },
     async validateUser () {
@@ -71,7 +77,6 @@ const actions = {
     },
     async getDataByUser () {
         ui.actions.showLoading()
-
         const dataArr = await actions.validateUser()
         const arr = []
         if (dataArr?.length) {
