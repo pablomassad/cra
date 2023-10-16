@@ -3,6 +3,9 @@ import { ui } from 'fwk-q-ui'
 import fb from 'fwk-q-firebase'
 import { LocalStorage } from 'quasar'
 import { main } from 'fwk-q-main'
+import { ENVIRONMENTS } from 'src/environments'
+
+fb.initFirebase(ENVIRONMENTS.firebase)
 
 const state = reactive({
     document: LocalStorage.getItem('CRA_doc'),
@@ -46,11 +49,8 @@ const set = {
 }
 const actions = {
     async subscribeToFCM () {
-        if (!main.state.isMobile) return
-        await fb.subscribePushForNotifications(state.document, (n) => {
-            set.notification(n)
-            ui.actions.notify('Ha recibido una notificacion!', 'success')
-        })
+        const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
+        await fb.saveMessagingDeviceToken(state.document, vapidKey)
     },
     async unsubscribeFromFCM () {
         if (!main.state.isMobile) return
