@@ -35,10 +35,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, defineComponent, reactive } from 'vue'
 import appStore from '../appStore'
 import { useRouter } from 'vue-router'
 import CardList from 'src/components/fwk-q-cardlist/index.vue'
+import { ui } from 'fwk-q-ui'
+import { saveMessagingDeviceToken } from 'src/firebase/messaging'
 
 const router = useRouter()
 const activeIndex = ref(0)
@@ -54,7 +56,7 @@ onMounted(async () => {
     if (!appStore.state.document) {
         router.push('/login')
     } else {
-        await appStore.actions.subscribeToFCM()
+        saveMessagingDeviceToken(appStore.state.document)
         await appStore.actions.getFieldsOrder()
         await appStore.actions.getSettings()
         await appStore.actions.getDataByUser()

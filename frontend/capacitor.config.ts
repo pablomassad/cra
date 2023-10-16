@@ -11,9 +11,9 @@ const config: CapacitorConfig = {
     webContentsDebuggingEnabled: true
   },
   plugins: {
-    PushNotifications: {
-      presentationOptions: ["badge", "sound", "alert"],
-    },
+    //PushNotifications: {
+    //  presentationOptions: ["badge", "sound", "alert"],
+    //},
     Badge: {
       persist: true,
       autoClear: false
