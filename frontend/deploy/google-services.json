@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "497129562754",
+    "project_id": "pp-cra",
+    "storage_bucket": "pp-cra.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497129562754:android:0dff77ea67892c401aca9b",
+        "android_client_info": {
+          "package_name": "com.pp.cra"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "497129562754-97oe25u48hu0c875hon34b0dse4jlqfu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFLL-cSMRiUZhtUAWkcpFQXorOViMlMEI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "497129562754-97oe25u48hu0c875hon34b0dse4jlqfu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497129562754:android:8e788832e7c0aa281aca9b",
+        "android_client_info": {
+          "package_name": "com.pp.crabo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "497129562754-97oe25u48hu0c875hon34b0dse4jlqfu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFLL-cSMRiUZhtUAWkcpFQXorOViMlMEI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "497129562754-97oe25u48hu0c875hon34b0dse4jlqfu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

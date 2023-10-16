@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">C.R.A.</string>
+    <string name="title_activity_main">cra</string>
+    <string name="package_name">com.pp.cra</string>
+    <string name="custom_url_scheme">com.pp.cra</string>
+</resources>

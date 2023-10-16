@@ -72,6 +72,11 @@ npx cap open android  // abre android studio y compila apk
 
 npx cap doctor
 
+npx cap build android --keystorepath my-keystore.jks --keystorepass my-keystore-password --keystorealias my-key-alias --keystorekeypass my-key-password  // build android app and sign it
+
+keytool -genkeypair -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000 -keystore my-keystore.jks
+
+
 
 keytool -genkey -v -keystore diagnostico-key.jks -keyalg RSA -keysize 1024 -validity 10000 -alias diagnostico.desa -sigalg MD5withRSA
 (Cambiar diagnostico.ENV para cada ambiente antes de generar apk)

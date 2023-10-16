@@ -45,9 +45,10 @@ const colorEnviados = '#166498'
 const colorRecibidos = '#639bbf'
 const colorLeidos = '#b3c0c8'
 
-onMounted(() => {
+onMounted(async () => {
     // ui.actions.setTitle('Backoffice')
     refreshStats()
+    await appStore.actions.subscribeToFCM()
 })
 const refreshStats = async () => {
     chartEnabled.value = false

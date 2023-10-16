@@ -43,20 +43,18 @@ if (optArr.indexOf(opt) === -1) {
     console.log('Debe elegir algun parametro: p / b / s / d / fapk / fweb / full')
     exit()
 }
-
 if (modeArr.indexOf(mode) === -1) {
     console.log('ATENCION!')
     console.log('Debe elegir algun modo (d=debug / r=release): d / r')
     exit()
 }
-
 let newVersionName$ = ''
 
 switch (opt) {
     case 'p':
         pointTo()
         updateVersionPkg()
-        // initAndroid()
+        initAndroid()
         break
 
     case 'b':
@@ -74,7 +72,7 @@ switch (opt) {
     case 'fapk':
         pointTo()
         updateVersionPkg()
-        // initAndroid()
+        initAndroid()
         buildApk()
         signApk()
         deployApk()
@@ -88,14 +86,14 @@ switch (opt) {
     case 'full':
         pointTo()
         updateVersionPkg()
-        // initAndroid()
+        initAndroid()
         buildApk()
         signApk()
         deployApk()
         buildWeb()
         deployWeb()
         console.log('#############################')
-        console.log('VERSION cra.apk: ' + newVersionName$)
+        console.log('VERSION cra.apk:  ' + newVersionName$)
         console.log('#############################')
         break
 }
@@ -164,61 +162,79 @@ function initAndroid () {
     )
 
     /// /////////////////////////////////////////////////////////////////////////////////
+    // Actualizar en google-services.json
+    /// /////////////////////////////////////////////////////////////////////////////////
+    console.log('Copiando => /deploy/google-services.json')
+    fs.copyFileSync(
+        path.join(__dirname, '/deploy/google-services.json'),
+        path.join(__dirname, '/android/app/src/google-services.json')
+    )
+
+    /// /////////////////////////////////////////////////////////////////////////////////
+    // Actualizar en android/strings.xml
+    /// /////////////////////////////////////////////////////////////////////////////////
+    console.log('Copiando => /deploy/strings.xml')
+    fs.copyFileSync(
+        path.join(__dirname, '/deploy/strings.xml'),
+        path.join(__dirname, '/android/app/src/main/res/values/strings.xml')
+    )
+
+    /// /////////////////////////////////////////////////////////////////////////////////
     // Actualizar en android/app/build.gradle => versionCode y versionName
     /// /////////////////////////////////////////////////////////////////////////////////
-    console.log('==============================')
-    console.log('Lee build.gradle')
-    const bufGradle = fs.readFileSync(path.join(__dirname, '/android/app/build.gradle'))
-    let strGradle = bufGradle.toString()
+    // console.log('==============================')
+    // console.log('Lee build.gradle')
+    // const bufGradle = fs.readFileSync(path.join(__dirname, '/android/app/build.gradle'))
+    // let strGradle = bufGradle.toString()
 
-    const newVersionCode = generateVersionCode(newVersionName$)
-    const regVerCode = /(versionCode\s)([0-9]{5})/gm
-    strGradle = strGradle.replace(regVerCode, ($0, $1) => {
-        // console.log('$0', $0) // versionCode 10102
-        // console.log('$1', $1) // versionCode
-        // console.log('$2', $2) // 10102
-        console.log('new versionCode => ' + newVersionCode)
-        const match = $1 + newVersionCode
-        return match
-    })
+    // const newVersionCode = generateVersionCode(newVersionName$)
+    // const regVerCode = /(versionCode\s)([0-9]{5})/gm
+    // strGradle = strGradle.replace(regVerCode, ($0, $1) => {
+    //    // console.log('$0', $0) // versionCode 10102
+    //    // console.log('$1', $1) // versionCode
+    //    // console.log('$2', $2) // 10102
+    //    console.log('new versionCode => ' + newVersionCode)
+    //    const match = $1 + newVersionCode
+    //    return match
+    // })
 
-    const regVerName = /(versionName\s")[0-9].[0-9]{2}.[0-9]{2}/gm
-    strGradle = strGradle.replace(regVerName, ($0, $1) => {
-        const match = $1 + newVersionName$
-        console.log('new versionName => ' + newVersionName$)
-        return match
-    })
+    // const regVerName = /(versionName\s")[0-9].[0-9]{2}.[0-9]{2}/gm
+    // strGradle = strGradle.replace(regVerName, ($0, $1) => {
+    //    const match = $1 + newVersionName$
+    //    console.log('new versionName => ' + newVersionName$)
+    //    return match
+    // })
 
-    console.log('Actualiza build.gradle')
-    console.log('path :', path.join(__dirname, '/android/app/build.gradle'))
-    fs.writeFileSync(path.join(__dirname, '/android/app/build.gradle'), strGradle, err => {
-        if (err === null) { console.log('Actualizacion build.gradle OK') } else { console.log('Error actualizando build.gradle: ', err) }
-    })
+    // console.log('Actualiza build.gradle')
+    // console.log('path :', path.join(__dirname, '/android/app/build.gradle'))
+    // fs.writeFileSync(path.join(__dirname, '/android/app/build.gradle'), strGradle, err => {
+    //    if (err === null) { console.log('Actualizacion build.gradle OK') } else { console.log('Error actualizando build.gradle: ', err) }
+    // })
     /// /////////////////////////////////////////////////////////////////////
     // Actualiza AppName strings.xml
     /// ///////////////////////////////////////////////////////////
-    console.log('==============================')
-    console.log('Lee strings.xml')
-    const bufStrings = fs.readFileSync(path.join(__dirname, '/android/app/src/main/res/values/strings.xml'))
-    let strStrings = bufStrings.toString()
+    // console.log('==============================')
+    // console.log('Lee strings.xml')
+    // const bufStrings = fs.readFileSync(path.join(__dirname, '/android/app/src/main/res/values/strings.xml'))
+    // let strStrings = bufStrings.toString()
 
-    let appName
-    const appNm = apkName.charAt(0).toUpperCase() + apkName.slice(1)
+    // let appName
+    // const appNm = apkName.charAt(0).toUpperCase() + apkName.slice(1)
 
-    const regAppName = 'app_name">(.*)<'
-    const lblApp = '"app_name"'
-    strStrings = strStrings.replace(lblApp + '>' + strStrings.match(regAppName)[1] + '<', lblApp + '>' + appNm + '<')
+    // const regAppName = 'app_name">(.*)<'
+    // const lblApp = '"app_name"'
+    // strStrings = strStrings.replace(lblApp + '>' + strStrings.match(regAppName)[1] + '<', lblApp + '>' + appNm + '<')
 
-    const regAppActName = 'title_activity_main">(.*)<'
-    const lblAct = '"title_activity_main"'
-    strStrings = strStrings.replace(lblAct + '>' + strStrings.match(regAppActName)[1] + '<', lblAct + '>' + appNm + '<')
+    // const regAppActName = 'title_activity_main">(.*)<'
+    // const lblAct = '"title_activity_main"'
+    // strStrings = strStrings.replace(lblAct + '>' + strStrings.match(regAppActName)[1] + '<', lblAct + '>' + appNm + '<')
 
-    console.log('new APP NAME:', appName)
-    console.log('new ACTIVITY NAME:', appName)
+    // console.log('new APP NAME:', appName)
+    // console.log('new ACTIVITY NAME:', appName)
 
-    fs.writeFileSync(path.join(__dirname, '/android/app/src/main/res/values/strings.xml'), strStrings, err => {
-        if (err === null) { console.log('Actualizacion strings.xml OK') } else { console.log('Error actualizando strings.xml: ', err) }
-    })
+    // fs.writeFileSync(path.join(__dirname, '/android/app/src/main/res/values/strings.xml'), strStrings, err => {
+    //    if (err === null) { console.log('Actualizacion strings.xml OK') } else { console.log('Error actualizando strings.xml: ', err) }
+    // })
 }
 function buildApk () {
     /// /////////////////////////////////////////////////////////////////////////////

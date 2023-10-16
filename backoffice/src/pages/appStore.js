@@ -1,6 +1,9 @@
 import { reactive, readonly } from 'vue'
 import { ui } from 'fwk-q-ui'
 import fb from 'fwk-q-firebase'
+import { ENVIRONMENTS } from 'src/environments'
+
+fb.initFirebase(ENVIRONMENTS.firebase)
 
 const state = reactive({
     settings: undefined,
@@ -18,6 +21,10 @@ const set = {
     }
 }
 const actions = {
+    async subscribeToFCM () {
+        const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
+        await fb.saveMessagingDeviceToken('admin', vapidKey)
+    },
     async updateFieldsOrder (fieldsOrder) {
         await fb.setDocument('opciones', fieldsOrder, 'config')
     },
