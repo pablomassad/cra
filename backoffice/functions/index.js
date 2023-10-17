@@ -1,6 +1,7 @@
 import functions from 'firebase-functions'
 import vision from '@google-cloud/vision'
 import admin from 'firebase-admin'
+import fs from 'fs'
 
 // Ensure these are the same as the one in ../firebase/messaging
 export const FCM_TOKEN_COLLECTION = 'fcmTokens'
@@ -60,4 +61,98 @@ export const readReceiptDetails = functions.storage.object().onFinalize(async (o
     }).catch((error) => {
         functions.logger.log('error: ', error)
     })
+})
+
+// Crea una función que se ejecutará cuando se suba un archivo
+exports.processNotificaciones = functions.storage.bucket().onUpload(event => {
+    const file = event.data
+
+    if (file.name === 'notificaciones.csv') {
+        const reader = new FileReader()
+        reader.onload = function () {
+            const data = reader.result
+
+            const rows = data.split('\n')
+            for (const row of rows) {
+                const document = {
+                    name: row.split(',')[0],
+                    age: row.split(',')[1]
+                }
+                admin.firestore().collection('users').add(document)
+            }
+        }
+        reader.readAsText(file)
+    }
+})
+
+// Crea una función que se ejecutará cuando se suba un archivo
+exports.processClientes = functions.storage.bucket().onUpload(event => {
+    const file = event.data
+
+    if (file.name === 'clientes.csv') {
+        const reader = new FileReader()
+        reader.onload = function () {
+            const data = reader.result
+
+            const rows = data.split('\n')
+            for (const row of rows) {
+                const document = {
+                    name: row.split(',')[0],
+                    age: row.split(',')[1]
+                }
+                admin.firestore().collection('users').add(document)
+            }
+        }
+        reader.readAsText(file)
+    }
+})
+
+// Crea una función que se ejecute cuando se suba un archivo
+exports.uploadCSV = functions.storage.bucket().onUpload(event => {
+    // Obtén la referencia al archivo subido
+    const file = event.data
+
+    // Lee el archivo CSV
+    const reader = new FileReader()
+    reader.onload = function () {
+        // Obtén los datos del archivo CSV
+        const data = reader.result
+
+        // Sube los datos del archivo CSV a Cloud Firestore
+        admin.firestore().collection('data').add({
+            data
+        })
+    }
+    reader.readAsText(file)
+})
+
+// Crea una función que se ejecutará cada 5 minutos
+exports.runEveryFiveMinutes = functions.https.onRequest((req, res) => {
+    // Programa la ejecución de la función
+    admin.functions().schedule('runEveryFiveMinutes', new Date(), () => {
+        // Ejecuta la función
+        exports.doSomething()
+    }, { repeat: 'every 5 minutes' })
+
+    // Responde a la solicitud
+    res.send('La función se ejecutará cada 5 minutos')
+})
+
+// Crea una función que se ejecutará cuando se ejecute la función programada
+exports.doSomething = functions.https.onRequest((req, res) => {
+    // Haz algo
+    res.send('La función se ejecutó')
+})
+
+// Create a function that deletes a collection
+exports.deleteCollection = functions.https.onRequest((req, res) => {
+    const collectionName = req.query.collectionName
+    admin.firestore().collection(collectionName).delete()
+        .then(() => {
+            res.send('Collection deleted successfully')
+        })
+        .catch(error => {
+            console.error(error)
+            res.status(500).send('An error occurred while deleting the collection')
+        })
 })
