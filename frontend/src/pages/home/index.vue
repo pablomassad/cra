@@ -115,7 +115,7 @@ const onChange = (ev) => {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 10px;
-    font-size: 31px;
+    font-size: 30px;
     text-align: center;
     font-weight: bold;
     text-shadow: 1px 1px 1px gray;

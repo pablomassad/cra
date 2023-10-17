@@ -50,7 +50,9 @@ const set = {
 const actions = {
     async subscribeToFCM () {
         const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
+        ui.actions.showLoading()
         await fb.saveMessagingDeviceToken(state.document, vapidKey)
+        ui.actions.hideLoading()
     },
     async unsubscribeFromFCM () {
         if (!main.state.isMobile) return
