@@ -112,50 +112,18 @@ const drawPie = (data) => {
 const uploadClients = () => {
     refFileClients.value.click()
 }
-const onUploadClients = (e) => {
+const onUploadClients = async (e) => {
     const file = e.target.files[0]
-    const reader = new FileReader()
-    reader.readAsText(file)
-
-    reader.onload = async () => {
-        const data = reader.result.split('\r\n')
-
-        const orderStr = data[0]
-        const orderArr = orderStr.split(';')
-        console.log('OrderArray:', orderArr)
-
-        const fieldsStr = data[1]
-        const fieldsArr = fieldsStr.split(';')
-        console.log('FieldsArray:', fieldsArr)
-
-        const config = {
-            orden: []
-        }
-        for (let i = 1; i <= orderArr.length; i++) {
-            const idx = orderArr.indexOf(i.toString())
-            config.orden.push(fieldsArr[idx])
-        }
-        await appStore.actions.updateFieldsOrder(config)
-        data.shift() // borra Orden de campos
-        data.shift() // borra cabecera del data
-
-        await appStore.actions.deleteCollection()
-
-        const clientesDocs = data.map((str, i) => {
-            const valuesArray = str.split(';')
-            const doc = {}
-            fieldsArr.forEach((f, i) => {
-                doc[f] = valuesArray[i]
-            })
-            return doc
-        })
-        await appStore.actions.insertCollection('clientes', clientesDocs)
-    }
+    await appStore.actions.uploadFile(file, 'clientes.csv')
 }
 const uploadNotifications = () => {
     refFileNoti.value.click()
 }
-const onUploadNotifications = (e) => {
+const onUploadNotifications = async (e) => {
+    const file = e.target.files[0]
+    await appStore.actions.uploadFile(file, 'notificaciones.csv')
+}
+const onUploadNotificationsOld = (e) => {
     const file = e.target.files[0]
     const reader = new FileReader()
     reader.readAsText(file)

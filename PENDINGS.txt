@@ -22,6 +22,7 @@ Backoffice:
 👍 Estilos azules / dark mode
 ⏰ Input de fecha desde para consulta de grafico torta
 ⏰ Query para eliminar notificaciones mayores a 6 meses con el arranque de la app
+⏰ Los clientes cargados en la DB pero no en el archivo CSV se borran logicamente o definitivamente
 
 
 

@@ -13,7 +13,6 @@ const state = reactive({
     userData: undefined,
     notificaciones: undefined,
     notification: undefined,
-    fieldsOrder: undefined,
     settings: undefined
 })
 const set = {
@@ -58,22 +57,18 @@ const actions = {
         if (!main.state.isMobile) return
         await fb.unsubscribePushAllTopics(state.document)
     },
-    async getFieldsOrder () {
-        ui.actions.showLoading()
-        const res = await fb.getDocument('opciones', 'config')
-        set.fieldsOrder(res)
-        ui.actions.hideLoading()
-    },
     async getSettings () {
         ui.actions.showLoading()
-        const res = await fb.getDocument('opciones', 'frontend')
+        const fe = await fb.getDocument('opciones', 'frontend')
+        const config = await fb.getDocument('opciones', 'config')
+        const res = { ...fe, ...config }
         set.settings(res)
         ui.actions.hideLoading()
         return res
     },
     async validateUser () {
         ui.actions.showLoading()
-        const dataArr = await fb.getCollectionFlex('clientes', { field: 'Documento', op: '==', val: state.document })
+        const dataArr = await fb.getCollectionFlex(state.settings.colClientes, { field: 'Documento', op: '==', val: state.document })
         ui.actions.hideLoading()
         return dataArr
     },
@@ -85,7 +80,7 @@ const actions = {
             dataArr.forEach((doc, i) => {
                 delete doc.id
                 const o = {}
-                state.fieldsOrder.orden.forEach(f => {
+                state.settings.orden.forEach(f => {
                     o[f] = dataArr[i][f]
                 })
                 arr.push(o)

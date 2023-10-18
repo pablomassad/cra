@@ -51,12 +51,12 @@ const unreadCounter = computed(() => {
 
 onMounted(async () => {
     // ui.actions.setTitle('Informacion')
+    await appStore.actions.getSettings()
+
     if (!appStore.state.document) {
         router.push('/login')
     } else {
         await appStore.actions.subscribeToFCM(appStore.state.document)
-        await appStore.actions.getFieldsOrder()
-        await appStore.actions.getSettings()
         await appStore.actions.getDataByUser()
         await appStore.actions.getNotificacionesByUser()
         activeIndex.value = appStore.state.userData[0].Patente

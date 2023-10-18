@@ -21,6 +21,9 @@ const set = {
     }
 }
 const actions = {
+    async uploadFile (file, fn) {
+        fb.uploadFile(file, fn)
+    },
     async subscribeToFCM () {
         const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
         await fb.saveMessagingDeviceToken('admin', vapidKey)
@@ -47,12 +50,6 @@ const actions = {
             await sleep(state.settings.fcmDelay)
         }
         ui.actions.hideLoading()
-    },
-    async deleteCollection () {
-        console.log('store deleteCollection')
-        console.time('deleteCol')
-        await fb.emptyCollection('clientes')
-        console.timeEnd('deleteCol')
     },
     async insertCollection (col, data) {
         console.log('store insertCollection')

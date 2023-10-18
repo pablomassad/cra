@@ -2,6 +2,8 @@ BACKOFFICE
 ⏰ Agregar Date Picker para mostrar grafico desde fecha al dia de hoy
 ⏰ Tabla de clientes pendientes de lectura
 ⏰ Grafico de evolucion diario
+⏰ Grafico de distribucion de app
+⏰ Log de ingresos
 
 
 
