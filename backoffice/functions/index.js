@@ -2,23 +2,25 @@ const { onRequest } = require('firebase-functions/v2/https')
 const logger = require('firebase-functions/logger')
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
+const { getStorage } = require('firebase-admin/storage')
 
 admin.initializeApp()
 
-exports.helloWorld = onRequest((request, response) => {
-    logger.info('Hello logs!', { structuredData: true })
-    response.send('Hello from Firebase!')
+exports.getAddCounter = onRequest((request, response) => {
+    logger.info('getAddCounter:', process.env.COUNTER)
+    response.send(process.env.COUNTER)
 })
 
-exports.processClientes = functions.storage.object().onFinalize(obj => {
-    console.log('obj.bucket:', JSON.stringify(obj.bucket))
-    console.log('obj.name:', obj.name)
-    const file = obj.data
-    if (file.name === 'clientes.csv') {
-        const reader = new FileReader()
-        reader.readAsText(file)
+exports.processClientes = functions.storage.bucket().object().onFinalize(async event => {
+    const gcs = getStorage()
+    const bucket = gcs.bucket(event.bucket)
+    const NAME = 'clientes.csv'
 
-        // Espera que cargue el archivo
+    if (event.name === NAME) {
+        const file = bucket.file(event.name)
+        const dwFile = await file.download({ encoding: 'utf8' })
+        const text = Buffer.concat(dwFile).toString('utf8')
+
         // Lee la coleccion activa de clientes
         // Obtiene el ordenamiento de la primer fila del csv y lo guarda en un array (orderArr)
         // Obtiene los campos de la segunda fila del csv y lo guarda en un array (fieldsArr)
@@ -30,52 +32,49 @@ exports.processClientes = functions.storage.object().onFinalize(obj => {
         // Borra esta coleccion
         // Inserta clientesDocs completo en esta ultima coleccion
         // Actualiza config.colClientes en la DB por el nuevo nombre de la coleccion alternativa
+        const cfgRef = admin.firestore().collection('opciones').doc('config')
+        const d = await cfgRef.get()
+        const cfg = d.data()
+        const colClientes = cfg.colClientes
+        console.log('config.colClientes activa:', colClientes)
 
-        reader.onload = async () => {
-            const cfgRef = admin.firestore().collection('options').doc('config')
-            const doc = await cfgRef.get()
-            const cfg = doc.data()
-            const colClientes = cfg.colClientes
-            console.log('config.colClientes activa:', colClientes)
+        const data = text.split('\r\n')
+        const orderStr = data[0]
+        const orderArr = orderStr.split(';')
 
-            const data = reader.result.split('\r\n')
-            const orderStr = data[0]
-            const orderArr = orderStr.split(';')
-            console.log('OrderArray:', orderArr)
+        const fieldsStr = data[1]
+        const fieldsArr = fieldsStr.split(';')
 
-            const fieldsStr = data[1]
-            const fieldsArr = fieldsStr.split(';')
-            console.log('FieldsArray:', fieldsArr)
-
-            const orderFieldsArr = []
-            for (let i = 1; i <= orderArr.length; i++) {
-                const idx = orderArr.indexOf(i.toString())
-                orderFieldsArr.push(fieldsArr[idx])
-            }
-            console.log('orderFieldsArr:', orderFieldsArr)
-
-            data.shift() // borra Orden de campos
-            data.shift() // borra cabecera del data
-
-            const clientesDocs = data.map((str, i) => {
-                const valuesArray = str.split(';')
-                const doc = {}
-                fieldsArr.forEach((f, i) => {
-                    doc[f] = valuesArray[i]
-                })
-                return doc
-            })
-
-            const config = {
-                orden: orderFieldsArr,
-                colClientes: (colClientes === 'clientes') ? 'clientesAlt' : 'clientes'
-            }
-            console.log('config update:', config)
-            // await deleteCollection(config.colClientes)
-            // await insertCollection(config.colClientes, clientesDocs)
-            // await admin.firestore().doc('options/config').set(config)
+        const orderFieldsArr = []
+        for (let i = 1; i <= orderArr.length; i++) {
+            const idx = getIndex(i, orderArr)
+            orderFieldsArr.push(fieldsArr[idx])
         }
+        data.shift() // borra Orden de campos
+        data.shift() // borra cabecera del data
+
+        const clientesDocs = data.map((str, i) => {
+            const valuesArray = str.split(';')
+            const doc = {}
+            fieldsArr.forEach((f, i) => {
+                doc[f] = valuesArray[i]
+            })
+            return doc
+        })
+
+        const config = {
+            borrame: true,
+            orden: orderFieldsArr,
+            colClientes: (colClientes === 'clientes') ? 'clientesAlt' : 'clientes'
+        }
+        console.log('config update:', config)
+        console.log('delete collection:', config.colClientes)
+        await deleteCollection(admin.firestore(), config.colClientes, 100)
+        console.log('delete ok')
+        await insertCollection(config.colClientes, clientesDocs)
+        await admin.firestore().doc('opciones/config').set(config)
     }
+    return null
 })
 // exports.processNotificaciones = functions.storage.bucket().onUpload(event => {
 //    const file = event.data
@@ -98,22 +97,58 @@ exports.processClientes = functions.storage.object().onFinalize(obj => {
 //    }
 // })
 
-// async function insertCollection (col, docs) {
-//    // await admin.firestore().collection(col).add(docs)
-//    for (const doc of docs) {
-//        await admin.firestore().collection('notificaciones').add(doc)
-//        sleep(1000)
-//    }
-// }
-// async function deleteCollection (col) {
-//    admin.firestore().collection(col).delete()
-//        .then(() => {
-//            functions.logger.log('Collection deleted successfully')
-//        })
-//        .catch(error => {
-//            functions.logger.log('Error deleting collection: ', error)
-//        })
-// }
+function getIndex (id, orderArr) {
+    let idx = -1
+    orderArr.forEach((x, i) => {
+        const flag = (Number(x) === Number(id))
+        if (flag) {
+            idx = i
+        }
+    })
+    return idx
+}
+async function deleteCollection (db, collectionPath, batchSize) {
+    const collectionRef = db.collection(collectionPath)
+    const query = collectionRef.orderBy('__name__').limit(batchSize)
+
+    return new Promise((resolve, reject) => {
+        deleteQueryBatch(db, query, resolve).catch(reject)
+    })
+}
+async function deleteQueryBatch (db, query, resolve) {
+    const snapshot = await query.get()
+    console.log('collection counter:', snapshot.length)
+    const batchSize = snapshot.size
+    if (batchSize === 0) {
+        resolve()
+        return
+    }
+    const batch = db.batch()
+    snapshot.docs.forEach((doc) => {
+        batch.delete(doc.ref)
+    })
+    await batch.commit()
+    // Recurse on the next process tick, to avoid
+    // exploding the stack.
+    process.nextTick(() => {
+        deleteQueryBatch(db, query, resolve)
+    })
+}
+async function insertCollection (col, data) {
+    process.env.COUNTER = 0
+    data.map(async d => {
+        await admin.firestore().collection(col).add(d)
+        process.env.COUNTER = process.env.COUNTER + 1
+        await sleep(1)
+    })
+}
+async function sleep (tout) {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve()
+        }, tout * 1000)
+    })
+}
 // function sendPush (token, message) {
 //    const payload = {
 //        token,
@@ -126,13 +161,6 @@ exports.processClientes = functions.storage.object().onFinalize(obj => {
 //        functions.logger.log('Successfully sent message: ', response)
 //    }).catch((error) => {
 //        functions.logger.log('error: ', error)
-//    })
-// }
-// async function sleep (tout) {
-//    return new Promise(resolve => {
-//        setTimeout(() => {
-//            resolve()
-//        }, tout * 1000)
 //    })
 // }
 

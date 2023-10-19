@@ -114,7 +114,7 @@ const uploadClients = () => {
 }
 const onUploadClients = async (e) => {
     const file = e.target.files[0]
-    await appStore.actions.uploadFile(file, 'clientes.csv')
+    await appStore.actions.uploadFile(file, 'clientes.csv') // file.name) // 'clientes.csv')
 }
 const uploadNotifications = () => {
     refFileNoti.value.click()

@@ -31,7 +31,7 @@ let mode = process.argv[3]
 const defOpt = 'full'
 const optArr = ['p', 'b', 's', 'd', 'fapk', 'fweb', 'full']
 
-const defMode = 'r'
+const defMode = 'd'
 const modeArr = ['d', 'r']
 
 if (!opt) opt = defOpt
@@ -41,11 +41,6 @@ if (!mode) mode = defMode
 if (optArr.indexOf(opt) === -1) {
     console.log('ATENCION!')
     console.log('Debe elegir algun parametro: p / b / s / d / fapk / fweb / full')
-    exit()
-}
-if (modeArr.indexOf(mode) === -1) {
-    console.log('ATENCION!')
-    console.log('Debe elegir algun modo (d=debug / r=release): d / r')
     exit()
 }
 let newVersionName$ = ''
