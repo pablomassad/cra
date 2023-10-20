@@ -35,39 +35,6 @@ const actions = {
     async uploadFile (file, fn) {
         fb.uploadFile(file, fn)
     },
-
-    async updateFieldsOrder (fieldsOrder) {
-        await fb.setDocument('opciones', fieldsOrder, 'config')
-    },
-    async sendNotificacions () {
-        console.log('store sendNotificacions:', state.notificaciones.length)
-        ui.actions.showLoading({
-            type: 'progressBar',
-            color: 'blue',
-            timeout: state.notificaciones.length * state.settings.fcmDelay
-        })
-        for (const msg in state.notificaciones) {
-            const o = {
-                topic: msg['N De documento'],
-                title: 'CRA Aviso',
-                body: msg.Mensaje,
-                img: 'https://pp-cra.web.app/images/craLoRes.png',
-                tokenKey: 'c9d19f3de37737eceb9daadf9f359f08a6ea4f1d'
-            }
-            await fb.sendFcmMessage(o)
-            await sleep(state.settings.fcmDelay)
-        }
-        ui.actions.hideLoading()
-    },
-    async insertCollection (col, data) {
-        console.log('store insertCollection')
-        console.time('createCol')
-        for (const doc of data) {
-            await fb.setDocument('notificaciones', doc)
-            sleep(1000)
-        }
-        console.timeEnd('createCol')
-    },
     async statNotificationsFromDate (d) {
         const ops = {
             field: 'fhEmision',

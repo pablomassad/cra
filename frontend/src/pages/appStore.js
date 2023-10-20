@@ -2,7 +2,6 @@ import { reactive, readonly } from 'vue'
 import { ui } from 'fwk-q-ui'
 import fb from 'fwk-q-firebase'
 import { LocalStorage } from 'quasar'
-import { main } from 'fwk-q-main'
 import { ENVIRONMENTS } from 'src/environments'
 
 fb.initFirebase(ENVIRONMENTS.firebase)

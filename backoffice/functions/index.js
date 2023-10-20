@@ -9,7 +9,7 @@ admin.initializeApp()
 
 exports.getAddCounter = onRequest((request, response) => {
     logger.info('getAddCounter:', process.env.COUNTER)
-    response.send(process.env.COUNTER + ' / ' + process.env.TOTAL)
+    response.send('procesando....:' + process.env.COUNTER + ' / ' + process.env.TOTAL)
 })
 
 exports.processStorageUpload = functions.storage.bucket().object().onFinalize(async event => {
@@ -71,12 +71,12 @@ exports.processStorageUpload = functions.storage.bucket().object().onFinalize(as
             colClientes: (colClientes === 'clientes') ? 'clientesAlt' : 'clientes'
         }
         console.log('delete collection:', config.colClientes)
-        await deleteCollection(admin.firestore(), config.colClientes, 100)
+        await deleteCollection(admin.firestore(), config.colClientes, 300)
         console.log('delete ok')
         await insertCollection(config.colClientes, clientesDocs)
         console.log('insertion ok', process.env.TOTAL)
         await admin.firestore().doc('opciones/config').set(config)
-        console.log('update config ok')
+        console.log('update config ok:', config)
     }
     if (event.name === NOTIFICACIONES) {
         const file = bucket.file(event.name)
@@ -130,9 +130,7 @@ async function deleteQueryBatch (db, query, resolve) {
     const snapshot = await query.get()
     const batchSize = snapshot.size
     const total = batchSize
-    console.log('total for deletion:', total)
     if (batchSize === 0) {
-        console.log('No data for delete!')
         resolve()
         return
     }
