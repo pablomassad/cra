@@ -77,6 +77,7 @@ exports.processStorageUpload = functions.storage.bucket().object().onFinalize(as
         console.log('insertion ok', process.env.TOTAL)
         await admin.firestore().doc('opciones/config').set(config)
         console.log('update config ok:', config)
+        sendPush('admin', 'La actualización de Clientes ha finalizado OK')
     }
     if (event.name === NOTIFICACIONES) {
         const file = bucket.file(event.name)
@@ -104,6 +105,7 @@ exports.processStorageUpload = functions.storage.bucket().object().onFinalize(as
         })
         await insertCollection('notificaciones', notiDocs)
         console.log('insertion ok', process.env.TOTAL)
+        sendPush('admin', 'Las notificaciones han sido enviadas!')
     }
     return null
 })
@@ -176,20 +178,20 @@ function evalUndefinedFields (doc) {
     return flag
 }
 
-// function sendPush (token, message) {
-//    const payload = {
-//        token,
-//        notification: {
-//            title: 'CRA: Notificacion',
-//            body: message
-//        }
-//    }
-//    admin.messaging().send(payload).then((response) => {
-//        functions.logger.log('Successfully sent message: ', response)
-//    }).catch((error) => {
-//        functions.logger.log('error: ', error)
-//    })
-// }
+function sendPush (token, message) {
+    const payload = {
+        token,
+        notification: {
+            title: 'CRA: Notificacion',
+            body: message
+        }
+    }
+    admin.messaging().send(payload).then((response) => {
+        functions.logger.log('Successfully sent message: ', response)
+    }).catch((error) => {
+        functions.logger.log('error: ', error)
+    })
+}
 
 // Crea una función que se ejecutará cada 5 minutos
 // exports.runEveryFiveMinutes = functions.https.onRequest((req, res) => {
