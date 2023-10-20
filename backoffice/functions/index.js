@@ -3,20 +3,22 @@ const logger = require('firebase-functions/logger')
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const { getStorage } = require('firebase-admin/storage')
+const process = require('process')
 
 admin.initializeApp()
 
 exports.getAddCounter = onRequest((request, response) => {
     logger.info('getAddCounter:', process.env.COUNTER)
-    response.send(process.env.COUNTER)
+    response.send(process.env.COUNTER + ' / ' + process.env.TOTAL)
 })
 
-exports.processClientes = functions.storage.bucket().object().onFinalize(async event => {
+exports.processStorageUpload = functions.storage.bucket().object().onFinalize(async event => {
     const gcs = getStorage()
     const bucket = gcs.bucket(event.bucket)
-    const NAME = 'clientes.csv'
+    const CLIENTES = 'clientes.csv'
+    const NOTIFICACIONES = 'notificaciones.csv'
 
-    if (event.name === NAME) {
+    if (event.name === CLIENTES) {
         const file = bucket.file(event.name)
         const dwFile = await file.download({ encoding: 'utf8' })
         const text = Buffer.concat(dwFile).toString('utf8')
@@ -58,6 +60,7 @@ exports.processClientes = functions.storage.bucket().object().onFinalize(async e
             const doc = {}
             fieldsArr.forEach((f, i) => {
                 doc[f] = valuesArray[i]
+                doc.id = i
             })
             return doc
         })
@@ -67,35 +70,43 @@ exports.processClientes = functions.storage.bucket().object().onFinalize(async e
             orden: orderFieldsArr,
             colClientes: (colClientes === 'clientes') ? 'clientesAlt' : 'clientes'
         }
-        console.log('config update:', config)
         console.log('delete collection:', config.colClientes)
         await deleteCollection(admin.firestore(), config.colClientes, 100)
         console.log('delete ok')
         await insertCollection(config.colClientes, clientesDocs)
+        console.log('insertion ok', process.env.TOTAL)
         await admin.firestore().doc('opciones/config').set(config)
+        console.log('update config ok')
+    }
+    if (event.name === NOTIFICACIONES) {
+        const file = bucket.file(event.name)
+        const dwFile = await file.download({ encoding: 'utf8' })
+        const text = Buffer.concat(dwFile).toString('utf8')
+
+        const data = text.split('\r\n')
+
+        const fieldsStr = data[0]
+        const fieldsArr = fieldsStr.split(';')
+        console.log('FieldsArray:', fieldsArr)
+
+        data.shift() // borra cabecera del data
+
+        const notiDocs = data.map((str, i) => {
+            const valuesArray = str.split(';')
+            const doc = {
+                id: new Date().getTime(),
+                fhEmision: new Date().getTime()
+            }
+            fieldsArr.forEach((f, i) => {
+                doc[f] = valuesArray[i]
+            })
+            return doc
+        })
+        await insertCollection('notificaciones', notiDocs)
+        console.log('insertion ok', process.env.TOTAL)
     }
     return null
 })
-// exports.processNotificaciones = functions.storage.bucket().onUpload(event => {
-//    const file = event.data
-
-//    if (file.name === 'notificaciones.csv') {
-//        const reader = new FileReader()
-//        reader.onload = function () {
-//            const data = reader.result
-
-//            const rows = data.split('\n')
-//            for (const row of rows) {
-//                const document = {
-//                    name: row.split(',')[0],
-//                    age: row.split(',')[1]
-//                }
-//                admin.firestore().collection('users').add(document)
-//            }
-//        }
-//        reader.readAsText(file)
-//    }
-// })
 
 function getIndex (id, orderArr) {
     let idx = -1
@@ -117,9 +128,11 @@ async function deleteCollection (db, collectionPath, batchSize) {
 }
 async function deleteQueryBatch (db, query, resolve) {
     const snapshot = await query.get()
-    console.log('collection counter:', snapshot.length)
     const batchSize = snapshot.size
+    const total = batchSize
+    console.log('total for deletion:', total)
     if (batchSize === 0) {
+        console.log('No data for delete!')
         resolve()
         return
     }
@@ -136,9 +149,15 @@ async function deleteQueryBatch (db, query, resolve) {
 }
 async function insertCollection (col, data) {
     process.env.COUNTER = 0
-    data.map(async d => {
+    process.env.TOTAL = data.length
+    console.log('begin inserting data in colClientes:', data.length)
+
+    const filteredData = data.filter(x => !evalUndefinedFields(x)) //  !!x['Fecha inicio'])
+    console.log('data to insert filtered: ', filteredData.length)
+
+    filteredData.map(async (d, i) => {
         await admin.firestore().collection(col).add(d)
-        process.env.COUNTER = process.env.COUNTER + 1
+        process.env.COUNTER = Number(process.env.COUNTER) + 1
         await sleep(1)
     })
 }
@@ -149,6 +168,16 @@ async function sleep (tout) {
         }, tout * 1000)
     })
 }
+function evalUndefinedFields (doc) {
+    let flag = false
+    for (const key in doc) {
+        if (doc[key] === undefined) {
+            flag = true
+        }
+    }
+    return flag
+}
+
 // function sendPush (token, message) {
 //    const payload = {
 //        token,

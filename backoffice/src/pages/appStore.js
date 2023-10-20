@@ -11,23 +11,31 @@ const state = reactive({
     notificaciones: undefined
 })
 const set = {
-    pass (doc) {
-        console.log('store pass:', doc)
-        state.pass = doc
-    },
     settings (o) {
         console.log('store set.settings:', o)
         state.settings = o
+    },
+    pass (doc) {
+        console.log('store pass:', doc)
+        state.pass = doc
     }
 }
 const actions = {
-    async uploadFile (file, fn) {
-        fb.uploadFile(file, fn)
-    },
     async subscribeToFCM () {
         const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
         await fb.saveMessagingDeviceToken('admin', vapidKey)
     },
+    async getSettings () {
+        const bo = await fb.getDocument('opciones', 'backoffice')
+        const config = await fb.getDocument('opciones', 'config')
+        const res = { ...bo, ...config }
+        set.settings(res)
+        return res
+    },
+    async uploadFile (file, fn) {
+        fb.uploadFile(file, fn)
+    },
+
     async updateFieldsOrder (fieldsOrder) {
         await fb.setDocument('opciones', fieldsOrder, 'config')
     },
@@ -59,11 +67,6 @@ const actions = {
             sleep(1000)
         }
         console.timeEnd('createCol')
-    },
-    async getSettings () {
-        const res = await fb.getDocument('opciones', 'backoffice')
-        set.settings(res)
-        return res
     },
     async statNotificationsFromDate (d) {
         const ops = {

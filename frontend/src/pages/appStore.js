@@ -8,14 +8,18 @@ import { ENVIRONMENTS } from 'src/environments'
 fb.initFirebase(ENVIRONMENTS.firebase)
 
 const state = reactive({
+    settings: undefined,
     document: LocalStorage.getItem('CRA_doc'),
     selVehiculo: undefined,
     userData: undefined,
     notificaciones: undefined,
-    notification: undefined,
-    settings: undefined
+    notification: undefined
 })
 const set = {
+    settings (o) {
+        console.log('store set.settings:', o)
+        state.settings = o
+    },
     document (doc) {
         console.log('store setDocument:', doc)
         state.document = doc
@@ -40,30 +44,18 @@ const set = {
     fieldsOrder (arr) {
         console.log('store set.fieldsOrder:', arr)
         state.fieldsOrder = arr
-    },
-    settings (o) {
-        console.log('store set.settings:', o)
-        state.settings = o
     }
 }
 const actions = {
     async subscribeToFCM () {
         const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
-        ui.actions.showLoading()
         await fb.saveMessagingDeviceToken(state.document, vapidKey)
-        ui.actions.hideLoading()
-    },
-    async unsubscribeFromFCM () {
-        if (!main.state.isMobile) return
-        await fb.unsubscribePushAllTopics(state.document)
     },
     async getSettings () {
-        ui.actions.showLoading()
         const fe = await fb.getDocument('opciones', 'frontend')
         const config = await fb.getDocument('opciones', 'config')
         const res = { ...fe, ...config }
         set.settings(res)
-        ui.actions.hideLoading()
         return res
     },
     async validateUser () {

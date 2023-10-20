@@ -56,7 +56,7 @@ onMounted(async () => {
     if (!appStore.state.document) {
         router.push('/login')
     } else {
-        await appStore.actions.subscribeToFCM(appStore.state.document)
+        await appStore.actions.subscribeToFCM()
         await appStore.actions.getDataByUser()
         await appStore.actions.getNotificacionesByUser()
         activeIndex.value = appStore.state.userData[0].Patente

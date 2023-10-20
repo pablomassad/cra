@@ -47,8 +47,9 @@ const colorLeidos = '#b3c0c8'
 
 onMounted(async () => {
     // ui.actions.setTitle('Backoffice')
-    refreshStats()
+    await appStore.actions.getSettings()
     await appStore.actions.subscribeToFCM()
+    refreshStats()
 })
 const refreshStats = async () => {
     chartEnabled.value = false
@@ -114,7 +115,7 @@ const uploadClients = () => {
 }
 const onUploadClients = async (e) => {
     const file = e.target.files[0]
-    await appStore.actions.uploadFile(file, 'clientes.csv') // file.name) // 'clientes.csv')
+    await appStore.actions.uploadFile(file, 'clientes.csv') // file.name)
 }
 const uploadNotifications = () => {
     refFileNoti.value.click()
@@ -122,35 +123,6 @@ const uploadNotifications = () => {
 const onUploadNotifications = async (e) => {
     const file = e.target.files[0]
     await appStore.actions.uploadFile(file, 'notificaciones.csv')
-}
-const onUploadNotificationsOld = (e) => {
-    const file = e.target.files[0]
-    const reader = new FileReader()
-    reader.readAsText(file)
-
-    reader.onload = async () => {
-        const data = reader.result.split('\r\n')
-
-        const fieldsStr = data[0]
-        const fieldsArr = fieldsStr.split(';')
-        console.log('FieldsArray:', fieldsArr)
-
-        data.shift() // borra cabecera del data
-
-        const notiDocs = data.map((str, i) => {
-            const valuesArray = str.split(';')
-            const doc = {
-                id: new Date().getTime(),
-                fhEmision: new Date().getTime()
-            }
-            fieldsArr.forEach((f, i) => {
-                doc[f] = valuesArray[i]
-            })
-            return doc
-        })
-        console.log('notiDocs array created:', notiDocs)
-        await appStore.actions.insertCollection('notificaciones', notiDocs)
-    }
 }
 </script>
 
