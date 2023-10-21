@@ -4,8 +4,16 @@ const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const { getStorage } = require('firebase-admin/storage')
 const process = require('process')
+const { getMessaging } = require('firebase/messaging')
 
 admin.initializeApp()
+
+exports.subscribeTopic = onRequest(async (request, response) => {
+    const tokenDoc = await getTokenById('admin')
+    logger.info('subscribeToTopics: ', 'admin => ' + tokenDoc.fcmToken)
+    await admin.messaging().subscribeTopic([tokenDoc.fcmToken], 'admin')
+    response.send('subscribed to topic:' + tokenDoc.fcmToken)
+})
 
 exports.getAddCounter = onRequest((request, response) => {
     logger.info('getAddCounter:', process.env.COUNTER)
@@ -38,7 +46,7 @@ exports.processStorageUpload = functions.storage.bucket().object().onFinalize(as
         const d = await cfgRef.get()
         const cfg = d.data()
         const colClientes = cfg.colClientes
-        console.log('config.colClientes activa:', colClientes)
+        functions.logger.log('config.colClientes activa:', colClientes)
 
         const data = text.split('\r\n')
         const orderStr = data[0]
@@ -70,13 +78,14 @@ exports.processStorageUpload = functions.storage.bucket().object().onFinalize(as
             orden: orderFieldsArr,
             colClientes: (colClientes === 'clientes') ? 'clientesAlt' : 'clientes'
         }
-        console.log('delete collection:', config.colClientes)
+        functions.logger.log('delete collection:', config.colClientes)
         await deleteCollection(admin.firestore(), config.colClientes, 300)
-        console.log('delete ok')
+        functions.logger.log('delete ok')
         await insertCollection(config.colClientes, clientesDocs)
-        console.log('insertion ok', process.env.TOTAL)
+        functions.logger.log('insertion ok', process.env.TOTAL)
         await admin.firestore().doc('opciones/config').set(config)
-        console.log('update config ok:', config)
+        functions.logger.log('update config ok:', config)
+        functions.logger.log('Documento: ', 'admin')
         sendPush('admin',
             'CRA Aviso',
             'La actualización de Clientes ha finalizado OK')
@@ -90,7 +99,7 @@ exports.processStorageUpload = functions.storage.bucket().object().onFinalize(as
 
         const fieldsStr = data[0]
         const fieldsArr = fieldsStr.split(';')
-        console.log('FieldsArray:', fieldsArr)
+        functions.logger.log('FieldsArray:', fieldsArr)
 
         data.shift() // borra cabecera del data
 
@@ -105,11 +114,11 @@ exports.processStorageUpload = functions.storage.bucket().object().onFinalize(as
             })
             return doc
         })
-        console.log('notiDocs len:', notiDocs.length)
         await insertCollection('notificaciones', notiDocs)
-        console.log('insertion ok', process.env.TOTAL)
+        functions.logger.log('insertion ok', process.env.TOTAL)
         await sendNotifications(notiDocs)
-        console.log('sent notifications ok', process.env.TOTAL)
+        functions.logger.log('sent notifications ok', process.env.TOTAL)
+        functions.logger.log('Documento: ', 'admin')
         await sendPush('admin',
             'CRA Aviso',
             'Las notificaciones han sido enviadas!')
@@ -157,10 +166,10 @@ async function deleteQueryBatch (db, query, resolve) {
 async function insertCollection (col, data) {
     process.env.COUNTER = 0
     process.env.TOTAL = data.length
-    console.log('begin inserting data in colClientes:', data.length)
+    functions.logger.log('begin inserting data in colClientes:', data.length)
 
     const filteredData = data.filter(x => !evalUndefinedFields(x)) //  !!x['Fecha inicio'])
-    console.log('data to insert filtered: ', filteredData.length)
+    functions.logger.log('data to insert filtered: ', filteredData.length)
 
     filteredData.map(async (d, i) => {
         await admin.firestore().collection(col).add(d)
@@ -186,20 +195,25 @@ function evalUndefinedFields (doc) {
 }
 async function sendNotifications (docs) {
     for (const doc of docs) {
-        await sendPush(
-            doc['N De documento'],
-            'CRA ' + doc['Tipo de Mensaje'],
-            'Descripción, Estimado cliente tiene una notificación pendiente  para leer de CR Asociados Seguros y Servicios. Ingresá para verla.')
-        await sleep(1)
+        const dni = doc['N De documento']
+        functions.logger.log('Documento:', dni)
+        if (dni) {
+            const tipo = doc['Tipo de Mensaje']
+            functions.logger.log('Tipo:', tipo)
+            await sendPush(
+                dni,
+                `CRA: ${tipo}`,
+                'Descripción, Estimado cliente tiene una notificación pendiente  para leer de CR Asociados Seguros y Servicios. Ingresá para verla.')
+            await sleep(1)
+        }
     }
 }
 async function sendPush (id, title, body) {
-    const tokenRef = admin.firestore().collection('fcmTokens').doc(id)
-    const ds = await tokenRef.get()
-    const tokenDoc = ds.data()
-    const token = tokenDoc.fcmToken
-    console.log('Token:', token)
+    const tokenDoc = await getTokenById(id)
+    if (!tokenDoc) return
 
+    const token = tokenDoc.fcmToken
+    functions.logger.log('Token:', token)
     const payload = {
         token,
         notification: {
@@ -207,13 +221,25 @@ async function sendPush (id, title, body) {
             body
         }
     }
+    // const payload = {
+    //    topic: id,
+    //    notification: {
+    //        title,
+    //        body
+    //    }
+    // }
     try {
         const response = await admin.messaging().send(payload)
-        functions.logger.log('Successfully sent message: ', response)
-        console.log('Successfully console sent:', response)
+        functions.logger.log('Successfully sent all messages:', response)
     } catch (error) {
-        console.log('Error sending push:', error)
+        functions.logger.log('Error sending push:', error)
     }
+}
+async function getTokenById (id) {
+    const tokenRef = admin.firestore().collection('fcmTokens').doc(id)
+    const ds = await tokenRef.get()
+    const tokenDoc = ds.data()
+    return tokenDoc
 }
 
 // Crea una función que se ejecutará cada 5 minutos

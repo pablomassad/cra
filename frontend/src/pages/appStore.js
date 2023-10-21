@@ -48,7 +48,7 @@ const set = {
 const actions = {
     async subscribeToFCM () {
         const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
-        await fb.saveMessagingDeviceToken(state.document, vapidKey)
+        await fb.saveMessagingDeviceToken(state.document, vapidKey, state.document)
     },
     async getSettings () {
         const fe = await fb.getDocument('opciones', 'frontend')
