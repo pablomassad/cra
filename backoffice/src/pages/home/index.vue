@@ -32,7 +32,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { ui } from 'fwk-q-ui'
 import appStore from 'src/pages/appStore'
 import * as d3 from 'd3'
 

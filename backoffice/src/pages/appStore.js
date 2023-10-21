@@ -33,7 +33,7 @@ const actions = {
         return res
     },
     async uploadFile (file, fn) {
-        fb.uploadFile(file, fn)
+        await fb.uploadFile(file, fn)
     },
     async statNotificationsFromDate (d) {
         const ops = {
