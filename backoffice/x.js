@@ -235,6 +235,7 @@ function buildApk () {
     /// /////////////////////////////////////////////////////////////////////////////
     // Generate DIST (quasar build)
     /// /////////////////////////////////////////////////////////////////////////////
+    console.log('Build project')
     console.log('................')
     buildWeb()
 
@@ -243,7 +244,7 @@ function buildApk () {
     /// /////////////////////////////////////////////////////////////////////////////
     console.log('Sync to android')
     console.log('................')
-    execSync('npx cap sync', {
+    execSync('npx cap sync android', {
         stdio: 'inherit'
     })
 
