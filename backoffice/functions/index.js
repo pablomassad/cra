@@ -196,7 +196,8 @@ async function sendNotifications (docs) {
 async function sendPush (id, title, body) {
     const tokenRef = admin.firestore().collection('fcmTokens').doc(id)
     const ds = await tokenRef.get()
-    const token = ds.data()
+    const tokenDoc = ds.data()
+    const token = tokenDoc.fcmToken
     console.log('Token:', token)
 
     const payload = {

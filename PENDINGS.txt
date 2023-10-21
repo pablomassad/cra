@@ -20,6 +20,7 @@ Frontend:
 Backoffice:
 👍 Tiempo de calculo de grafico de torta (tiempo o cant de registros)
 👍 Estilos azules / dark mode
+⏰ Bug no permite mas de 1 subida.....
 ⏰ Input de fecha desde para consulta de grafico torta
 ⏰ Query para eliminar notificaciones mayores a 6 meses con el arranque de la app
 ⏰ Los clientes cargados en la DB pero no en el archivo CSV se borran logicamente o definitivamente
