@@ -4,22 +4,26 @@ const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const { getStorage } = require('firebase-admin/storage')
 const process = require('process')
-const { getMessaging } = require('firebase/messaging')
 
 admin.initializeApp()
 
 exports.subscribeTopic = onRequest(async (request, response) => {
     const tokenDoc = await getTokenById('admin')
     logger.info('subscribeToTopics: ', 'admin => ' + tokenDoc.fcmToken)
-    await admin.messaging().subscribeTopic([tokenDoc.fcmToken], 'admin')
+    await admin.messaging().subscribeTopic(tokenDoc.fcmToken, 'admin')
     response.send('subscribed to topic:' + tokenDoc.fcmToken)
 })
-
-exports.getAddCounter = onRequest((request, response) => {
-    logger.info('getAddCounter:', process.env.COUNTER)
-    response.send('procesando....:' + process.env.COUNTER + ' / ' + process.env.TOTAL)
+exports.getStatus = onRequest(async (request, response) => { // ?task=clients || ?task=notifications
+    const ref = admin.database.ref('tasks/' + request.params.task) // request.query.task)
+    const sn = await ref.once('value')
+    if (!sn.exists()) {
+        response.send({ error: 'No se encontró ninguna tarea' })
+    } else {
+        const st = sn.val()
+        logger.info('getStatus:', st)
+        response.send(st)
+    }
 })
-
 exports.processStorageUpload = functions.storage.bucket().object().onFinalize(async event => {
     const gcs = getStorage()
     const bucket = gcs.bucket(event.bucket)
@@ -74,21 +78,20 @@ exports.processStorageUpload = functions.storage.bucket().object().onFinalize(as
         })
 
         const config = {
-            borrame: true,
             orden: orderFieldsArr,
             colClientes: (colClientes === 'clientes') ? 'clientesAlt' : 'clientes'
         }
         functions.logger.log('delete collection:', config.colClientes)
         await deleteCollection(admin.firestore(), config.colClientes, 300)
-        functions.logger.log('delete ok')
+        functions.logger.log('delete finished')
         await insertCollection(config.colClientes, clientesDocs)
-        functions.logger.log('insertion ok', process.env.TOTAL)
+        functions.logger.log('insertion finished')
         await admin.firestore().doc('opciones/config').set(config)
-        functions.logger.log('update config ok:', config)
-        functions.logger.log('Documento: ', 'admin')
+        functions.logger.log('update colClientes ok:', config)
         sendPush('admin',
             'CRA Aviso',
             'La actualización de Clientes ha finalizado OK')
+        functions.logger.log('sent msg to ', 'admin')
     }
     if (event.name === NOTIFICACIONES) {
         const file = bucket.file(event.name)
@@ -115,13 +118,13 @@ exports.processStorageUpload = functions.storage.bucket().object().onFinalize(as
             return doc
         })
         await insertCollection('notificaciones', notiDocs)
-        functions.logger.log('insertion ok', process.env.TOTAL)
+        functions.logger.log('insertion finished')
         await sendNotifications(notiDocs)
-        functions.logger.log('sent notifications ok', process.env.TOTAL)
-        functions.logger.log('Documento: ', 'admin')
+        functions.logger.log('sent notifications finished')
         await sendPush('admin',
             'CRA Aviso',
             'Las notificaciones han sido enviadas!')
+        functions.logger.log('sent msg to ', 'admin')
     }
     return null
 })
@@ -164,36 +167,24 @@ async function deleteQueryBatch (db, query, resolve) {
     })
 }
 async function insertCollection (col, data) {
-    process.env.COUNTER = 0
-    process.env.TOTAL = data.length
-    functions.logger.log('begin inserting data in colClientes:', data.length)
+    const counter = 0
+    const total = data.length
+    const ref = admin.database.ref('tasks/' + col)
 
+    functions.logger.log('begin inserting data in colClientes:', total)
     const filteredData = data.filter(x => !evalUndefinedFields(x)) //  !!x['Fecha inicio'])
     functions.logger.log('data to insert filtered: ', filteredData.length)
 
     filteredData.map(async (d, i) => {
         await admin.firestore().collection(col).add(d)
-        process.env.COUNTER = Number(process.env.COUNTER) + 1
-        await sleep(1)
+        await ref.set({ progress: i, total })
+        await sleep(500)
     })
-}
-async function sleep (tout) {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve()
-        }, tout * 1000)
-    })
-}
-function evalUndefinedFields (doc) {
-    let flag = false
-    for (const key in doc) {
-        if (doc[key] === undefined) {
-            flag = true
-        }
-    }
-    return flag
 }
 async function sendNotifications (docs) {
+    const ref = admin.database.ref('tasks/notifications')
+    let i = 0
+    const total = docs.length
     for (const doc of docs) {
         const dni = doc['N De documento']
         functions.logger.log('Documento:', dni)
@@ -204,7 +195,8 @@ async function sendNotifications (docs) {
                 dni,
                 `CRA: ${tipo}`,
                 'Descripción, Estimado cliente tiene una notificación pendiente  para leer de CR Asociados Seguros y Servicios. Ingresá para verla.')
-            await sleep(1)
+            await ref.set({ progress: i++, total })
+            await sleep(800)
         }
     }
 }
@@ -240,6 +232,22 @@ async function getTokenById (id) {
     const ds = await tokenRef.get()
     const tokenDoc = ds.data()
     return tokenDoc
+}
+async function sleep (tout) {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve()
+        }, tout)
+    })
+}
+function evalUndefinedFields (doc) {
+    let flag = false
+    for (const key in doc) {
+        if (doc[key] === undefined) {
+            flag = true
+        }
+    }
+    return flag
 }
 
 // Crea una función que se ejecutará cada 5 minutos
