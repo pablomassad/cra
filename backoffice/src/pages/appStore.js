@@ -2,12 +2,8 @@ import { reactive, readonly, watch } from 'vue'
 import { ui } from 'fwk-q-ui'
 import fb from 'fwk-q-firebase'
 import { ENVIRONMENTS } from 'src/environments'
-import { getDatabase, onValue, ref as refRt, child, get } from 'firebase/database'
-import { initializeApp } from 'firebase/app'
 
 fb.initFirebase(ENVIRONMENTS.firebase)
-
-const app = initializeApp(ENVIRONMENTS.firebase)
 
 const state = reactive({
     settings: undefined,
@@ -55,19 +51,6 @@ const actions = {
         }
         const res = await fb.getCollectionFlex('notificaciones', ops)
         return res
-    },
-    getTasks (col) {
-        const route = '/tasks/' + col
-        const dbRt = getDatabase(app)
-        const dbRefValue = refRt(dbRt, route)
-        console.log('getTasks: ', route)
-        onValue(dbRefValue, (snapshot) => {
-            console.log('onValue event....')
-            const data = snapshot.val()
-            console.log('onValue data:', data)
-        }, (error) => {
-            console.error('onValue error: ', error)
-        })
     }
 }
 
@@ -75,12 +58,4 @@ export default {
     set,
     state: readonly(state),
     actions
-}
-
-async function sleep (tout) {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve()
-        }, tout * 1000)
-    })
 }

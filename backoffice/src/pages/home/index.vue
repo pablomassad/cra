@@ -139,15 +139,19 @@ const onUploadNotifications = async (e) => {
     appStore.actions.monitorStatus('mensajes', notificationsStatus)
 }
 
-watch(() => clientsStatus.value.progress, (newVal) => {
-    if (newVal === clientsStatus.value.total && (newVal > 0)) {
-        console.log('watch clients:', newVal)
+watch(() => clientsStatus.value.progress, (newProgress) => {
+    console.log('watch clients:', newProgress)
+    const flag = newProgress === clientsStatus.value.total && (newProgress > 0)
+    if (flag) {
+        clientsDisabled.value = !flag
         appStore.actions.finishStatus('clientes')
     }
 })
-watch(() => notificationsStatus.value.progress, (newVal) => {
-    console.log('watch notifications:', newVal)
-    if (newVal === notificationsStatus.value.total && (newVal > 0)) {
+watch(() => notificationsStatus.value.progress, (newProgress) => {
+    console.log('watch notifications:', newProgress)
+    const flag = newProgress === notificationsStatus.value.total && (newProgress > 0)
+    if (flag) {
+        notificationsDisabled.value = !flag
         appStore.actions.finishStatus('mensajes')
     }
 })

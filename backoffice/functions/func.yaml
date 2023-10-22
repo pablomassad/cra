@@ -1,0 +1,3 @@
+name: processStorageUpload
+memory: 512Mi
+timeoutSeconds: 540
