@@ -169,36 +169,37 @@ async function deleteQueryBatch (db, query, resolve) {
     })
 }
 async function insertCollection (col, data) {
-    const counter = 0
-    const total = data.length
+    const total = data.length - 1
     const ref = db.ref('tasks/' + col)
 
     functions.logger.log('begin inserting data in colClientes:', total)
     const filteredData = data.filter(x => !evalUndefinedFields(x)) //  !!x['Fecha inicio'])
     functions.logger.log('data to insert filtered: ', filteredData.length)
 
-    filteredData.map(async (d, i) => {
+    let i = 1
+    filteredData.map(async (d) => {
         await admin.firestore().collection(col).add(d)
-        await ref.set({ progress: i, total })
+        await ref.set({ progress: i++, total })
         await sleep(500)
     })
 }
 async function sendNotifications (docs) {
-    const ref = db.ref('tasks/notifications')
-    let i = 0
-    const total = docs.length
-    for (const doc of docs) {
-        const dni = doc['N De documento']
+    const ref = db.ref('tasks/mensajes')
+    let i = 1
+    const total = docs.length - 1
+    for (const d of docs) {
+        const dni = d['N De documento']
         functions.logger.log('Documento:', dni)
         if (dni) {
-            const tipo = doc['Tipo de Mensaje']
+            functions.logger.log('doc:', JSON.stringify(d))
+            const tipo = d['Tipo de Mensaje']
             functions.logger.log('Tipo:', tipo)
             await sendPush(
                 dni,
                 `CRA: ${tipo}`,
                 'Descripción, Estimado cliente tiene una notificación pendiente  para leer de CR Asociados Seguros y Servicios. Ingresá para verla.')
             await ref.set({ progress: i++, total })
-            await sleep(800)
+            await sleep(5000)
         }
     }
 }

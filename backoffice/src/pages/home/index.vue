@@ -3,14 +3,14 @@
         <div class="uploader" @click="uploadClients" :class="{disabled: clientsDisabled}">
             <q-icon name="person" size="lg"></q-icon>
             <div class="iconText">CLIENTES (csv)</div>
-            <div v-show="clientsDisabled">
+            <div v-show="clientsDisabled" style="font-size: 13px;">
                 {{ clientsStatus.progress }} / {{ clientsStatus.total }}
             </div>
         </div>
         <div class="uploader" @click="uploadNotifications" :class="{disabled: notificationsDisabled}">
             <q-icon name="mail"></q-icon>
             <div class="iconText">MENSAJES (csv)</div>
-            <div v-show="notificationsDisabled">
+            <div v-show="notificationsDisabled" style="font-size: 13px;">
                 {{ notificationsStatus.progress }} / {{ notificationsStatus.total }}
             </div>
         </div>
@@ -43,11 +43,11 @@ import * as d3 from 'd3'
 
 const refFileClients = ref()
 const clientsDisabled = ref(false)
-const clientsStatus = ref()
+const clientsStatus = ref({ progress: 0, total: 0 })
 
 const refFileNoti = ref()
 const notificationsDisabled = ref(false)
-const notificationsStatus = ref()
+const notificationsStatus = ref({ progress: 0, total: 0 })
 
 const chartEnabled = ref(false)
 const refChart = ref()
@@ -121,29 +121,35 @@ const drawPie = (data) => {
         .text(d => d.data)
 }
 const uploadClients = () => {
-    clientsDisabled.value = true
     refFileClients.value.click()
 }
 const onUploadClients = async (e) => {
     const file = e.target.files[0]
-    await appStore.actions.uploadFile(file, 'clientes.csv') // file.name)
+    clientsDisabled.value = true
+    await appStore.actions.uploadFile(file, 'clientes.csv')
     appStore.actions.monitorStatus('clients', clientsStatus)
 }
 const uploadNotifications = () => {
-    notificationsDisabled.value = true
     refFileNoti.value.click()
 }
 const onUploadNotifications = async (e) => {
     const file = e.target.files[0]
+    notificationsDisabled.value = true
     await appStore.actions.uploadFile(file, 'notificaciones.csv')
     appStore.actions.monitorStatus('notifications', notificationsStatus)
 }
 
 watch(() => clientsStatus.value.progress, (newVal) => {
-    if (newVal === clientsStatus.value.total) appStore.actions.finishStatus('clients')
+    if (newVal === clientsStatus.value.total && (newVal > 0)) {
+        console.log('watch clients:', newVal)
+        appStore.actions.finishStatus('clients')
+    }
 })
 watch(() => notificationsStatus.value.progress, (newVal) => {
-    if (newVal === notificationsStatus.value.total) appStore.actions.finishStatus('notifications')
+    console.log('watch notifications:', newVal)
+    if (newVal === notificationsStatus.value.total && (newVal > 0)) {
+        appStore.actions.finishStatus('notifications')
+    }
 })
 
 </script>
@@ -237,7 +243,7 @@ watch(() => notificationsStatus.value.progress, (newVal) => {
 .uploader {
     border: 3px solid rgb(28, 106, 230);
     border-radius: 20px;
-    height: 100px;
+    height: 120px;
     width: 300px;
     background: #c7ecff;
     color: #0082cf;

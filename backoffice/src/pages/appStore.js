@@ -23,7 +23,7 @@ const set = {
 const actions = {
     monitorStatus (col, proxyRef) {
         console.log('monitorStatus:', col)
-        proxyRef.value = 'HOLA MUNDO!!'
+        proxyRef.value = { progress: -1, total: -1 }
         fb.realtimeOn(col, proxyRef)
     },
     finishStatus (col) {
