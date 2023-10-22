@@ -6,6 +6,7 @@ const { getStorage } = require('firebase-admin/storage')
 const process = require('process')
 
 admin.initializeApp()
+const db = admin.database()
 
 exports.subscribeTopic = onRequest(async (request, response) => {
     const tokenDoc = await getTokenById('admin')
@@ -14,9 +15,10 @@ exports.subscribeTopic = onRequest(async (request, response) => {
     response.send('subscribed to topic:' + tokenDoc.fcmToken)
 })
 exports.getStatus = onRequest(async (request, response) => { // ?task=clients || ?task=notifications
-    const ref = admin.database.ref('tasks/' + request.params.task) // request.query.task)
+    const ref = db.ref('tasks/' + request.params.task) // request.query.task)
     const sn = await ref.once('value')
     if (!sn.exists()) {
+        logger.info('getStatus:', 'No task pending')
         response.send({ error: 'No se encontró ninguna tarea' })
     } else {
         const st = sn.val()
@@ -169,7 +171,7 @@ async function deleteQueryBatch (db, query, resolve) {
 async function insertCollection (col, data) {
     const counter = 0
     const total = data.length
-    const ref = admin.database.ref('tasks/' + col)
+    const ref = db.ref('tasks/' + col)
 
     functions.logger.log('begin inserting data in colClientes:', total)
     const filteredData = data.filter(x => !evalUndefinedFields(x)) //  !!x['Fecha inicio'])
@@ -182,7 +184,7 @@ async function insertCollection (col, data) {
     })
 }
 async function sendNotifications (docs) {
-    const ref = admin.database.ref('tasks/notifications')
+    const ref = db.ref('tasks/notifications')
     let i = 0
     const total = docs.length
     for (const doc of docs) {

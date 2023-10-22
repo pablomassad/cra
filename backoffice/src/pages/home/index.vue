@@ -1,12 +1,18 @@
 <template>
     <div class="backIntegralmente">
-        <div class="uploader" @click="uploadClients">
+        <div class="uploader" @click="uploadClients" :class="{disabled: clientsDisabled}">
             <q-icon name="person" size="lg"></q-icon>
             <div class="iconText">CLIENTES (csv)</div>
+            <div v-show="clientsDisabled">
+                {{ clientsStatus.progress }} / {{ clientsStatus.total }}
+            </div>
         </div>
-        <div class="uploader" @click="uploadNotifications">
+        <div class="uploader" @click="uploadNotifications" :class="{disabled: notificationsDisabled}">
             <q-icon name="mail"></q-icon>
             <div class="iconText">MENSAJES (csv)</div>
+            <div v-show="notificationsDisabled">
+                {{ notificationsStatus.progress }} / {{ notificationsStatus.total }}
+            </div>
         </div>
         <div>
             <div class="title">Gráfico de Notificaciones</div>
@@ -31,12 +37,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import appStore from 'src/pages/appStore'
 import * as d3 from 'd3'
 
 const refFileClients = ref()
+const clientsDisabled = ref(false)
+const clientsStatus = ref()
+
 const refFileNoti = ref()
+const notificationsDisabled = ref(false)
+const notificationsStatus = ref()
 
 const chartEnabled = ref(false)
 const refChart = ref()
@@ -110,22 +121,39 @@ const drawPie = (data) => {
         .text(d => d.data)
 }
 const uploadClients = () => {
+    clientsDisabled.value = true
     refFileClients.value.click()
 }
 const onUploadClients = async (e) => {
     const file = e.target.files[0]
     await appStore.actions.uploadFile(file, 'clientes.csv') // file.name)
+    appStore.actions.monitorStatus('clients', clientsStatus)
 }
 const uploadNotifications = () => {
+    notificationsDisabled.value = true
     refFileNoti.value.click()
 }
 const onUploadNotifications = async (e) => {
     const file = e.target.files[0]
     await appStore.actions.uploadFile(file, 'notificaciones.csv')
+    appStore.actions.monitorStatus('notifications', notificationsStatus)
 }
+
+watch(() => clientsStatus.value.progress, (newVal) => {
+    if (newVal === clientsStatus.value.total) appStore.actions.finishStatus('clients')
+})
+watch(() => notificationsStatus.value.progress, (newVal) => {
+    if (newVal === notificationsStatus.value.total) appStore.actions.finishStatus('notifications')
+})
+
 </script>
 
 <style lang="scss" scoped>
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 .refreshButton {
     z-index: 10000;
     position: relative;

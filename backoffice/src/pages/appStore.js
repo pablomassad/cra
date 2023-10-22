@@ -1,4 +1,4 @@
-import { reactive, readonly } from 'vue'
+import { reactive, readonly, watch } from 'vue'
 import { ui } from 'fwk-q-ui'
 import fb from 'fwk-q-firebase'
 import { ENVIRONMENTS } from 'src/environments'
@@ -21,6 +21,15 @@ const set = {
     }
 }
 const actions = {
+    monitorStatus (col, proxyRef) {
+        console.log('monitorStatus:', col)
+        proxyRef.value = 'HOLA MUNDO!!'
+        fb.realtimeOn(col, proxyRef)
+    },
+    finishStatus (col) {
+        console.log('finishStatus:', col)
+        fb.realtimeOff(col)
+    },
     async subscribeToFCM () {
         const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
         await fb.saveMessagingDeviceToken('admin', vapidKey, 'admin')
