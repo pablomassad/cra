@@ -2,8 +2,12 @@ import { reactive, readonly, watch } from 'vue'
 import { ui } from 'fwk-q-ui'
 import fb from 'fwk-q-firebase'
 import { ENVIRONMENTS } from 'src/environments'
+import { getDatabase, onValue, ref as refRt, child, get } from 'firebase/database'
+import { initializeApp } from 'firebase/app'
 
 fb.initFirebase(ENVIRONMENTS.firebase)
+
+const app = initializeApp(ENVIRONMENTS.firebase)
 
 const state = reactive({
     settings: undefined,
@@ -23,12 +27,11 @@ const set = {
 const actions = {
     monitorStatus (col, proxyRef) {
         console.log('monitorStatus:', col)
-        proxyRef.value = { progress: -1, total: -1 }
-        fb.realtimeOn(col, proxyRef)
+        fb.realtimeOn('/tasks/' + col, proxyRef)
     },
     finishStatus (col) {
         console.log('finishStatus:', col)
-        fb.realtimeOff(col)
+        fb.realtimeOff('/tasks/' + col)
     },
     async subscribeToFCM () {
         const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
@@ -52,6 +55,19 @@ const actions = {
         }
         const res = await fb.getCollectionFlex('notificaciones', ops)
         return res
+    },
+    getTasks (col) {
+        const route = '/tasks/' + col
+        const dbRt = getDatabase(app)
+        const dbRefValue = refRt(dbRt, route)
+        console.log('getTasks: ', route)
+        onValue(dbRefValue, (snapshot) => {
+            console.log('onValue event....')
+            const data = snapshot.val()
+            console.log('onValue data:', data)
+        }, (error) => {
+            console.error('onValue error: ', error)
+        })
     }
 }
 

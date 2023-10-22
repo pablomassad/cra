@@ -127,7 +127,7 @@ const onUploadClients = async (e) => {
     const file = e.target.files[0]
     clientsDisabled.value = true
     await appStore.actions.uploadFile(file, 'clientes.csv')
-    appStore.actions.monitorStatus('clients', clientsStatus)
+    appStore.actions.monitorStatus('clientes', clientsStatus)
 }
 const uploadNotifications = () => {
     refFileNoti.value.click()
@@ -136,19 +136,19 @@ const onUploadNotifications = async (e) => {
     const file = e.target.files[0]
     notificationsDisabled.value = true
     await appStore.actions.uploadFile(file, 'notificaciones.csv')
-    appStore.actions.monitorStatus('notifications', notificationsStatus)
+    appStore.actions.monitorStatus('mensajes', notificationsStatus)
 }
 
 watch(() => clientsStatus.value.progress, (newVal) => {
     if (newVal === clientsStatus.value.total && (newVal > 0)) {
         console.log('watch clients:', newVal)
-        appStore.actions.finishStatus('clients')
+        appStore.actions.finishStatus('clientes')
     }
 })
 watch(() => notificationsStatus.value.progress, (newVal) => {
     console.log('watch notifications:', newVal)
     if (newVal === notificationsStatus.value.total && (newVal > 0)) {
-        appStore.actions.finishStatus('notifications')
+        appStore.actions.finishStatus('mensajes')
     }
 })
 

@@ -15,11 +15,11 @@ exports.subscribeTopic = onRequest(async (request, response) => {
     response.send('subscribed to topic:' + tokenDoc.fcmToken)
 })
 exports.getStatus = onRequest(async (request, response) => { // ?task=clients || ?task=notifications
-    const ref = db.ref('tasks/' + request.params.task) // request.query.task)
+    const ref = db.ref('/tasks/' + request.params['0']) // request.query.task)
     const sn = await ref.once('value')
     if (!sn.exists()) {
         logger.info('getStatus:', 'No task pending')
-        response.send({ error: 'No se encontró ninguna tarea' })
+        response.send({ result: 'No task pending' })
     } else {
         const st = sn.val()
         logger.info('getStatus:', st)
@@ -169,37 +169,39 @@ async function deleteQueryBatch (db, query, resolve) {
     })
 }
 async function insertCollection (col, data) {
+    let i = 1
     const total = data.length - 1
     const ref = db.ref('tasks/' + col)
 
-    functions.logger.log('begin inserting data in colClientes:', total)
+    functions.logger.log('total data in ', col, total)
     const filteredData = data.filter(x => !evalUndefinedFields(x)) //  !!x['Fecha inicio'])
-    functions.logger.log('data to insert filtered: ', filteredData.length)
+    functions.logger.log('data to be inserted: ', filteredData.length)
 
-    let i = 1
-    filteredData.map(async (d) => {
+    for (const d of filteredData) {
         await admin.firestore().collection(col).add(d)
         await ref.set({ progress: i++, total })
-        await sleep(500)
-    })
+        await sleep(200)
+    }
 }
 async function sendNotifications (docs) {
-    const ref = db.ref('tasks/mensajes')
     let i = 1
     const total = docs.length - 1
+    const ref = db.ref('tasks/mensajes')
+
     for (const d of docs) {
         const dni = d['N De documento']
         functions.logger.log('Documento:', dni)
         if (dni) {
-            functions.logger.log('doc:', JSON.stringify(d))
-            const tipo = d['Tipo de Mensaje']
+            const keys = Object.keys(d)
+            console.log('keys:', keys)
+            const tipo = d[keys[2]]
             functions.logger.log('Tipo:', tipo)
             await sendPush(
                 dni,
                 `CRA: ${tipo}`,
                 'Descripción, Estimado cliente tiene una notificación pendiente  para leer de CR Asociados Seguros y Servicios. Ingresá para verla.')
             await ref.set({ progress: i++, total })
-            await sleep(5000)
+            await sleep(2000)
         }
     }
 }
