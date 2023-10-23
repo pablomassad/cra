@@ -1,17 +1,24 @@
 <template>
     <div class="backIntegralmente">
-        <div class="uploader" @click="uploadClients" :class="{disabled: clientsDisabled}">
-            <q-icon name="person" size="lg"></q-icon>
-            <div class="iconText">CLIENTES (csv)</div>
+        <div class="uploader" @click="uploadClients">
+            <div :class="{disabled: clientsDisabled}">
+                <q-icon name="person" size="lg"></q-icon>
+                <div class="iconText">CLIENTES (csv)</div>
+            </div>
             <div v-show="clientsDisabled" style="font-size: 13px;">
                 {{ clientsStatus.progress }} / {{ clientsStatus.total }}
+                <q-linear-progress :value="clientsStatus.progress / clientsStatus.total" color="secondary" class="q-mt-xs" />
             </div>
         </div>
-        <div class="uploader" @click="uploadNotifications" :class="{disabled: notificationsDisabled}">
-            <q-icon name="mail"></q-icon>
-            <div class="iconText">MENSAJES (csv)</div>
-            <div v-show="notificationsDisabled" style="font-size: 13px;">
-                {{ notificationsStatus.progress }} / {{ notificationsStatus.total }}
+        <div class="uploader" @click="uploadNotifications">
+            <div :class="{disabled: notiDisabled}">
+                <q-icon name="mail"></q-icon>
+                <div class="iconText">MENSAJES (csv)</div>
+            </div>
+            <div v-show="notiDisabled" style="font-size: 13px;">
+                {{ pushStatus.progress }} / {{ pushStatus.total }}
+                <q-linear-progress :value="notiStatus.progress / notiStatus.total" color="secondary" class="q-mt-xs" />
+                <q-linear-progress :value="msgStatus.progress / msgStatus.total" color="primary" class="q-mt-xs" />
             </div>
         </div>
         <div>
@@ -31,7 +38,7 @@
         </div>
 
         <input type="file" ref="refFileClients" @change="onUploadClients" style="display:none" />
-        <input type="file" ref="refFileNoti" @change="onUploadNotifications($event)" style="display:none" />
+        <input type="file" ref="refFileNoti" @change="onUploadNotifications" style="display:none" />
 
     </div>
 </template>
@@ -46,8 +53,11 @@ const clientsDisabled = ref(false)
 const clientsStatus = ref({ progress: 0, total: 0 })
 
 const refFileNoti = ref()
-const notificationsDisabled = ref(false)
-const notificationsStatus = ref({ progress: 0, total: 0 })
+const notiDisabled = ref(false)
+const pushStatus = ref({ progress: 0, total: 0 })
+const notiStatus = ref({ progress: 0, total: 0 })
+const msgDisabled = ref(false)
+const msgStatus = ref({ progress: 0, total: 0 })
 
 const chartEnabled = ref(false)
 const refChart = ref()
@@ -127,16 +137,17 @@ const onUploadClients = async (e) => {
     const file = e.target.files[0]
     clientsDisabled.value = true
     await appStore.actions.uploadFile(file, 'clientes.csv')
-    appStore.actions.monitorStatus('clientes', clientsStatus)
+    appStore.actions.monitorStatus(appStore.state.settings.colClientes, clientsStatus)
 }
 const uploadNotifications = () => {
     refFileNoti.value.click()
 }
 const onUploadNotifications = async (e) => {
     const file = e.target.files[0]
-    notificationsDisabled.value = true
+    notiDisabled.value = true
     await appStore.actions.uploadFile(file, 'notificaciones.csv')
-    appStore.actions.monitorStatus('mensajes', notificationsStatus)
+    appStore.actions.monitorStatus('notificaciones', notiStatus)
+    appStore.actions.monitorStatus('mensajes', msgStatus)
 }
 
 watch(() => clientsStatus.value.progress, (newProgress) => {
@@ -144,14 +155,23 @@ watch(() => clientsStatus.value.progress, (newProgress) => {
     const flag = newProgress === clientsStatus.value.total && (newProgress > 0)
     if (flag) {
         clientsDisabled.value = !flag
-        appStore.actions.finishStatus('clientes')
+        appStore.actions.finishStatus(appStore.state.settings.colClientes)
     }
 })
-watch(() => notificationsStatus.value.progress, (newProgress) => {
+watch(() => notiStatus.value.progress, (newProgress) => {
     console.log('watch notifications:', newProgress)
-    const flag = newProgress === notificationsStatus.value.total && (newProgress > 0)
+    pushStatus.value = notiStatus.value
+    const flag = newProgress === notiStatus.value.total && (newProgress > 0)
     if (flag) {
-        notificationsDisabled.value = !flag
+        appStore.actions.finishStatus('notificaciones')
+    }
+})
+watch(() => msgStatus.value.progress, (newProgress) => {
+    console.log('watch notifications:', newProgress)
+    pushStatus.value = msgStatus.value
+    const flag = newProgress === msgStatus.value.total && (newProgress > 0)
+    if (flag) {
+        notiDisabled.value = !flag
         appStore.actions.finishStatus('mensajes')
     }
 })
@@ -247,7 +267,7 @@ watch(() => notificationsStatus.value.progress, (newProgress) => {
 .uploader {
     border: 3px solid rgb(28, 106, 230);
     border-radius: 20px;
-    height: 120px;
+    height: 124px;
     width: 300px;
     background: #c7ecff;
     color: #0082cf;

@@ -1,6 +1,6 @@
 {
     "name": "com.pp.crabo",
-    "version": "1.00.31",
+    "version": "1.00.32",
     "description": "CRA Backoffice",
     "productName": "CRA Backoffice",
     "author": "Pablo Massad <pamassad@teco.com.ar>",
@@ -43,7 +43,7 @@
         "fwk-q-cardlist": "0.0.23",
         "fwk-q-confirmdialog": "0.0.19",
         "fwk-q-expansion": "0.0.40",
-        "fwk-q-firebase": "0.0.87",
+        "fwk-q-firebase": "0.0.89",
         "fwk-q-inputs": "0.0.87",
         "fwk-q-layout": "0.1.53",
         "fwk-q-main": "0.0.5",

@@ -55,7 +55,7 @@ const logout = () => {
 
 <style lang="scss" scoped>
 .logoFrame {
-    position: absolute;
+    position: fixed;
     top: -12px;
     left: 0;
     right: 0;

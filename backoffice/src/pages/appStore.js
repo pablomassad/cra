@@ -21,9 +21,9 @@ const set = {
     }
 }
 const actions = {
-    monitorStatus (col, proxyRef) {
+    monitorStatus (col, proxy) {
         console.log('monitorStatus:', col)
-        fb.realtimeOn('/tasks/' + col, proxyRef)
+        fb.realtimeOn('/tasks/' + col, proxy)
     },
     finishStatus (col) {
         console.log('finishStatus:', col)

@@ -154,9 +154,9 @@ async function deleteCollection (db, col, batchSize) {
     const sn = await collectionRef.get()
     const total = sn.size
     partial = total
+    functions.logger.log('total for delete: ', total)
 
     const query = collectionRef.orderBy('__name__').limit(batchSize)
-
     return new Promise((resolve, reject) => {
         deleteQueryBatch(db, query, resolve, col, total).catch(reject)
     })
@@ -176,6 +176,9 @@ async function deleteQueryBatch (db, query, resolve, col, total) {
     for (const doc of snapshot.docs) {
         batch.delete(doc.ref)
         partial = partial - (i++)
+        // if ((i % 10) === 0) {
+        functions.logger.log('delete counter ', partial)
+        // }
         await ref.set({ progress: partial, total })
     }
     await batch.commit()
@@ -197,7 +200,10 @@ async function insertCollection (col, data) {
     for (const d of filteredData) {
         await admin.firestore().collection(col).add(d)
         await ref.set({ progress: i++, total })
-        await sleep(200)
+        if (i % 10 === 0) {
+            functions.logger.log('insert counter ', i)
+        }
+        await sleep(10)
     }
 }
 async function sendNotifications (docs) {
