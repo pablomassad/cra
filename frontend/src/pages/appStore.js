@@ -135,7 +135,9 @@ function processMessages (data) {
         noti.forDelete = false
         notiArray.push(noti)
     })
-    return notiArray
+    const sorted = notiArray.sort((a, b) => b.fhEmision - a.fhEmision)
+    const maxArray = sorted.slice(0, 20)
+    return maxArray
 }
 // function InitFCM () {
 //    fb.initFCM(srvAcc)

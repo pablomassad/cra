@@ -35,6 +35,7 @@ const refresh = async (done) => {
 <style scoped>
 .frame {
     height: calc(100vh - 50px);
+    overflow: auto;
 }
 
 .noData {

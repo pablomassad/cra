@@ -17,8 +17,8 @@
             </div>
             <div v-show="notiDisabled" style="font-size: 13px;">
                 {{ pushStatus.progress }} / {{ pushStatus.total }}
-                <q-linear-progress :value="notiStatus.progress / notiStatus.total" color="secondary" class="q-mt-xs" />
-                <q-linear-progress :value="msgStatus.progress / msgStatus.total" color="primary" class="q-mt-xs" />
+                <q-linear-progress :value="notiVal" color="secondary" class="q-mt-xs" />
+                <q-linear-progress :value="msgVal" color="primary" class="q-mt-xs" />
             </div>
         </div>
         <div>
@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import appStore from 'src/pages/appStore'
 import * as d3 from 'd3'
 
@@ -58,6 +58,9 @@ const pushStatus = ref({ progress: 0, total: 0 })
 const notiStatus = ref({ progress: 0, total: 0 })
 const msgDisabled = ref(false)
 const msgStatus = ref({ progress: 0, total: 0 })
+
+const notiVal = computed(() => notiStatus.value.progress / notiStatus.value.total)
+const msgVal = computed(() => msgStatus.value.progress / msgStatus.value.total)
 
 const chartEnabled = ref(false)
 const refChart = ref()
@@ -167,12 +170,14 @@ watch(() => notiStatus.value.progress, (newProgress) => {
     }
 })
 watch(() => msgStatus.value.progress, (newProgress) => {
-    console.log('watch notifications:', newProgress)
+    console.log('watch mensajes:', newProgress)
     pushStatus.value = msgStatus.value
+    console.log('pushStatus:', pushStatus)
     const flag = newProgress === msgStatus.value.total && (newProgress > 0)
     if (flag) {
         notiDisabled.value = !flag
         appStore.actions.finishStatus('mensajes')
+        refreshStats()
     }
 })
 

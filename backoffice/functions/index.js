@@ -10,12 +10,12 @@ const dbRt = admin.database()
 const db = admin.firestore()
 let partial
 
-exports.subscribeTopic = onRequest(async (request, response) => {
-    const tokenDoc = await getTokenById('admin')
-    logger.info('subscribeToTopics: ', 'admin => ' + tokenDoc.fcmToken)
-    await admin.messaging().subscribeTopic(tokenDoc.fcmToken, 'admin')
-    response.send('subscribed to topic:' + tokenDoc.fcmToken)
-})
+// exports.subscribeTopic = onRequest(async (request, response) => {
+//    const tokenDoc = await getTokenById('admin')
+//    logger.info('subscribeToTopics: ', 'admin => ' + tokenDoc.fcmToken)
+//    await admin.messaging().subscribeTopic(tokenDoc.fcmToken, 'admin')
+//    response.send('subscribed to topic:' + tokenDoc.fcmToken)
+// })
 exports.getStatus = onRequest(async (request, response) => { // ?task=clients || ?task=notifications
     const ref = dbRt.ref('/tasks/' + request.params['0']) // request.query.task)
     const sn = await ref.once('value')
@@ -155,6 +155,7 @@ async function deleteCollection (db, col, batchSize) {
     const total = sn.size
     partial = total
     functions.logger.log('total for delete: ', total)
+    if (total === 0) return
 
     const query = collectionRef.orderBy('__name__').limit(batchSize)
     return new Promise((resolve, reject) => {
@@ -176,10 +177,10 @@ async function deleteQueryBatch (db, query, resolve, col, total) {
     for (const doc of snapshot.docs) {
         batch.delete(doc.ref)
         partial = partial - (i++)
-        // if ((i % 10) === 0) {
-        functions.logger.log('delete counter ', partial)
-        // }
-        await ref.set({ progress: partial, total })
+        if ((i % 10) === 0) {
+            functions.logger.log('delete counter ', partial)
+            await ref.set({ progress: partial, total })
+        }
     }
     await batch.commit()
     // Recurse on the next process tick, to avoid
@@ -200,11 +201,12 @@ async function insertCollection (col, data) {
     for (const d of filteredData) {
         await admin.firestore().collection(col).add(d)
         await ref.set({ progress: i++, total })
-        if (i % 10 === 0) {
-            functions.logger.log('insert counter ', i)
-        }
-        await sleep(10)
+        // if (i % 10 === 0) {
+        functions.logger.log('insert counter ', i)
+        // }
+        await sleep(500)
     }
+    await ref.set({ progress: 0, total: 0 })
 }
 async function sendNotifications (docs) {
     let i = 1
@@ -216,9 +218,7 @@ async function sendNotifications (docs) {
         functions.logger.log('Documento:', dni)
         if (dni) {
             const keys = Object.keys(d)
-            console.log('keys:', keys)
             const tipo = d[keys[2]]
-            functions.logger.log('Tipo:', tipo)
             await sendPush(
                 dni,
                 `CRA: ${tipo}`,
@@ -227,6 +227,7 @@ async function sendNotifications (docs) {
             await sleep(500)
         }
     }
+    await ref.set({ progress: 0, total: 0 })
 }
 async function sendPush (id, title, body) {
     const tokenDoc = await getTokenById(id)
@@ -241,19 +242,8 @@ async function sendPush (id, title, body) {
             body
         }
     }
-    // const payload = {
-    //    topic: id,
-    //    notification: {
-    //        title,
-    //        body
-    //    }
-    // }
-    try {
-        const response = await admin.messaging().send(payload)
-        functions.logger.log('Successfully sent all messages:', response)
-    } catch (error) {
-        functions.logger.log('Error sending push:', error)
-    }
+    const response = await admin.messaging().send(payload)
+    functions.logger.log('Successfully sent all messages:', response)
 }
 async function getTokenById (id) {
     const tokenRef = admin.firestore().collection('fcmTokens').doc(id)
