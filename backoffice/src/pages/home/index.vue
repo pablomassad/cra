@@ -1,7 +1,7 @@
 <template>
     <div class="backIntegralmente">
         <div class="uploader" @click="uploadClients">
-            <div :class="{disabled: clientsDisabled}">
+            <div :class="{btnDisabled: clientsDisabled}">
                 <q-icon name="person" size="lg"></q-icon>
                 <div class="iconText">CLIENTES (csv)</div>
             </div>
@@ -10,17 +10,18 @@
                 <q-linear-progress :value="clientsStatus.progress / clientsStatus.total" color="secondary" class="q-mt-xs" />
             </div>
         </div>
-        <div class="uploader" @click="uploadNotifications">
-            <div :class="{disabled: notiDisabled}">
+        <div>
+            <div class="uploader" @click="uploadNotifications" :class="{btnDisabled: notificationsDisabled}">
                 <q-icon name="mail"></q-icon>
                 <div class="iconText">MENSAJES (csv)</div>
-            </div>
-            <div v-show="notiDisabled" style="font-size: 13px;">
-                {{ pushStatus.progress }} / {{ pushStatus.total }}
-                <q-linear-progress :value="notiVal" color="secondary" class="q-mt-xs" />
-                <q-linear-progress :value="msgVal" color="primary" class="q-mt-xs" />
+                <div v-show="notificationsDisabled" class="monitor">
+                    {{ pushStatus.progress }} / {{ pushStatus.total }}
+                    <q-linear-progress :value="notiVal" color="secondary" class="q-mt-xs" />
+                    <q-linear-progress :value="msgVal" color="primary" class="q-mt-xs" />
+                </div>
             </div>
         </div>
+
         <div>
             <div class="title">Gráfico de Notificaciones</div>
             <div ref="refChart" style="position: relative;" v-if="chartEnabled"></div>
@@ -37,8 +38,8 @@
             </div>
         </div>
 
-        <input type="file" ref="refFileClients" @change="onUploadClients" style="display:none" />
-        <input type="file" ref="refFileNoti" @change="onUploadNotifications" style="display:none" />
+        <input type="file" ref="refFileClients" @change="onUploadClients" style="display:none" accept=".csv" />
+        <input type="file" ref="refFileNoti" @change="onUploadNotifications" style="display:none" accept=".csv" />
 
     </div>
 </template>
@@ -53,11 +54,10 @@ const clientsDisabled = ref(false)
 const clientsStatus = ref({ progress: 0, total: 0 })
 
 const refFileNoti = ref()
-const notiDisabled = ref(false)
-const pushStatus = ref({ progress: 0, total: 0 })
-const notiStatus = ref({ progress: 0, total: 0 })
-const msgDisabled = ref(false)
-const msgStatus = ref({ progress: 0, total: 0 })
+const notificationsDisabled = ref(false)
+const pushStatus = ref({ progress: 0, total: 1 })
+const notiStatus = ref({ progress: 0, total: 1 })
+const msgStatus = ref({ progress: 0, total: 1 })
 
 const notiVal = computed(() => notiStatus.value.progress / notiStatus.value.total)
 const msgVal = computed(() => msgStatus.value.progress / msgStatus.value.total)
@@ -138,6 +138,7 @@ const uploadClients = () => {
 }
 const onUploadClients = async (e) => {
     const file = e.target.files[0]
+    refFileClients.value.value = ''
     clientsDisabled.value = true
     await appStore.actions.uploadFile(file, 'clientes.csv')
     appStore.actions.monitorStatus(appStore.state.settings.colClientes, clientsStatus)
@@ -147,7 +148,8 @@ const uploadNotifications = () => {
 }
 const onUploadNotifications = async (e) => {
     const file = e.target.files[0]
-    notiDisabled.value = true
+    refFileNoti.value.value = ''
+    notificationsDisabled.value = true
     await appStore.actions.uploadFile(file, 'notificaciones.csv')
     appStore.actions.monitorStatus('notificaciones', notiStatus)
     appStore.actions.monitorStatus('mensajes', msgStatus)
@@ -175,7 +177,7 @@ watch(() => msgStatus.value.progress, (newProgress) => {
     console.log('pushStatus:', pushStatus)
     const flag = newProgress === msgStatus.value.total && (newProgress > 0)
     if (flag) {
-        notiDisabled.value = !flag
+        notificationsDisabled.value = !flag
         appStore.actions.finishStatus('mensajes')
         refreshStats()
     }
@@ -184,7 +186,7 @@ watch(() => msgStatus.value.progress, (newProgress) => {
 </script>
 
 <style lang="scss" scoped>
-.disabled {
+.btnDisabled {
     opacity: 0.5;
     pointer-events: none;
 }

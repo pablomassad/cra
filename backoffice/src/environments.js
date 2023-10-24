@@ -1,6 +1,6 @@
 export const ENVIRONMENTS = {
     versionCode: 1,
-    versionName: '1.00.33',
+    versionName: '1.00.34',
     productName: 'crabo',
     packageName: 'com.pp.crabo',
     appName: 'crabo',
