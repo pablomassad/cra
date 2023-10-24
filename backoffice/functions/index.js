@@ -206,7 +206,7 @@ async function insertCollection (col, data) {
         // }
         await sleep(500)
     }
-    await ref.set({ progress: 0, total: 0 })
+    // await ref.set({ progress: 0, total: 0 })
 }
 async function sendNotifications (docs) {
     let i = 1
@@ -227,7 +227,7 @@ async function sendNotifications (docs) {
             await sleep(500)
         }
     }
-    await ref.set({ progress: 0, total: 0 })
+    // await ref.set({ progress: 0, total: 0 })
 }
 async function sendPush (id, title, body) {
     const tokenDoc = await getTokenById(id)
