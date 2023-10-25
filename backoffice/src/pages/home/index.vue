@@ -1,14 +1,14 @@
 <template>
     <div class="backIntegralmente">
         <div style="position: relative">
-            <div class="uploader" @click="uploadClients">
-                <div :class="{btnDisabled: clientsDisabled}">
-                    <q-icon name="person" size="lg"></q-icon>
-                    <div class="iconText">CLIENTES (csv)</div>
-                </div>
-                <div v-show="clientsDisabled" class="monitor">
+            <div class="uploader" @click="uploadClients" :class="{btnDisabled: clientsDisabled}">
+                <q-icon name="person" size="lg"></q-icon>
+                <div class="iconText">CLIENTES (csv)</div>
+            </div>
+            <div class="btnFrame">
+                <div v-if="clientsDisabled" class="monitor">
                     {{ clientsStatus.progress }} / {{ clientsStatus.total }}
-                    <q-linear-progress :value="clientsStatus.progress / clientsStatus.total" color="secondary" class="q-mt-xs" />
+                    <q-linear-progress :value="cliVal" color="green" class="q-mt-xs" />
                 </div>
             </div>
         </div>
@@ -43,7 +43,6 @@
 
         <input type="file" ref="refFileClients" @change="onUploadClients" style="display:none" accept=".csv" />
         <input type="file" ref="refFileNoti" @change="onUploadNotifications" style="display:none" accept=".csv" />
-
     </div>
 </template>
 
@@ -62,6 +61,10 @@ const pushStatus = ref({ progress: 0, total: 0 })
 const notiStatus = ref({ progress: 0, total: 0 })
 const msgStatus = ref({ progress: 0, total: 0 })
 
+const cliVal = computed(() => {
+    const result = (clientsStatus.value.progress === 0) ? 0 : (clientsStatus.value.progress / clientsStatus.value.total)
+    return result
+})
 const notiVal = computed(() => {
     const result = (notiStatus.value.progress === 0) ? 0 : (notiStatus.value.progress / notiStatus.value.total)
     return result
@@ -193,7 +196,6 @@ watch(() => msgStatus.value.progress, (newProgress) => {
         refreshStats()
     }
 })
-
 </script>
 
 <style lang="scss" scoped>

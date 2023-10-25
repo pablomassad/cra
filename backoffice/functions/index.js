@@ -8,7 +8,6 @@ const process = require('process')
 admin.initializeApp()
 const dbRt = admin.database()
 const db = admin.firestore()
-let partial
 
 // exports.subscribeTopic = onRequest(async (request, response) => {
 //    const tokenDoc = await getTokenById('admin')
@@ -70,15 +69,21 @@ exports.processStorageUpload = functions.storage.bucket().object().onFinalize(as
         data.shift() // borra Orden de campos
         data.shift() // borra cabecera del data
 
-        const clientesDocs = data.map((str, i) => {
+        functions.logger.log('data len:', data.length)
+
+        const clientesDocs = []
+        for (const str of data) {
             const valuesArray = str.split(';')
             const doc = {}
-            fieldsArr.forEach((f, i) => {
-                doc[f] = valuesArray[i]
-                doc.id = i
-            })
-            return doc
-        })
+            if (valuesArray[0] !== '') {
+                fieldsArr.forEach((f, i) => {
+                    doc[f] = valuesArray[i]
+                    doc.id = i
+                })
+                clientesDocs.push(doc)
+            }
+        }
+        functions.logger.log('clientesDocs len:', clientesDocs.length)
 
         const cfgRef = db.collection('opciones').doc('config')
         const d = await cfgRef.get()
@@ -91,11 +96,11 @@ exports.processStorageUpload = functions.storage.bucket().object().onFinalize(as
             colClientes: (colClientes === 'clientes') ? 'clientesAlt' : 'clientes'
         }
         functions.logger.log('delete collection:', config.colClientes)
-        await deleteCollection(admin.firestore(), config.colClientes, 5)
+        await deleteCollection(config.colClientes, 5)
         functions.logger.log('delete finished')
         await insertCollection(config.colClientes, clientesDocs)
         functions.logger.log('insertion finished')
-        await admin.firestore().doc('opciones/config').set(config)
+        await db.doc('opciones/config').set(config)
         functions.logger.log('update colClientes ok:', config)
         sendPush('admin',
             'CRA Aviso',
@@ -148,47 +153,33 @@ function getIndex (id, orderArr) {
     })
     return idx
 }
-async function deleteCollection (db, col, batchSize) {
-    const collectionRef = db.collection(col)
-    const sn = await collectionRef.get()
-    const total = sn.size
-    partial = total
+async function deleteCollection (col, batchSize) {
+    const colRef = db.collection(col)
+    const qsn = await colRef.get()
+    const data = qsn.docs
+    const total = data.length
+    let partial = total
     functions.logger.log('total for delete: ', total)
     if (total === 0) return
 
-    const query = collectionRef.orderBy('__name__').limit(batchSize)
-    return new Promise((resolve, reject) => {
-        deleteQueryBatch(db, query, resolve, total).catch(reject)
-    })
-}
-async function deleteQueryBatch (db, query, resolve, total) {
-    const snapshot = await query.get()
-    const batchSize = snapshot.size
-    functions.logger.log('batchSize for delete: ', batchSize)
     const refRt = dbRt.ref('/tasks/clientes')
+    await refRt.set({ progress: partial, total })
 
-    if (batchSize === 0) {
-        await refRt.set({ progress: 0, total })
-        resolve()
-        return
-    }
-    let i = 0
-    const batch = db.batch()
-    functions.logger.log(' snapshot.docs len ', snapshot.docs.length)
-    for (const doc of snapshot.docs) {
-        batch.delete(doc.ref)
-        partial = partial - (i++)
-        if ((i % 1) === 0) {
+    for (const d of data) {
+        await db.collection(col).doc(d.id).delete()
+        partial--
+        if (partial % 50 === 0) {
             functions.logger.log('delete counter ', partial)
             await refRt.set({ progress: partial, total })
         }
     }
-    await batch.commit()
-    // Recurse on the next process tick, to avoid
-    // exploding the stack.
-    process.nextTick(() => {
-        deleteQueryBatch(db, query, resolve)
-    })
+    functions.logger.log('delete counter final', partial)
+    await refRt.set({ progress: partial, total })
+
+    // const query = collectionRef.orderBy('__name__').limit(batchSize)
+    // return new Promise((resolve, reject) => {
+    //    deleteQueryBatch(db, query, resolve, total).catch(reject)
+    // })
 }
 async function insertCollection (col, data) {
     let colRt = col
@@ -202,7 +193,7 @@ async function insertCollection (col, data) {
     functions.logger.log('data to be inserted: ', filteredData.length)
 
     for (const d of filteredData) {
-        await admin.firestore().collection(col).add(d)
+        await db.collection(col).add(d)
         await refRt.set({ progress: i++, total })
         // if (i % 10 === 0) {
         functions.logger.log('insert counter ', i)
@@ -249,7 +240,7 @@ async function sendPush (id, title, body) {
     functions.logger.log('Successfully sent all messages:', response)
 }
 async function getTokenById (id) {
-    const tokenRef = admin.firestore().collection('fcmTokens').doc(id)
+    const tokenRef = db.collection('fcmTokens').doc(id)
     const ds = await tokenRef.get()
     const tokenDoc = ds.data()
     return tokenDoc
@@ -269,6 +260,35 @@ function evalUndefinedFields (doc) {
         }
     }
     return flag
+}
+async function deleteQueryBatch (db, query, resolve, total) {
+    const snapshot = await query.get()
+    const batchSize = snapshot.size
+    functions.logger.log('batchSize for delete: ', batchSize)
+    const refRt = dbRt.ref('/tasks/clientes')
+
+    if (batchSize === 0) {
+        await refRt.set({ progress: 0, total })
+        resolve()
+        return
+    }
+    let i = 0
+    const batch = db.batch()
+    functions.logger.log(' snapshot.docs len ', snapshot.docs.length)
+    for (const doc of snapshot.docs) {
+        batch.delete(doc.ref)
+        partial = partial - (i++)
+        if ((i % 1) === 0) {
+            functions.logger.log('delete counter ', partial)
+            await refRt.set({ progress: partial, total })
+        }
+    }
+    await batch.commit()
+    // Recurse on the next process tick, to avoid
+    // exploding the stack.
+    process.nextTick(() => {
+        deleteQueryBatch(db, query, resolve)
+    })
 }
 
 // Crea una función que se ejecutará cada 5 minutos
