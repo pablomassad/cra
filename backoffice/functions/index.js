@@ -17,8 +17,8 @@ let partial
 //    response.send('subscribed to topic:' + tokenDoc.fcmToken)
 // })
 exports.getStatus = onRequest(async (request, response) => { // ?task=clients || ?task=notifications
-    const ref = dbRt.ref('/tasks/' + request.params['0']) // request.query.task)
-    const sn = await ref.once('value')
+    const refRt = dbRt.ref('/tasks/' + request.params['0']) // request.query.task)
+    const sn = await refRt.once('value')
     if (!sn.exists()) {
         logger.info('getStatus:', 'No task pending')
         response.send({ result: 'No task pending' })
@@ -50,13 +50,6 @@ exports.processStorageUpload = functions.storage.bucket().object().onFinalize(as
         // Borra esta coleccion
         // Inserta clientesDocs completo en esta ultima coleccion
         // Actualiza config.colClientes en la DB por el nuevo nombre de la coleccion alternativa
-        const cfgRef = db.collection('opciones').doc('config')
-        const d = await cfgRef.get()
-        const cfg = d.data()
-        const colClientes = cfg.colClientes
-        functions.logger.log('config.colClientes activa:', colClientes)
-
-        functions.logger.log('clientes text len:', text.length)
         const data = text.split('\r\n')
 
         const orderStr = data[0]
@@ -87,12 +80,18 @@ exports.processStorageUpload = functions.storage.bucket().object().onFinalize(as
             return doc
         })
 
+        const cfgRef = db.collection('opciones').doc('config')
+        const d = await cfgRef.get()
+        const cfg = d.data()
+        const colClientes = cfg.colClientes
+        functions.logger.log('config.colClientes activa:', colClientes)
+
         const config = {
             orden: orderFieldsArr,
             colClientes: (colClientes === 'clientes') ? 'clientesAlt' : 'clientes'
         }
         functions.logger.log('delete collection:', config.colClientes)
-        await deleteCollection(admin.firestore(), config.colClientes, 300)
+        await deleteCollection(admin.firestore(), config.colClientes, 5)
         functions.logger.log('delete finished')
         await insertCollection(config.colClientes, clientesDocs)
         functions.logger.log('insertion finished')
@@ -159,59 +158,63 @@ async function deleteCollection (db, col, batchSize) {
 
     const query = collectionRef.orderBy('__name__').limit(batchSize)
     return new Promise((resolve, reject) => {
-        deleteQueryBatch(db, query, resolve, col, total).catch(reject)
+        deleteQueryBatch(db, query, resolve, total).catch(reject)
     })
 }
-async function deleteQueryBatch (db, query, resolve, col, total) {
+async function deleteQueryBatch (db, query, resolve, total) {
     const snapshot = await query.get()
     const batchSize = snapshot.size
-    const ref = dbRt.ref('/tasks/' + col)
+    functions.logger.log('batchSize for delete: ', batchSize)
+    const refRt = dbRt.ref('/tasks/clientes')
 
     if (batchSize === 0) {
-        await ref.set({ progress: 0, total })
+        await refRt.set({ progress: 0, total })
         resolve()
         return
     }
     let i = 0
     const batch = db.batch()
+    functions.logger.log(' snapshot.docs len ', snapshot.docs.length)
     for (const doc of snapshot.docs) {
         batch.delete(doc.ref)
         partial = partial - (i++)
-        if ((i % 10) === 0) {
+        if ((i % 1) === 0) {
             functions.logger.log('delete counter ', partial)
-            await ref.set({ progress: partial, total })
+            await refRt.set({ progress: partial, total })
         }
     }
     await batch.commit()
     // Recurse on the next process tick, to avoid
     // exploding the stack.
     process.nextTick(() => {
-        deleteQueryBatch(db, query, resolve, col)
+        deleteQueryBatch(db, query, resolve)
     })
 }
 async function insertCollection (col, data) {
+    let colRt = col
+    if (colRt.indexOf('cliente') > 0) { colRt = 'clientes' }
+    const refRt = dbRt.ref('tasks/' + col)
+
     let i = 1
     const total = data.length - 1
-    const ref = dbRt.ref('tasks/' + col)
-
     functions.logger.log('total data in ', col, total)
     const filteredData = data.filter(x => !evalUndefinedFields(x)) //  !!x['Fecha inicio'])
     functions.logger.log('data to be inserted: ', filteredData.length)
 
     for (const d of filteredData) {
         await admin.firestore().collection(col).add(d)
-        await ref.set({ progress: i++, total })
+        await refRt.set({ progress: i++, total })
         // if (i % 10 === 0) {
         functions.logger.log('insert counter ', i)
         // }
-        await sleep(500)
+        await sleep(100)
     }
-    // await ref.set({ progress: 0, total: 0 })
+    // await refRt.set({ progress: 0, total: 0 })
 }
 async function sendNotifications (docs) {
     let i = 1
     const total = docs.length - 1
-    const ref = dbRt.ref('tasks/mensajes')
+    const refRt = dbRt.ref('tasks/mensajes')
 
     for (const d of docs) {
         const dni = d['N De documento']
@@ -223,11 +226,11 @@ async function sendNotifications (docs) {
                 dni,
                 `CRA: ${tipo}`,
                 'Descripción, Estimado cliente tiene una notificación pendiente  para leer de CR Asociados Seguros y Servicios. Ingresá para verla.')
-            await ref.set({ progress: i++, total })
-            await sleep(500)
+            await refRt.set({ progress: i++, total })
+            await sleep(300)
         }
     }
-    // await ref.set({ progress: 0, total: 0 })
+    // await refRt.set({ progress: 0, total: 0 })
 }
 async function sendPush (id, title, body) {
     const tokenDoc = await getTokenById(id)

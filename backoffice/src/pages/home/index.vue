@@ -150,7 +150,7 @@ const onUploadClients = async (e) => {
     refFileClients.value.value = ''
     clientsDisabled.value = true
     await appStore.actions.uploadFile(file, 'clientes.csv')
-    appStore.actions.monitorStatus(appStore.state.settings.colClientes, clientsStatus)
+    appStore.actions.monitorStatus('clientes', clientsStatus)
 }
 const uploadNotifications = () => {
     refFileNoti.value.click()
