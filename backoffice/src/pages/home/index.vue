@@ -6,7 +6,7 @@
                 <div class="iconText">CLIENTES (csv)</div>
             </div>
             <div class="btnFrame">
-                <div v-if="clientsDisabled" class="monitor">
+                <div v-if="clientsDisabled" class="monitor" style="marginTop:'10px'">
                     {{ clientsStatus.progress }} / {{ clientsStatus.total }}
                     <q-linear-progress :value="cliVal" color="green" class="q-mt-xs" />
                 </div>
@@ -167,34 +167,30 @@ const onUploadNotifications = async (e) => {
     appStore.actions.monitorStatus('mensajes', msgStatus)
 }
 
-watch(() => clientsStatus.value.progress, (newProgress) => {
-    console.log('watch clients:', newProgress)
-    const flag = newProgress === clientsStatus.value.total && (newProgress > 0)
-    if (flag) {
-        clientsDisabled.value = !flag
-        appStore.actions.finishStatus(appStore.state.settings.colClientes)
-        clientsStatus.value.progress = 0
+watch(() => appStore.state.processFinished, (newVal) => {
+    console.log('watch finish process:', newVal)
+    if (newVal) {
+        if (clientsDisabled.value) {
+            clientsDisabled.value = false
+            appStore.actions.finishStatus(appStore.state.settings.colClientes)
+            clientsStatus.value.progress = 0
+        }
+        if (notificationsDisabled.value) {
+            notificationsDisabled.value = false
+            appStore.actions.finishStatus('mensajes')
+            notiStatus.value.progress = 0
+            msgStatus.value.progress = 0
+            refreshStats()
+        }
     }
 })
 watch(() => notiStatus.value.progress, (newProgress) => {
     console.log('watch notifications:', newProgress)
     pushStatus.value = notiStatus.value
-    const flag = newProgress === notiStatus.value.total && (newProgress > 0)
-    if (flag) {
-        appStore.actions.finishStatus('notificaciones')
-    }
 })
 watch(() => msgStatus.value.progress, (newProgress) => {
     console.log('watch mensajes:', newProgress)
     pushStatus.value = msgStatus.value
-    const flag = newProgress === msgStatus.value.total && (newProgress > 0)
-    if (flag) {
-        notificationsDisabled.value = !flag
-        appStore.actions.finishStatus('mensajes')
-        notiStatus.value.progress = 0
-        msgStatus.value.progress = 0
-        refreshStats()
-    }
 })
 </script>
 

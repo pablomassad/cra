@@ -8,7 +8,8 @@ fb.initFirebase(ENVIRONMENTS.firebase)
 const state = reactive({
     settings: undefined,
     pass: undefined,
-    notificaciones: undefined
+    notificaciones: undefined,
+    processFinished: true
 })
 const set = {
     settings (o) {
@@ -22,17 +23,19 @@ const set = {
 }
 const actions = {
     monitorStatus (col, proxy) {
-        console.log('monitorStatus:', col)
+        console.log('start monitorStatus:', col)
         fb.realtimeOn('/tasks/' + col, proxy)
+        state.processFinished = false
     },
     finishStatus (col) {
-        console.log('finishStatus:', col)
+        console.log('finish monitorStatus:', col)
         fb.realtimeOff('/tasks/' + col)
     },
     async subscribeToFCM () {
         const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
         await fb.saveMessagingDeviceToken('admin', vapidKey, (msg) => {
-            ui.actions.notify(msg.body, 'success')
+            ui.actions.notify(msg, 'success')
+            state.processFinished = true
         })
     },
     async getSettings () {
@@ -44,6 +47,7 @@ const actions = {
     },
     async uploadFile (file, fn) {
         await fb.uploadFile(file, fn)
+        console.log('store uploadFile finished:', fn)
     },
     async statNotificationsFromDate (d) {
         const ops = {
