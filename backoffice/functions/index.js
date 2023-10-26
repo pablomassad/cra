@@ -195,10 +195,10 @@ async function insertCollection (col, data) {
     for (const d of filteredData) {
         await db.collection(col).add(d)
         await refRt.set({ progress: i++, total })
-        // if (i % 10 === 0) {
-        functions.logger.log('insert counter ', i)
-        // }
-        await sleep(100)
+        if (i % 10 === 0) {
+            functions.logger.log('insert counter ', i)
+        }
+        // await sleep(100)
     }
     // await refRt.set({ progress: 0, total: 0 })
 }
