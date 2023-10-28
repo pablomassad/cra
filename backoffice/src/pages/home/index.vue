@@ -7,9 +7,9 @@
             </div>
             <div class="btnFrame">
                 <div class="abm">
-                    <div>A:{{ appStore.state.altas }}</div>
-                    <div>B:{{ appStore.state.bajas }}</div>
-                    <div>M:{{ appStore.state.mods }}</div>
+                    <div style="color:green">A:{{ `${appStore.state.altas.cnt}/${appStore.state.altas.total}` }}</div>
+                    <div style="color:red">B:{{ `${appStore.state.bajas.cnt}/${appStore.state.bajas.total}` }}</div>
+                    <div style="color:cornflowerblue">M:{{ `${appStore.state.mods.cnt}/${appStore.state.mods.total}` }}</div>
                 </div>
             </div>
             <!--<div class="btnFrame">
@@ -92,6 +92,7 @@ onMounted(async () => {
     await appStore.actions.getSettings()
     await appStore.actions.subscribeToFCM()
     refreshStats()
+    console.log('altas:', appStore.state.altas)
 })
 const refreshStats = async () => {
     chartEnabled.value = false
@@ -215,7 +216,7 @@ watch(() => msgStatus.value.progress, (newProgress) => {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     color: #0082cf;
-    font-size: 17px;
+    font-size: 15px;
     font-weight: bold;
     width: 280px;
     margin: auto;

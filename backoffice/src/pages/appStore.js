@@ -10,9 +10,9 @@ const state = reactive({
     pass: undefined,
     notificaciones: undefined,
     processFinished: true,
-    altas: 0,
-    bajas: 0,
-    mods: 0
+    altas: { cnt: 0, total: 0 },
+    bajas: { cnt: 0, total: 0 },
+    mods: { cnt: 0, total: 0 }
 })
 const set = {
     settings (o) {
@@ -53,10 +53,9 @@ const actions = {
         console.log('store uploadFile finished:', fn)
     },
     async processClientes (file) {
-        state.altas = 0
-        state.bajas = 0
-        state.mods = 0
-        ui.actions.showLoading()
+        state.altas.cnt = 0
+        state.bajas.cnt = 0
+        state.mods.cnt = 0
         const dbClients = await fb.getCollection('clientes')
 
         const reader = new FileReader()
@@ -68,21 +67,29 @@ const actions = {
                 const { added, removed, modified } = compareArrays(dbClients, newClients)
 
                 console.log('added:', added)
+                state.altas.total = added.length
+                let step = 1
+                if (state.altas.total > 100) { step = 10 }
+
+                let addCounter = 1
                 for (const item of added) {
                     await fb.setDocument('clientes', item, item.id)
-                    state.altas++
+                    if (addCounter++ % step === 0) {
+                        state.altas.cnt = addCounter
+                    }
                 }
                 console.log('removed:', removed)
+                state.bajas.total = removed.length
                 for (const item of removed) {
                     await fb.deleteDocument('clientes', item.id)
-                    state.bajas++
+                    state.bajas.cnt++
                 }
                 console.log('modified:', modified)
+                state.mods.total = modified.length
                 for (const item of modified) {
                     await fb.setDocument('clientes', item, item.id)
-                    state.mods++
+                    state.mods.cnt++
                 }
-                ui.actions.hideLoading()
                 resolve()
             }
         })
@@ -121,7 +128,7 @@ async function processFile (text) {
     data.shift() // borra cabecera del data
 
     const config = { orden: orderFieldsArr }
-    await fb.setDocument('opciones', config)
+    await fb.setDocument('opciones', config, 'config')
 
     const clientesDocs = []
     let idx = 0
