@@ -6,11 +6,18 @@
                 <div class="iconText">CLIENTES (csv)</div>
             </div>
             <div class="btnFrame">
+                <div class="abm">
+                    <div>A:{{ appStore.state.altas }}</div>
+                    <div>B:{{ appStore.state.bajas }}</div>
+                    <div>M:{{ appStore.state.mods }}</div>
+                </div>
+            </div>
+            <!--<div class="btnFrame">
                 <div v-if="clientsDisabled" class="monitor" style="marginTop:'10px'">
                     {{ clientsStatus.progress }} / {{ clientsStatus.total }}
                     <q-linear-progress :value="cliVal" color="green" class="q-mt-xs" />
                 </div>
-            </div>
+            </div>-->
         </div>
         <div style="position: relative">
             <div class="uploader" @click="uploadNotifications" :class="{btnDisabled: notificationsDisabled}">
@@ -150,10 +157,12 @@ const uploadClients = () => {
 }
 const onUploadClients = async (e) => {
     const file = e.target.files[0]
-    refFileClients.value.value = ''
     clientsDisabled.value = true
-    await appStore.actions.uploadFile(file, 'clientes.csv')
-    appStore.actions.monitorStatus('clientes', clientsStatus)
+    refFileClients.value.value = ''
+    await appStore.actions.processClientes(file)
+    clientsDisabled.value = false
+    // await appStore.actions.uploadFile(file, 'clientes.csv')
+    // appStore.actions.monitorStatus('clientes', clientsStatus)
 }
 const uploadNotifications = () => {
     refFileNoti.value.click()
@@ -200,6 +209,18 @@ watch(() => msgStatus.value.progress, (newProgress) => {
     top: 76px;
     left: 0px;
     right: 0px;
+}
+
+.abm {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    color: #0082cf;
+    font-size: 17px;
+    font-weight: bold;
+    width: 280px;
+    margin: auto;
+    margin-top: 14px;
+    text-align: center;
 }
 
 .monitor {
