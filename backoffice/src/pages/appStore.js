@@ -2,6 +2,7 @@ import { reactive, readonly, watch } from 'vue'
 import { ui } from 'fwk-q-ui'
 import fb from 'fwk-q-firebase'
 import { ENVIRONMENTS } from 'src/environments'
+import { LocalStorage } from 'quasar'
 
 fb.initFirebase(ENVIRONMENTS.firebase)
 
@@ -10,6 +11,7 @@ const state = reactive({
     pass: undefined,
     notificaciones: undefined,
     processFinished: true,
+    clientsFilename: LocalStorage.getItem('CRA_filename'),
     altas: { cnt: 0, total: 0 },
     bajas: { cnt: 0, total: 0 },
     mods: { cnt: 0, total: 0 }
@@ -22,6 +24,11 @@ const set = {
     pass (doc) {
         console.log('store pass:', doc)
         state.pass = doc
+    },
+    clientsFilename (fn) {
+        console.log('store clientsFilename:', fn)
+        state.clientsFilename = fn
+        LocalStorage.set('CRA_filename', fn)
     }
 }
 const actions = {

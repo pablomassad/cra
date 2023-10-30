@@ -1,4 +1,3 @@
-
 npm install -g @quasar/cli
 
 npm init quasar
@@ -32,34 +31,6 @@ resources/
 npx capacitor-assets generate
 
 
-
-
-
-/usr/libexec/java_home -V     => devuelve listado de versiones de jdk instaladas
-java -version                 => muestra version jdk actual
-export JAVA_HOME=`/usr/libexec/java_home -v 1.8`  => cambia de version de jdk
-// en el archivo .zshrc
-alias j10="export JAVA_HOME=`/usr/libexec/java_home -v 10`; java -version"
-alias j9="export JAVA_HOME=`/usr/libexec/java_home -v 9`; java -version"
-alias j8="export JAVA_HOME=`/usr/libexec/java_home -v 1.8`; java -version"
-
-gradle --version              => muestra info del gradle con jdk
-
- ./gradlew wrapper --gradle-version=7.2 --distribution-type=bin      => cambia gradle version del proyecto actual
-
-/Users/pablomassad/Library/Android/sdk
-
-
-////////////////////////////////////////////////////
-DEJAR JDK 1.8 con el gradle nativo de quasar 5.6.4
-////////////////////////////////////////////////////
-
-@capacitor/android": "^3.2.5",
-        "@capacitor/app": "^1.0.5",
-        "@capacitor/core": "^3.2.5",
-
-npm i
-
 npx cap init
 
 npx cap add android
@@ -80,4 +51,3 @@ keytool -genkeypair -alias my-key-alias -keyalg RSA -keysize 2048 -validity 1000
 
 keytool -genkey -v -keystore diagnostico-key.jks -keyalg RSA -keysize 1024 -validity 10000 -alias diagnostico.desa -sigalg MD5withRSA
 (Cambiar diagnostico.ENV para cada ambiente antes de generar apk)
-

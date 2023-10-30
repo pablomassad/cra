@@ -12,12 +12,7 @@
                     <div style="color:cornflowerblue">M:{{ `${appStore.state.mods.cnt}/${appStore.state.mods.total}` }}</div>
                 </div>
             </div>
-            <!--<div class="btnFrame">
-                <div v-if="clientsDisabled" class="monitor" style="marginTop:'10px'">
-                    {{ clientsStatus.progress }} / {{ clientsStatus.total }}
-                    <q-linear-progress :value="cliVal" color="green" class="q-mt-xs" />
-                </div>
-            </div>-->
+            <div class="filename">{{ appStore.state.clientsFilename }}</div>
         </div>
         <div style="position: relative">
             <div class="uploader" @click="uploadNotifications" :class="{btnDisabled: notificationsDisabled}">
@@ -62,6 +57,7 @@ const refFileClients = ref()
 const clientsDisabled = ref(false)
 const clientsStatus = ref({ progress: 0, total: 0 })
 
+const lastFilename = ref()
 const refFileNoti = ref()
 const notificationsDisabled = ref(false)
 const pushStatus = ref({ progress: 0, total: 0 })
@@ -160,6 +156,7 @@ const onUploadClients = async (e) => {
     const file = e.target.files[0]
     clientsDisabled.value = true
     refFileClients.value.value = ''
+    appStore.set.clientsFilename(file.name)
     await appStore.actions.processClientes(file)
     clientsDisabled.value = false
     // await appStore.actions.uploadFile(file, 'clientes.csv')
@@ -182,7 +179,7 @@ watch(() => appStore.state.processFinished, (newVal) => {
     if (newVal) {
         if (clientsDisabled.value) {
             clientsDisabled.value = false
-            appStore.actions.finishStatus(appStore.state.settings.colClientes)
+            appStore.actions.finishStatus('clientes')
             clientsStatus.value.progress = 0
         }
         if (notificationsDisabled.value) {
@@ -222,6 +219,13 @@ watch(() => msgStatus.value.progress, (newProgress) => {
     margin: auto;
     margin-top: 14px;
     text-align: center;
+}
+
+.filename {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #1c7293;
 }
 
 .monitor {
@@ -319,7 +323,7 @@ watch(() => msgStatus.value.progress, (newProgress) => {
 
 .uploader {
     position: relative;
-    border: 3px solid rgb(28, 106, 230);
+    border: 3px solid #1c6ae6;
     border-radius: 20px;
     height: 124px;
     width: 300px;
@@ -327,10 +331,9 @@ watch(() => msgStatus.value.progress, (newProgress) => {
     color: #0082cf;
     font-size: 22px;
     font-weight: bold;
-    /* text-shadow: 1px 1px 1px black; */
     text-align: center;
     padding: 10px;
-    margin: 20px auto;
+    margin: 30px auto 10px;
     box-shadow: 3px 3px 8px #8c8a8a;
 }
 

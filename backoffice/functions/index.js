@@ -48,7 +48,6 @@ exports.processStorageUpload = functions.storage.bucket().object().onFinalize(as
         // Cambia variable local con nuevo nombre de coleccion alternativa de clientes (clientes <==> clientesAlt)
         // Borra esta coleccion
         // Inserta clientesDocs completo en esta ultima coleccion
-        // Actualiza config.colClientes en la DB por el nuevo nombre de la coleccion alternativa
         const data = text.split('\r\n')
 
         const orderStr = data[0]
@@ -88,20 +87,16 @@ exports.processStorageUpload = functions.storage.bucket().object().onFinalize(as
         const cfgRef = db.collection('opciones').doc('config')
         const d = await cfgRef.get()
         const cfg = d.data()
-        const colClientes = cfg.colClientes
-        functions.logger.log('config.colClientes activa:', colClientes)
 
         const config = {
-            orden: orderFieldsArr,
-            colClientes: (colClientes === 'clientes') ? 'clientesAlt' : 'clientes'
+            orden: orderFieldsArr
         }
-        functions.logger.log('delete collection:', config.colClientes)
-        await deleteCollection(config.colClientes, 5)
+        await deleteCollection('clientes', 5)
         functions.logger.log('delete finished')
-        await insertCollection(config.colClientes, clientesDocs)
+        await insertCollection('clientes', clientesDocs)
         functions.logger.log('insertion finished')
         await db.doc('opciones/config').set(config)
-        functions.logger.log('update colClientes ok:', config)
+        functions.logger.log('update clients ok:', config)
         sendPush('admin',
             'CRA Aviso',
             'La actualización de Clientes ha finalizado OK')

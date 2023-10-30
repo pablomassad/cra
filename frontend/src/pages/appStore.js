@@ -61,7 +61,7 @@ const actions = {
     },
     async validateUser () {
         ui.actions.showLoading()
-        const dataArr = await fb.getCollectionFlex(state.settings.colClientes, { field: 'Documento', op: '==', val: state.document })
+        const dataArr = await fb.getCollectionFlex('clientes', { field: 'Documento', op: '==', val: state.document })
         ui.actions.hideLoading()
         return dataArr
     },
