@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, defineComponent, reactive } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import appStore from '../appStore'
 import { useRouter } from 'vue-router'
 import CardList from 'src/components/fwk-q-cardlist/index.vue'
@@ -49,6 +49,7 @@ const unreadCounter = computed(() => {
     return result.length
 })
 
+console.log('HOME CONSTRUCTOR #########################')
 onMounted(async () => {
     // ui.actions.setTitle('Informacion')
     await appStore.actions.getSettings()
@@ -56,11 +57,13 @@ onMounted(async () => {
     if (!appStore.state.document) {
         router.push('/login')
     } else {
-        await appStore.actions.subscribeToFCM()
         await appStore.actions.getDataByUser()
-        await appStore.actions.getNotificacionesByUser()
         activeIndex.value = appStore.state.userData[0].Patente
-        appStore.actions.updateNotifications('fhRecepcion')
+        if (!appStore.state.notificaciones) {
+            await appStore.actions.subscribeToFCM()
+            await appStore.actions.getNotificacionesByUser()
+            appStore.actions.updateNotifications('fhRecepcion')
+        }
     }
 })
 const gotoMensajes = () => {
