@@ -211,7 +211,7 @@ async function sendNotifications (docs) {
             await sendPush(
                 dni,
                 `CRA: ${tipo}`,
-                'Descripción, Estimado cliente tiene una notificación pendiente  para leer de CR Asociados Seguros y Servicios. Ingresá para verla.')
+                'Estimado cliente tiene una notificación pendiente  para leer de CR Asociados Seguros y Servicios. Ingresá para verla.')
             await refRt.set({ progress: i++, total })
             await sleep(300)
         }

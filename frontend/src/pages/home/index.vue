@@ -46,6 +46,7 @@ const activeIndex = ref(0)
 const unreadCounter = computed(() => {
     if (!appStore.state.notificaciones) return 0
     const result = appStore.state.notificaciones.filter(x => !x.fhLectura)
+    console.log('notificaciones leidas pendientes:', result.length)
     return result.length
 })
 
