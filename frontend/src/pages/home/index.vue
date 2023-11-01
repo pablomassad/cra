@@ -58,13 +58,10 @@ onMounted(async () => {
     if (!appStore.state.document) {
         router.push('/login')
     } else {
-        await appStore.actions.getDataByUser()
-        activeIndex.value = appStore.state.userData[0].Patente
-        if (!appStore.state.notificaciones) {
-            await appStore.actions.subscribeToFCM()
-            await appStore.actions.getNotificacionesByUser()
-            appStore.actions.updateNotifications('fhRecepcion')
-        }
+        const data = await appStore.actions.getDataByUser()
+        activeIndex.value = data[0].Patente
+        await appStore.actions.subscribeToFCM()
+        await appStore.actions.getNotificacionesByUser()
     }
 })
 const gotoMensajes = () => {

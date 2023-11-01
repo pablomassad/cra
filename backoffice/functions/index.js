@@ -15,6 +15,16 @@ const db = admin.firestore()
 //    await admin.messaging().subscribeTopic(tokenDoc.fcmToken, 'admin')
 //    response.send('subscribed to topic:' + tokenDoc.fcmToken)
 // })
+exports.sendMsg = onRequest(async (request, response) => {
+    const args = request.params['0'].split('/')
+    logger.info('id:', args[0])
+    logger.info('msg:', args[1])
+    const id = args[0]
+    const msg = args[1]
+    const res = await sendPush(id, 'FCM Test', msg)
+    logger.info('sendPush:', id + ': ' + msg)
+    response.send('Sent msg ok')
+})
 exports.getStatus = onRequest(async (request, response) => { // ?task=clients || ?task=notifications
     const refRt = dbRt.ref('/tasks/' + request.params['0']) // request.query.task)
     const sn = await refRt.once('value')
@@ -100,7 +110,6 @@ exports.processStorageUpload = functions.storage.bucket().object().onFinalize(as
         sendPush('admin',
             'CRA Aviso',
             'La actualización de Clientes ha finalizado OK')
-        functions.logger.log('sent msg to ', 'admin')
     }
     if (event.name === NOTIFICACIONES) {
         const file = bucket.file(event.name)
@@ -133,7 +142,6 @@ exports.processStorageUpload = functions.storage.bucket().object().onFinalize(as
         await sendPush('admin',
             'CRA Aviso',
             'Las notificaciones han sido enviadas!')
-        functions.logger.log('sent msg to ', 'admin')
     }
     return null
 })
@@ -204,7 +212,6 @@ async function sendNotifications (docs) {
 
     for (const d of docs) {
         const dni = d['N De documento']
-        functions.logger.log('Documento:', dni)
         if (dni) {
             const keys = Object.keys(d)
             const tipo = d[keys[2]]
@@ -216,7 +223,6 @@ async function sendNotifications (docs) {
             await sleep(300)
         }
     }
-    // await refRt.set({ progress: 0, total: 0 })
 }
 async function sendPush (id, title, body) {
     const tokenDoc = await getTokenById(id)
@@ -232,7 +238,7 @@ async function sendPush (id, title, body) {
         }
     }
     const response = await admin.messaging().send(payload)
-    functions.logger.log('Successfully sent all messages:', response)
+    functions.logger.log('Successfully sent message:', response)
 }
 async function getTokenById (id) {
     const tokenRef = db.collection('fcmTokens').doc(id)

@@ -66,7 +66,6 @@ const actions = {
         return dataArr
     },
     async getDataByUser () {
-        ui.actions.showLoading()
         const dataArr = await actions.validateUser()
         const arr = []
         if (dataArr?.length) {
@@ -82,7 +81,6 @@ const actions = {
         } else {
             ui.actions.notify('El usuario no existe!. Pruebe con otro documento.', 'error')
         }
-        ui.actions.hideLoading()
         return arr
     },
     async getNotificacionesByUser () {
@@ -94,6 +92,9 @@ const actions = {
         const msgArr = processMessages(data)
         console.log(msgArr)
         set.notificaciones(msgArr)
+        if (msgArr.length) {
+            await actions.updateNotifications('fhRecepcion')
+        }
         ui.actions.hideLoading()
         return msgArr
     },
@@ -111,6 +112,10 @@ const actions = {
         for (const n of arr) {
             await fb.deleteDocument('notificaciones', n.id)
         }
+    },
+    async sendPush (push) {
+        await fb.sendPushToFCM(push)
+        ui.actions.notify('Envio a FCM ok', 'success')
     }
 }
 
@@ -141,15 +146,12 @@ function processMessages (data) {
     const maxArray = sorted.slice(0, 20)
     return maxArray
 }
-// function InitFCM () {
-//    fb.initFCM(srvAcc)
+// async function getToken () {
+//    const token = await fb.getFCMToken('BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP - CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4')
+//    console.log('CRA client token:', token)
 // }
-async function getToken () {
-    const token = await fb.getFCMToken('BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP - CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4')
-    console.log('CRA client token:', token)
-}
-async function subscribeToTopic () {
-    const result = await fb.subscribeToTopic(state.document, 'AAAAc787IoI:APA91bHogsWCGsk8LDJvjUTstI1k0bRvnC2G21wzrg93mCr_6bARKS5xoD45br-zDwvC-lh8-4mkAs9kVn0am2VjbZ2soBDMUs7Kj9K_II19AHkP_u3CZYN47xajg4Z_NLHb8wNM9t87')
-    console.log('CRA client subscribeToTopic:', state.document)
-    return result
-}
+// async function subscribeToTopic () {
+//    const result = await fb.subscribeToTopic(state.document, 'AAAAc787IoI:APA91bHogsWCGsk8LDJvjUTstI1k0bRvnC2G21wzrg93mCr_6bARKS5xoD45br-zDwvC-lh8-4mkAs9kVn0am2VjbZ2soBDMUs7Kj9K_II19AHkP_u3CZYN47xajg4Z_NLHb8wNM9t87')
+//    console.log('CRA client subscribeToTopic:', state.document)
+//    return result
+// }

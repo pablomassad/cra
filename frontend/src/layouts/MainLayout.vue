@@ -15,8 +15,19 @@
         </template>
     </Layout>
     <div class="logoFrame">
-        <img src="images/cra.png" class="logo" />
+        <img src="images/cra.png" class="logo" @click="counterAdmin" />
     </div>
+    <ConfirmDialog :prompt="showPush" message="Test Pushing">
+        <template #default>
+            <q-input color="black" bg-color="blue-10" type="number" filled v-model="push.dni" label="Ingrese documento" class="doc" />
+            <q-input color="black" bg-color="blue-10" type="Text" filled v-model="push.msg" label="Ingrese mensaje" class="doc" />
+        </template>
+        <template #footer>
+            <div class="btnContainer">
+                <q-btn flat label="Enviar" v-close-popup @click="sendPush()" />
+            </div>
+        </template>
+    </ConfirmDialog>
     <ConfirmDialog :prompt="prompt" :message="dialogMessage" :onCancel="onCancelDialog" :onAccept="onAcceptDialog" />
 </template>
 
@@ -29,7 +40,12 @@ import { ENVIRONMENTS } from 'src/environments'
 import { LocalStorage } from 'quasar'
 import { ui } from 'fwk-q-ui'
 import { main } from 'fwk-q-main'
+import fb from 'fwk-q-firebase'
 
+let timerAdmin = null
+let cnt = 0
+const push = ref({ dni: 0, msg: 'Esta es una prueba de FCM' })
+const showPush = ref(false)
 const prompt = ref(false)
 const dialogMessage = ref('')
 const onAcceptDialog = ref()
@@ -50,6 +66,20 @@ const searchUpdates = () => {
 const logout = () => {
     LocalStorage.set('CRA_doc', '')
     window.location.reload()
+}
+const counterAdmin = () => {
+    if (!timerAdmin) {
+        timerAdmin = setTimeout(() => {
+            cnt = 0
+            clearTimeout(timerAdmin)
+        }, 1000)
+    }
+    if (cnt === 5) {
+        showPush.value = true
+    } else { cnt++ }
+}
+const sendPush = () => {
+    appStore.actions.sendPush(push)
 }
 </script>
 
