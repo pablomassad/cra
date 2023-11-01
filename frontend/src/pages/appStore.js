@@ -7,6 +7,7 @@ import { ENVIRONMENTS } from 'src/environments'
 fb.initFirebase(ENVIRONMENTS.firebase)
 
 const state = reactive({
+    fcmOK: false,
     settings: undefined,
     document: LocalStorage.getItem('CRA_doc'),
     selVehiculo: undefined,
@@ -47,6 +48,7 @@ const set = {
 }
 const actions = {
     async subscribeToFCM () {
+        state.fcmOK = true
         const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
         await fb.saveMessagingDeviceToken(state.document, vapidKey, (msg) => {
             ui.actions.notify(msg.body, 'success')

@@ -60,7 +60,7 @@ onMounted(async () => {
     } else {
         const data = await appStore.actions.getDataByUser()
         activeIndex.value = data[0].Patente
-        await appStore.actions.subscribeToFCM()
+        if (!appStore.state.fcmOK) { await appStore.actions.subscribeToFCM() }
         await appStore.actions.getNotificacionesByUser()
     }
 })
@@ -111,12 +111,12 @@ const onChange = (ev) => {
 
 .patVieja {
     position: relative;
-    top: -56px;
+    top: -54px;
     left: 0px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 10px;
-    font-size: 30px;
+    font-size: 28px;
     text-align: center;
     font-weight: bold;
     text-shadow: 1px 1px 1px gray;
