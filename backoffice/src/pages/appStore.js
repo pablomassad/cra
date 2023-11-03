@@ -11,7 +11,6 @@ const state = reactive({
     pass: undefined,
     notificaciones: undefined,
     processFinished: true,
-    clientsFilename: LocalStorage.getItem('CRA_filename'),
     altas: { cnt: 0, total: 0 },
     bajas: { cnt: 0, total: 0 },
     mods: { cnt: 0, total: 0 }
@@ -24,11 +23,6 @@ const set = {
     pass (doc) {
         console.log('store pass:', doc)
         state.pass = doc
-    },
-    clientsFilename (fn) {
-        console.log('store clientsFilename:', fn)
-        state.clientsFilename = fn
-        LocalStorage.set('CRA_filename', fn)
     }
 }
 const actions = {
@@ -72,6 +66,16 @@ const actions = {
                 const text = e.target.result
                 const newClients = await processFile(text)
                 const { added, removed, modified } = compareArrays(dbClients, newClients)
+
+                const updatedObj = {
+                    clientsFilename: file.name,
+                    clientsDatetime: new Date().getTime(),
+                    clientsAdded: added.length,
+                    clientsDeleted: removed.length,
+                    clientsModified: modified.length
+                }
+                state.settings = { ...state.settings, ...updatedObj }
+                await fb.setDocument('opciones', state.settings, 'backoffice')
 
                 console.log('added:', added)
                 state.altas.total = added.length
@@ -163,6 +167,7 @@ function compareArrays (origData, newData) {
         }
         return result
     })
+    if (added.length && removed.length && modified.length) { ui.actions.notify('No hay cambios en la base de clientes!', 'info') }
     return { added, removed, modified }
 }
 function deepEqual (a, b) {

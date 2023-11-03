@@ -4,6 +4,7 @@ const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const { getStorage } = require('firebase-admin/storage')
 const process = require('process')
+const { onDocumentWritten } = require('firebase-functions/v2/firestore')
 
 admin.initializeApp()
 const dbRt = admin.database()

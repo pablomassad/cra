@@ -12,7 +12,13 @@
                     <div style="color:cornflowerblue">M:{{ `${appStore.state.mods.cnt}/${appStore.state.mods.total}` }}</div>
                 </div>
             </div>
-            <div class="filename">{{ appStore.state.clientsFilename }}</div>
+            <div class="rowFile filename">
+                <div>{{ appStore.state.settings.clientsFilename }}</div>
+                <div>{{ moment(appStore.state.settings.clientsDatetime).format('DD/MM/YY HH:mm') }}</div>
+                <div>A:{{ appStore.state.settings.clientsAdded }}</div>
+                <div>B:{{ appStore.state.settings.clientsDeleted }}</div>
+                <div>M:{{ appStore.state.settings.clientsModified }}</div>
+            </div>
         </div>
         <div style="position: relative">
             <div class="uploader" @click="uploadNotifications" :class="{btnDisabled: notificationsDisabled}">
@@ -51,13 +57,13 @@
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue'
 import appStore from 'src/pages/appStore'
+import moment from 'moment'
 import * as d3 from 'd3'
 
 const refFileClients = ref()
 const clientsDisabled = ref(false)
 const clientsStatus = ref({ progress: 0, total: 0 })
 
-const lastFilename = ref()
 const refFileNoti = ref()
 const notificationsDisabled = ref(false)
 const pushStatus = ref({ progress: 0, total: 0 })
@@ -88,7 +94,6 @@ onMounted(async () => {
     await appStore.actions.getSettings()
     await appStore.actions.subscribeToFCM()
     refreshStats()
-    console.log('altas:', appStore.state.altas)
 })
 const refreshStats = async () => {
     chartEnabled.value = false
@@ -156,7 +161,6 @@ const onUploadClients = async (e) => {
     const file = e.target.files[0]
     clientsDisabled.value = true
     refFileClients.value.value = ''
-    appStore.set.clientsFilename(file.name)
     await appStore.actions.processClientes(file)
     clientsDisabled.value = false
     // await appStore.actions.uploadFile(file, 'clientes.csv')
@@ -202,6 +206,12 @@ watch(() => msgStatus.value.progress, (newProgress) => {
 </script>
 
 <style lang="scss" scoped>
+.rowFile {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
 .btnFrame {
     position: absolute;
     top: 76px;

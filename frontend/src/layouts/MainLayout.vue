@@ -65,7 +65,7 @@ const searchUpdates = () => {
 }
 const logout = () => {
     LocalStorage.set('CRA_doc', '')
-    window.location.reload()
+    appStore.actions.exit()
 }
 const counterAdmin = () => {
     if (!timerAdmin) {

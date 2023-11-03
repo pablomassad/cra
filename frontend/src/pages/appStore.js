@@ -1,8 +1,12 @@
 import { reactive, readonly } from 'vue'
 import { ui } from 'fwk-q-ui'
+import { main } from 'fwk-q-main'
 import fb from 'fwk-q-firebase'
 import { LocalStorage } from 'quasar'
 import { ENVIRONMENTS } from 'src/environments'
+import { Plugins } from '@capacitor/core'
+const { App } = Plugins
+// import { App } from '@capacitor/App'
 
 fb.initFirebase(ENVIRONMENTS.firebase)
 
@@ -53,6 +57,14 @@ const actions = {
         await fb.saveMessagingDeviceToken(state.document, vapidKey, (msg) => {
             ui.actions.notify(msg.body, 'success')
         })
+    },
+    async exit () {
+        await fb.deleteDocument('fcmTokens', state.document)
+        if (main.state.isMobile) {
+            App.exitApplication()
+        } else {
+            window.location.reload()
+        }
     },
     async getSettings () {
         const fe = await fb.getDocument('opciones', 'frontend')
