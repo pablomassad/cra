@@ -160,10 +160,10 @@ function compareArrays (origData, newData) {
     const added = newData.filter(newItem => !origData.find(oldItem => oldItem.id === newItem.id))
     const removed = origData.filter(oldItem => !newData.find(newItem => newItem.id === oldItem.id))
     const modified = newData.filter(newItem => {
-        const oldItem = origData.find(oldItem => oldItem.id === newItem.id)
+        const fndOld = origData.find(oldItem => oldItem.id === newItem.id)
         let result = false
-        if (oldItem) {
-            result = !deepEqual(oldItem, newItem)
+        if (fndOld) {
+            result = (JSON.stringify(newItem) === JSON.stringify(fndOld)) // !deepEqual(fndOld, newItem)
         }
         return result
     })
