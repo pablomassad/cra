@@ -9,7 +9,7 @@
             <q-separator />
             <div class="menuRow" @click="logout()">
                 <q-icon name="logout" class="iconMenu" />
-                <div class="rowText">Salir</div>
+                <div class="rowText">Cerrar sesión</div>
             </div>
             <q-separator />
         </template>

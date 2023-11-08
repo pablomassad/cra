@@ -78,8 +78,10 @@ const refresh = async (done) => {
 }
 
 .noti {
-    display: flex;
     align-items: center;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
 }
 
 .tituloCliente {

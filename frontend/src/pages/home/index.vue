@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import appStore from '../appStore'
 import { useRouter } from 'vue-router'
 import CardList from 'src/components/fwk-q-cardlist/index.vue'
@@ -54,7 +54,15 @@ console.log('HOME CONSTRUCTOR #########################')
 onMounted(async () => {
     // ui.actions.setTitle('Informacion')
     await appStore.actions.getSettings()
-
+    validateUser()
+})
+const gotoMensajes = () => {
+    router.push('/notificaciones')
+}
+const onChange = (ev) => {
+    console.log('onChange slide:', ev)
+}
+const validateUser = async () => {
     if (!appStore.state.document) {
         router.push('/login')
     } else {
@@ -63,13 +71,12 @@ onMounted(async () => {
         if (!appStore.state.fcmOK) { await appStore.actions.subscribeToFCM() }
         await appStore.actions.getNotificacionesByUser()
     }
+}
+
+watch(() => appStore.state.document, (newdoc) => {
+    console.log('watch document:', newdoc)
+    validateUser()
 })
-const gotoMensajes = () => {
-    router.push('/notificaciones')
-}
-const onChange = (ev) => {
-    console.log('onChange slide:', ev)
-}
 </script>
 
 <style scoped>
@@ -177,5 +184,16 @@ const onChange = (ev) => {
     padding-left: 6px;
     bottom: 27px;
     right: -7px;
+}
+
+.body--dark {
+    .q-carousel {
+        background-color: #777777 !important;
+    }
+
+    .q-carousel__slide {
+        background-color: #3c3c3c !important;
+    }
+
 }
 </style>

@@ -9,7 +9,7 @@
             <q-separator />
             <div class="menuRow" @click="logout()">
                 <q-icon name="logout" class="iconMenu" />
-                <div class="rowText">Salir</div>
+                <div class="rowText">Cerrar sesión</div>
             </div>
             <q-separator />
         </template>
@@ -64,8 +64,7 @@ const searchUpdates = () => {
     } else { ui.actions.notify('No hay nuevas actualizaciones!', 'info', { position: 'center' }) }
 }
 const logout = () => {
-    LocalStorage.set('CRA_doc', '')
-    appStore.actions.exit()
+    appStore.actions.logout()
 }
 const counterAdmin = () => {
     if (!timerAdmin) {

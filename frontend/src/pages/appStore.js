@@ -4,9 +4,9 @@ import { main } from 'fwk-q-main'
 import fb from 'fwk-q-firebase'
 import { LocalStorage } from 'quasar'
 import { ENVIRONMENTS } from 'src/environments'
-import { Plugins } from '@capacitor/core'
-const { App } = Plugins
-// import { App } from '@capacitor/App'
+// import { Plugins } from '@capacitor/core'
+// const { App } = Plugins
+import { App } from '@capacitor/app'
 
 fb.initFirebase(ENVIRONMENTS.firebase)
 
@@ -52,16 +52,16 @@ const set = {
 }
 const actions = {
     async subscribeToFCM () {
-        state.fcmOK = true
         const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
         await fb.saveMessagingDeviceToken(state.document, vapidKey, (msg) => {
+            state.fcmOK = true
             ui.actions.notify(msg.body, 'success')
         })
     },
     async exit () {
         await fb.deleteDocument('fcmTokens', state.document)
         if (main.state.isMobile) {
-            App.exitApplication()
+            App.exitApp()
         } else {
             window.location.reload()
         }
@@ -130,6 +130,12 @@ const actions = {
     async sendPush (push) {
         await fb.sendPushToFCM(push)
         ui.actions.notify('Envio a FCM ok', 'success')
+    },
+    async logout () {
+        await fb.unregisterFCM()
+        await fb.deleteDocument('fcmTokens', state.document)
+        set.document('')
+        // appStore.actions.exit()
     }
 }
 
