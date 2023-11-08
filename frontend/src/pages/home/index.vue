@@ -68,7 +68,7 @@ const validateUser = async () => {
     } else {
         const data = await appStore.actions.getDataByUser()
         activeIndex.value = data[0].Patente
-        if (!appStore.state.fcmOK) { await appStore.actions.subscribeToFCM() }
+        await appStore.actions.subscribeToFCM()
         await appStore.actions.getNotificacionesByUser()
     }
 }
@@ -79,7 +79,7 @@ watch(() => appStore.state.document, (newdoc) => {
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .title {
     font-size: 20px;
     font-weight: bold;
@@ -96,11 +96,6 @@ watch(() => appStore.state.document, (newdoc) => {
     border-radius: 20px;
     box-shadow: 2px 2px 10px #555;
     padding-top: 16px;
-}
-
-.carousel {
-    height: calc(100vh - 50px);
-    background: #cacaca;
 }
 
 .grdTitle {
@@ -186,14 +181,14 @@ watch(() => appStore.state.document, (newdoc) => {
     right: -7px;
 }
 
+.carousel {
+    height: calc(100vh - 50px);
+    background: #cacaca;
+}
+
 .body--dark {
-    .q-carousel {
-        background-color: #777777 !important;
+    .carousel {
+        background: #474747;
     }
-
-    .q-carousel__slide {
-        background-color: #3c3c3c !important;
-    }
-
 }
 </style>

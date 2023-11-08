@@ -12,27 +12,22 @@
 import { ref, onMounted } from 'vue'
 import appStore from 'src/pages/appStore'
 import { useRouter } from 'vue-router'
-import { LocalStorage } from 'quasar'
 import { ui } from 'fwk-q-ui'
 
 const router = useRouter()
 
-const pass = ref(LocalStorage.getItem('CRA_BO_pw'))
+const pass = ref(appStore.state.pass)
 
 onMounted(async () => {
     if (pass.value) validate()
 })
 const validate = async () => {
-    ui.actions.showLoading()
-    const ops = await appStore.actions.getSettings()
-    if (ops.password === pass.value) {
-        appStore.set.pass(pass.value)
-        LocalStorage.set('CRA_BO_pw', pass.value)
-        ui.actions.hideLoading()
-        router.push('/home')
+    appStore.set.pass(pass.value)
+    const data = await appStore.actions.validateUser()
+    if (data) {
+        router.go(-1)
     } else {
-        ui.actions.notify('Contraseña incorrecta!', 'error')
-        ui.actions.hideLoading()
+        ui.actions.notify('Contraseña incorrecta', 'error')
     }
 }
 </script>

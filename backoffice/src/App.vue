@@ -19,7 +19,7 @@ onMounted(() => {
             isMobile: false,
             appname: 'crabo',
             origApp: 'crabo',
-            tool: '/login'
+            tool: '/home'
         }
     }
     main.actions.init(ENVIRONMENTS, pl, true)

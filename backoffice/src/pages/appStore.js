@@ -1,5 +1,6 @@
 import { reactive, readonly, watch } from 'vue'
 import { ui } from 'fwk-q-ui'
+import { main } from 'fwk-q-main'
 import fb from 'fwk-q-firebase'
 import { ENVIRONMENTS } from 'src/environments'
 import { LocalStorage } from 'quasar'
@@ -8,7 +9,7 @@ fb.initFirebase(ENVIRONMENTS.firebase)
 
 const state = reactive({
     settings: undefined,
-    pass: undefined,
+    pass: LocalStorage.getItem('CRA_pass'),
     notificaciones: undefined,
     processFinished: true,
     altas: { cnt: 0, total: 0 },
@@ -23,6 +24,7 @@ const set = {
     pass (doc) {
         console.log('store pass:', doc)
         state.pass = doc
+        LocalStorage.set('CRA_pass', doc)
     }
 }
 const actions = {
@@ -113,6 +115,17 @@ const actions = {
         }
         const res = await fb.getCollectionFlex('notificaciones', ops)
         return res
+    },
+    async logout () {
+        if (main.state.isMobile) { await fb.unregisterFCM() }
+        await fb.deleteDocument('fcmTokens', 'admin')
+        set.pass('')
+    },
+    async validateUser () {
+        ui.actions.showLoading()
+        const result = (state.settings.password === state.pass)
+        ui.actions.hideLoading()
+        return result
     }
 }
 

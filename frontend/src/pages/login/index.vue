@@ -2,7 +2,7 @@
     <div class="backLogin">
         <img src="images/cra.png" class="logo">
         <div class="grdLogin">
-            <q-input color="black" bg-color="white" type="number" filled v-model="dni" label="Ingrese documento" @keyup.enter="validateDocument" class="doc" />
+            <q-input type="number" filled v-model="dni" label="Ingrese documento" @keyup.enter="validateDocument" class="doc" />
             <q-btn color="blue-10" icon="login" @click="validateDocument" class="login" :disable="!dni" />
         </div>
     </div>
@@ -19,7 +19,6 @@ const router = useRouter()
 const dni = ref(appStore.state.document)
 
 onMounted(async () => {
-    // await appStore.actions.unsubscribeFromFCM()
     if (dni.value) validateDocument()
 })
 const validateDocument = async () => {
@@ -33,7 +32,7 @@ const validateDocument = async () => {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .logo {
     position: absolute;
     top: 10%;
@@ -63,9 +62,17 @@ const validateDocument = async () => {
 .doc {
     margin: auto;
     width: 100%;
+    background-color: #d2d2d2
 }
 
 .login {
     height: 50px;
+}
+
+.body--dark {
+    .doc {
+        color: rgb(255, 255, 255);
+        background-color: #505050;
+    }
 }
 </style>

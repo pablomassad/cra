@@ -1,6 +1,6 @@
 <template>
     <div class="backIntegralmente">
-        <div style="position: relative">
+        <div style="position: relative" v-if="appStore.state.settings">
             <div class="uploader" @click="uploadClients" :class="{btnDisabled: clientsDisabled}">
                 <q-icon name="person" size="lg"></q-icon>
                 <div class="iconText">CLIENTES (csv)</div>
@@ -59,6 +59,9 @@ import { ref, onMounted, watch, computed } from 'vue'
 import appStore from 'src/pages/appStore'
 import moment from 'moment'
 import * as d3 from 'd3'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const refFileClients = ref()
 const clientsDisabled = ref(false)
@@ -90,10 +93,8 @@ const colorRecibidos = '#639bbf'
 const colorLeidos = '#b3c0c8'
 
 onMounted(async () => {
-    // ui.actions.setTitle('Backoffice')
     await appStore.actions.getSettings()
-    await appStore.actions.subscribeToFCM()
-    refreshStats()
+    validateUser()
 })
 const refreshStats = async () => {
     chartEnabled.value = false
@@ -177,6 +178,14 @@ const onUploadNotifications = async (e) => {
     appStore.actions.monitorStatus('notificaciones', notiStatus)
     appStore.actions.monitorStatus('mensajes', msgStatus)
 }
+const validateUser = async () => {
+    if (!appStore.state.pass) {
+        router.push('/login')
+    } else {
+        await appStore.actions.subscribeToFCM()
+        refreshStats()
+    }
+}
 
 watch(() => appStore.state.processFinished, (newVal) => {
     console.log('watch finish process:', newVal)
@@ -202,6 +211,10 @@ watch(() => notiStatus.value.progress, (newProgress) => {
 watch(() => msgStatus.value.progress, (newProgress) => {
     console.log('watch mensajes:', newProgress)
     pushStatus.value = msgStatus.value
+})
+watch(() => appStore.state.pass, (newPass) => {
+    console.log('watch pass:', newPass)
+    validateUser()
 })
 </script>
 

@@ -26,7 +26,6 @@ import Layout from './fwk-q-layout/index.vue'
 import appStore from 'src/pages/appStore'
 import ConfirmDialog from 'fwk-q-confirmdialog'
 import { ENVIRONMENTS } from 'src/environments'
-import { LocalStorage } from 'quasar'
 import { ui } from 'fwk-q-ui'
 import { main } from 'fwk-q-main'
 
@@ -48,8 +47,7 @@ const searchUpdates = () => {
     } else { ui.actions.notify('No hay nuevas actualizaciones!', 'info', { position: 'center' }) }
 }
 const logout = () => {
-    LocalStorage.set('CRA_BO_pw', '')
-    window.location.reload()
+    appStore.actions.logout()
 }
 </script>
 

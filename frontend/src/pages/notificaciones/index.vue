@@ -33,12 +33,7 @@ const refresh = async (done) => {
 }
 </script>
 
-<style scoped>
-.frame {
-    height: calc(100vh - 50px);
-    overflow: auto;
-}
-
+<style scoped lang="scss">
 .noData {
     position: absolute;
     left: 0;
@@ -119,5 +114,22 @@ const refresh = async (done) => {
 .msgText {
     text-align: justify;
     padding: 10px 0;
+}
+
+.frame {
+    height: calc(100vh - 50px);
+    overflow: auto;
+    background-color: lightgray;
+}
+
+.body--dark {
+    .frame {
+        background-color: rgb(103, 103, 103);
+    }
+
+    .mensaje {
+        background-color: black;
+        color: white;
+    }
 }
 </style>

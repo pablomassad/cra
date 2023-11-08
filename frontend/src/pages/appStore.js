@@ -11,7 +11,6 @@ import { App } from '@capacitor/app'
 fb.initFirebase(ENVIRONMENTS.firebase)
 
 const state = reactive({
-    fcmOK: false,
     settings: undefined,
     document: LocalStorage.getItem('CRA_doc'),
     selVehiculo: undefined,
@@ -54,17 +53,8 @@ const actions = {
     async subscribeToFCM () {
         const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
         await fb.saveMessagingDeviceToken(state.document, vapidKey, (msg) => {
-            state.fcmOK = true
             ui.actions.notify(msg.body, 'success')
         })
-    },
-    async exit () {
-        await fb.deleteDocument('fcmTokens', state.document)
-        if (main.state.isMobile) {
-            App.exitApp()
-        } else {
-            window.location.reload()
-        }
     },
     async getSettings () {
         const fe = await fb.getDocument('opciones', 'frontend')
@@ -131,11 +121,19 @@ const actions = {
         await fb.sendPushToFCM(push)
         ui.actions.notify('Envio a FCM ok', 'success')
     },
+    async exit () {
+        await fb.deleteDocument('fcmTokens', state.document)
+        if (main.state.isMobile) {
+            App.exitApp()
+        } else {
+            window.location.reload()
+        }
+    },
     async logout () {
-        await fb.unregisterFCM()
+        if (main.state.isMobile) { await fb.unregisterFCM() }
         await fb.deleteDocument('fcmTokens', state.document)
         set.document('')
-        // appStore.actions.exit()
+        // actions.exit()
     }
 }
 
