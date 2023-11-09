@@ -52,8 +52,6 @@ const unreadCounter = computed(() => {
 
 console.log('HOME CONSTRUCTOR #########################')
 onMounted(async () => {
-    // ui.actions.setTitle('Informacion')
-    await appStore.actions.getSettings()
     validateUser()
 })
 const gotoMensajes = () => {
@@ -66,10 +64,11 @@ const validateUser = async () => {
     if (!appStore.state.document) {
         router.push('/login')
     } else {
+        await appStore.actions.getSettings()
         const data = await appStore.actions.getDataByUser()
         activeIndex.value = data[0].Patente
-        await appStore.actions.subscribeToFCM()
-        await appStore.actions.getNotificacionesByUser()
+        if (!appStore.fcmOK) { await appStore.actions.subscribeToFCM() }
+        appStore.actions.getNotificacionesByUser()
     }
 }
 

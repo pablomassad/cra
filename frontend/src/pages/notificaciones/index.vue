@@ -17,13 +17,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import appStore from 'src/pages/appStore'
 import moment from 'moment'
 
 onMounted(async () => {
     await appStore.actions.updateNotifications('fhLectura')
-    appStore.actions.getNotificacionesByUser()
+    await appStore.actions.getNotificacionesByUser()
 })
 const refresh = async (done) => {
     appStore.actions.getNotificacionesByUser()

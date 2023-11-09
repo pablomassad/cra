@@ -34,25 +34,23 @@ const validateDocument = async () => {
 
 <style scoped lang="scss">
 .logo {
-    position: absolute;
-    top: 10%;
-    right: 0;
-    left: 0;
-    margin: auto;
-    width: 70vw;
+    position: relative;
+    display: grid;
     max-width: 500px;
+    margin: auto;
+    width: 90vw;
 }
 
 .backLogin {
     background: linear-gradient(#a9b0ff, #303294);
     margin: 0;
     padding: 0;
+    height: 100vh;
 }
 
 .grdLogin {
     display: grid;
     grid-template-columns: 1fr 50px;
-    height: 100vh;
     align-items: center;
     width: 300px;
     margin: auto;

@@ -16,7 +16,8 @@ const state = reactive({
     selVehiculo: undefined,
     userData: undefined,
     notificaciones: undefined,
-    notification: undefined
+    notification: undefined,
+    fcmOK: false
 })
 const set = {
     settings (o) {
@@ -55,6 +56,7 @@ const actions = {
         await fb.saveMessagingDeviceToken(state.document, vapidKey, (msg) => {
             ui.actions.notify(msg.body, 'success')
         })
+        state.fcmOK = true
     },
     async getSettings () {
         const fe = await fb.getDocument('opciones', 'frontend')
