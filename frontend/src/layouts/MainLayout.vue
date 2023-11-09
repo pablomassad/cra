@@ -49,7 +49,8 @@ const dialogMessage = ref('')
 const onAcceptDialog = ref()
 const onCancelDialog = ref()
 
-const searchUpdates = () => {
+const searchUpdates = async () => {
+    await appStore.actions.getSettings()
     if (ENVIRONMENTS.versionName < appStore.state.settings.version || !main.state.isMobile) {
         prompt.value = true
         dialogMessage.value = 'Hay una nueva version de la aplicación, desea instalarla?'
