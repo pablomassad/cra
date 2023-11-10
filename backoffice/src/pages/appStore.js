@@ -176,7 +176,7 @@ function compareArrays (origData, newData) {
         const fndOld = origData.find(oldItem => oldItem.id === newItem.id)
         let result = false
         if (fndOld) {
-            result = (JSON.stringify(newItem) === JSON.stringify(fndOld)) // !deepEqual(fndOld, newItem)
+            result = (JSON.stringify(newItem) !== JSON.stringify(fndOld)) // !deepEqual(fndOld, newItem)
         }
         return result
     })
