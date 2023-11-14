@@ -59,6 +59,7 @@ const actions = {
         state.altas.cnt = 0
         state.bajas.cnt = 0
         state.mods.cnt = 0
+        ui.actions.showLoading()
         const dbClients = await fb.getCollection('clientes')
 
         const reader = new FileReader()
@@ -87,6 +88,7 @@ const actions = {
                 let addCounter = 1
                 for (const item of added) {
                     await fb.setDocument('clientes', item, item.id)
+                    console.log('add item:', item)
                     if (addCounter++ % step === 0) {
                         state.altas.cnt = addCounter
                     }
@@ -95,15 +97,18 @@ const actions = {
                 state.bajas.total = removed.length
                 for (const item of removed) {
                     await fb.deleteDocument('clientes', item.id)
+                    console.log('del item:', item)
                     state.bajas.cnt++
                 }
                 console.log('modified:', modified)
                 state.mods.total = modified.length
                 for (const item of modified) {
-                    await fb.setDocument('clientes', item, item.id)
+                    await fb.setDocument('clientes', item, item.id, {})
+                    console.log('mod item:', item)
                     state.mods.cnt++
                 }
                 resolve()
+                ui.actions.hideLoading()
             }
         })
     },
@@ -172,14 +177,24 @@ async function processFile (text) {
 function compareArrays (origData, newData) {
     const added = newData.filter(newItem => !origData.find(oldItem => oldItem.id === newItem.id))
     const removed = origData.filter(oldItem => !newData.find(newItem => newItem.id === oldItem.id))
-    const modified = newData.filter(newItem => {
-        const fndOld = origData.find(oldItem => oldItem.id === newItem.id)
-        let result = false
-        if (fndOld) {
-            result = (JSON.stringify(newItem) !== JSON.stringify(fndOld)) // !deepEqual(fndOld, newItem)
-        }
-        return result
+    const modified = []
+    origData.forEach((obj1) => {
+        newData.forEach((obj2) => {
+            if (obj1.id === obj2.id && !deepEqual(obj1, obj2)) {
+                console.log('dif o1:', obj1)
+                console.log('dif o2:', obj2)
+                modified.push(obj2)
+            }
+        })
     })
+    // const modified = newData.filter(newItem => {
+    //    const fndOld = origData.find(oldItem => oldItem.id === newItem.id)
+    //    let result = false
+    //    if (fndOld) {
+    //        result = (JSON.stringify(newItem) !== JSON.stringify(fndOld)) // !deepEqual(fndOld, newItem)
+    //    }
+    //    return result
+    // })
     if (added.length && removed.length && modified.length) { ui.actions.notify('No hay cambios en la base de clientes!', 'info') }
     return { added, removed, modified }
 }
