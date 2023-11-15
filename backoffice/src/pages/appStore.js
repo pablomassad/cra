@@ -85,13 +85,14 @@ const actions = {
                 let step = 1
                 if (state.altas.total > 100) { step = 10 }
 
-                let addCounter = 1
+                const addCounter = 1
                 for (const item of added) {
                     await fb.setDocument('clientes', item, item.id)
                     console.log('add item:', item)
-                    if (addCounter++ % step === 0) {
-                        state.altas.cnt = addCounter
-                    }
+                    state.altas.cnt++
+                    // if (addCounter++ % step === 0) {
+                    //    state.altas.cnt = addCounter
+                    // }
                 }
                 console.log('removed:', removed)
                 state.bajas.total = removed.length
@@ -160,7 +161,6 @@ async function processFile (text) {
     await fb.setDocument('opciones', config, 'config')
 
     const clientesDocs = []
-    let idx = 0
     for (const str of data) {
         const valuesArray = str.split(';')
         const d = {}
@@ -168,7 +168,7 @@ async function processFile (text) {
             fieldsArr.forEach((f, i) => {
                 d[f] = valuesArray[i]
             })
-            d.id = (idx++).toString()
+            d.id = `${d.Documento}${d.Patente}`
             clientesDocs.push(d)
         }
     }
