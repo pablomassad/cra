@@ -78,6 +78,7 @@ const actions = {
         if (dataArr?.length) {
             dataArr.forEach((doc, i) => {
                 delete doc.id
+                delete doc['Nº Interno']
                 const o = {}
                 state.settings.orden.forEach(f => {
                     o[f] = dataArr[i][f]
