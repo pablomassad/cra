@@ -9,6 +9,7 @@ fb.initFirebase(ENVIRONMENTS.firebase)
 
 const state = reactive({
     settings: undefined,
+    user: undefined,
     pass: LocalStorage.getItem('CRA_pass'),
     notificaciones: undefined,
     processFinished: true,
@@ -21,10 +22,14 @@ const set = {
         console.log('store set.settings:', o)
         state.settings = o
     },
-    pass (doc) {
-        console.log('store pass:', doc)
-        state.pass = doc
-        LocalStorage.set('CRA_pass', doc)
+    user (usr) {
+        console.log('store user:', usr)
+        state.user = usr
+    },
+    pass (pwd) {
+        console.log('store pass:', pwd)
+        state.pass = pwd
+        LocalStorage.set('CRA_pass', pwd)
     }
 }
 const actions = {
@@ -38,11 +43,13 @@ const actions = {
         fb.realtimeOff('/tasks/' + col)
     },
     async subscribeToFCM () {
+        console.log('store subscribeToFCM')
         const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
-        await fb.saveMessagingDeviceToken('admin', vapidKey, (msg) => {
+        await fb.fmRegisterFCM(state.user, vapidKey, (msg) => {
             ui.actions.notify(msg, 'success')
             state.processFinished = true
         })
+        state.fcmOK = true
     },
     async getSettings () {
         const bo = await fb.getDocument('opciones', 'backoffice')
@@ -117,7 +124,7 @@ const actions = {
     },
     async logout () {
         if (main.state.isMobile) { await fb.unregisterFCM() }
-        await fb.deleteDocument('fcmTokens', 'admin')
+        await fb.deleteDocument('fcmTokens', state.user)
         set.pass('')
     },
     async validateUser () {
