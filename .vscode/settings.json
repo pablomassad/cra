@@ -170,7 +170,7 @@
           "string.quoted.double.html"
         ],
         "settings": {
-          "foreground": "#d36544"
+          "foreground": "#00f2ff"
         }
       },
       {
@@ -178,7 +178,7 @@
           "string.quoted.single.js"
         ],
         "settings": {
-          "foreground": "#b5476f"
+          "foreground": "#dc2727"
         }
       },
       {
@@ -186,7 +186,7 @@
           "variable.other.readwrite.ts"
         ],
         "settings": {
-          "foreground": "#f9ff55"
+          "foreground": "#f6ff00"
         }
       }
     ]

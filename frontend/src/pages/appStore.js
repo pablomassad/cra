@@ -54,8 +54,10 @@ const actions = {
     async subscribeToFCM () {
         console.log('store subscribeToFCM')
         const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
-        await fb.saveMessagingDeviceToken(state.document, vapidKey, (msg) => {
-            ui.actions.notify(msg.body, 'success')
+
+        await fb.fmRegisterFCM(state.document, vapidKey, (msg) => {
+            // ui.actions.notify(msg.body, 'success')
+            actions.getNotificacionesByUser()
         })
         state.fcmOK = true
     },

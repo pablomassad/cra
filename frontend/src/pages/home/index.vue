@@ -43,6 +43,7 @@ import CardList from 'src/components/fwk-q-cardlist/index.vue'
 const router = useRouter()
 const activeIndex = ref(0)
 
+// const unreadCounter = ref(0)
 const unreadCounter = computed(() => {
     if (!appStore.state.notificaciones) return 0
     const result = appStore.state.notificaciones.filter(x => !x.fhLectura)
@@ -78,6 +79,14 @@ watch(() => appStore.state.document, (newdoc) => {
     console.log('watch document:', newdoc)
     validateUser()
 })
+// watch(() => appStore.state.notificaciones, (newNoti) => {
+//    console.log('watch state.notificationes')
+//    if (newNoti) {
+//        const result = appStore.state.notificaciones.filter(x => !x.fhLectura)
+//        console.log('notificaciones leidas pendientes:', result.length)
+//        unreadCounter.value = result.length
+//    }
+// })
 </script>
 
 <style scoped lang="scss">

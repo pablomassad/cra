@@ -22,14 +22,17 @@ import appStore from 'src/pages/appStore'
 import moment from 'moment'
 
 onMounted(async () => {
-    await appStore.actions.updateNotifications('fhLectura')
-    await appStore.actions.getNotificacionesByUser()
+    refreshNotifications()
 })
 const refresh = async (done) => {
-    appStore.actions.getNotificacionesByUser()
+    refreshNotifications()
     setTimeout(() => {
         done()
     }, 1000)
+}
+const refreshNotifications = async () => {
+    await appStore.actions.getNotificacionesByUser()
+    await appStore.actions.updateNotifications('fhLectura')
 }
 </script>
 
