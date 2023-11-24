@@ -191,11 +191,13 @@ watch(() => appStore.state.processFinished, (newVal) => {
     console.log('watch finish process:', newVal)
     if (newVal) {
         if (clientsDisabled.value) {
+            console.log('watch finish clients')
             clientsDisabled.value = false
             appStore.actions.finishStatus('clientes')
             clientsStatus.value.progress = 0
         }
         if (notificationsDisabled.value) {
+            console.log('watch finish notifications')
             notificationsDisabled.value = false
             appStore.actions.finishStatus('mensajes')
             notiStatus.value.progress = 0
@@ -205,7 +207,7 @@ watch(() => appStore.state.processFinished, (newVal) => {
     }
 })
 watch(() => notiStatus.value.progress, (newProgress) => {
-    console.log('watch notifications:', newProgress)
+    console.log('watch progress:', newProgress)
     pushStatus.value = notiStatus.value
 })
 watch(() => msgStatus.value.progress, (newProgress) => {

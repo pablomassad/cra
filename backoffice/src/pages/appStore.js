@@ -9,7 +9,7 @@ fb.initFirebase(ENVIRONMENTS.firebase)
 
 const state = reactive({
     settings: undefined,
-    user: undefined,
+    user: LocalStorage.getItem('CRA_user'),
     pass: LocalStorage.getItem('CRA_pass'),
     notificaciones: undefined,
     processFinished: true,
@@ -25,6 +25,7 @@ const set = {
     user (usr) {
         console.log('store user:', usr)
         state.user = usr
+        LocalStorage.set('CRA_user', usr)
     },
     pass (pwd) {
         console.log('store pass:', pwd)
@@ -46,6 +47,7 @@ const actions = {
         console.log('store subscribeToFCM')
         const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
         await fb.fmRegisterFCM(state.user, vapidKey, (msg) => {
+            console.log('Notification event VAPID web msg:', msg)
             ui.actions.notify(msg, 'success')
             state.processFinished = true
         })

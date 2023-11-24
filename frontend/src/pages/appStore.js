@@ -54,8 +54,8 @@ const actions = {
     async subscribeToFCM () {
         console.log('store subscribeToFCM')
         const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
-
         await fb.fmRegisterFCM(state.document, vapidKey, (msg) => {
+            console.log('Notification event VAPID web msg:', msg)
             // ui.actions.notify(msg.body, 'success')
             actions.getNotificacionesByUser()
         })
