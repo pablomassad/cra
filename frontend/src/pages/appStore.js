@@ -2,6 +2,7 @@ import { reactive, readonly } from 'vue'
 import { ui } from 'fwk-q-ui'
 import { main } from 'fwk-q-main'
 import fb from 'fwk-q-firebase'
+import fbMsg from 'fwk-q-firebase-messaging'
 import { LocalStorage } from 'quasar'
 import { ENVIRONMENTS } from 'src/environments'
 import { LocalNotifications } from '@capacitor/local-notifications'
@@ -9,6 +10,7 @@ import { Badge } from '@capawesome/capacitor-badge'
 import { App } from '@capacitor/app'
 
 fb.initFirebase(ENVIRONMENTS.firebase)
+fbMsg.initFirebase(ENVIRONMENTS.firebase)
 
 App.addListener('appStateChange', async ({ isActive }) => {
     if (isActive) {
@@ -61,7 +63,7 @@ const actions = {
     async subscribeToFCM () {
         console.log('store subscribeToFCM')
         const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
-        await fb.fmRegisterFCM(state.document, vapidKey, (evt) => {
+        await fbMsg.fmRegisterFCM(state.document, vapidKey, (evt) => {
             actions.getNotificacionesByUser()
         })
         state.fcmOK = true
@@ -137,7 +139,7 @@ const actions = {
         }
     },
     async sendPush (push) {
-        await fb.sendPushToFCM(push)
+        await fbMsg.sendPushToFCM(push)
         ui.actions.notify('Envio a FCM ok', 'success')
     },
     async exit () {
@@ -183,12 +185,3 @@ function processMessages (data) {
     const maxArray = sorted.slice(0, 20)
     return maxArray
 }
-// async function getToken () {
-//    const token = await fb.getFCMToken('BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP - CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4')
-//    console.log('CRA client token:', token)
-// }
-// async function subscribeToTopic () {
-//    const result = await fb.subscribeToTopic(state.document, 'AAAAc787IoI:APA91bHogsWCGsk8LDJvjUTstI1k0bRvnC2G21wzrg93mCr_6bARKS5xoD45br-zDwvC-lh8-4mkAs9kVn0am2VjbZ2soBDMUs7Kj9K_II19AHkP_u3CZYN47xajg4Z_NLHb8wNM9t87')
-//    console.log('CRA client subscribeToTopic:', state.document)
-//    return result
-// }

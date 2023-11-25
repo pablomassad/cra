@@ -2,10 +2,12 @@ import { reactive, readonly, watch } from 'vue'
 import { ui } from 'fwk-q-ui'
 import { main } from 'fwk-q-main'
 import fb from 'fwk-q-firebase'
+import fbMsg from 'fwk-q-firebase-messaging'
 import { ENVIRONMENTS } from 'src/environments'
 import { LocalStorage } from 'quasar'
 
 fb.initFirebase(ENVIRONMENTS.firebase)
+fbMsg.initFirebase(ENVIRONMENTS.firebase)
 
 const state = reactive({
     settings: undefined,
@@ -50,7 +52,7 @@ const actions = {
     async subscribeToFCM () {
         console.log('store subscribeToFCM')
         const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
-        await fb.fmRegisterFCM(state.user, vapidKey, (evt) => {
+        await fbMsg.fmRegisterFCM(state.user, vapidKey, (evt) => {
             ui.actions.notify(evt.notification.body, 'success')
         })
         state.fcmOK = true
