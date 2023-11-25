@@ -224,6 +224,7 @@ async function sendNotifications (docs) {
             await sleep(300)
         }
     }
+    await refRt.set({ progress: 0, total })
 }
 async function sendPush (id, title, body) {
     const tokenDoc = await getTokenById(id)

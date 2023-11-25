@@ -18,6 +18,10 @@ const state = reactive({
     mods: { cnt: 0, total: 0 }
 })
 const set = {
+    processFinished (flag) {
+        console.log('store set.processFinished:', flag)
+        state.processFinished = flag
+    },
     settings (o) {
         console.log('store set.settings:', o)
         state.settings = o
@@ -46,10 +50,8 @@ const actions = {
     async subscribeToFCM () {
         console.log('store subscribeToFCM')
         const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
-        await fb.fmRegisterFCM(state.user, vapidKey, (msg) => {
-            console.log('Notification event VAPID web msg:', msg)
-            ui.actions.notify(msg, 'success')
-            state.processFinished = true
+        await fb.fmRegisterFCM(state.user, vapidKey, (evt) => {
+            ui.actions.notify(evt.notification.body, 'success')
         })
         state.fcmOK = true
     },

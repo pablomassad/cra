@@ -29,16 +29,22 @@
 
         <div class="notificaciones">
             <q-btn round color="blue-9" icon="mail" class="btnMensajes" @click="gotoMensajes"></q-btn>
-            <div class="contadorMensajes" v-if="unreadCounter > 0">{{ unreadCounter }}</div>
+            <div class="contadorMensajes" v-if="unreadCounter > 0">
+                <div class="numMsg">
+                    {{ unreadCounter }}
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted, computed, watch, onActivated } from 'vue'
 import appStore from '../appStore'
 import { useRouter } from 'vue-router'
 import CardList from 'src/components/fwk-q-cardlist/index.vue'
+import { LocalNotifications } from '@capacitor/local-notifications'
+import { Badge } from '@capawesome/capacitor-badge'
 
 const router = useRouter()
 const activeIndex = ref(0)
@@ -54,6 +60,10 @@ const unreadCounter = computed(() => {
 console.log('HOME CONSTRUCTOR #########################')
 onMounted(async () => {
     validateUser()
+})
+onActivated(() => {
+    console.log('onActivated')
+    clearNotifications()
 })
 const gotoMensajes = () => {
     router.push('/notificaciones')
@@ -73,6 +83,11 @@ const validateUser = async () => {
         }
         appStore.actions.getNotificacionesByUser()
     }
+}
+const clearNotifications = async () => {
+    await Badge.set({ count: 0 })
+    await Badge.clear()
+    await LocalNotifications.removeAllDeliveredNotifications()
 }
 
 watch(() => appStore.state.document, (newdoc) => {
@@ -189,6 +204,10 @@ watch(() => appStore.state.document, (newdoc) => {
     padding-left: 6px;
     bottom: 27px;
     right: -7px;
+}
+
+.numMsg {
+    text-align: center;
 }
 
 .carousel {

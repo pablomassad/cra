@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import Layout from './fwk-q-layout/index.vue'
 import appStore from 'src/pages/appStore'
 import ConfirmDialog from 'fwk-q-confirmdialog'
@@ -49,6 +49,9 @@ const dialogMessage = ref('')
 const onAcceptDialog = ref()
 const onCancelDialog = ref()
 
+onMounted(() => {
+    searchUpdates()
+})
 const searchUpdates = async () => {
     await appStore.actions.getSettings()
     if (ENVIRONMENTS.versionName < appStore.state.settings.version || !main.state.isMobile) {

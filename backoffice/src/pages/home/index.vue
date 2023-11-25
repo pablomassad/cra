@@ -212,7 +212,13 @@ watch(() => notiStatus.value.progress, (newProgress) => {
 })
 watch(() => msgStatus.value.progress, (newProgress) => {
     console.log('watch mensajes:', newProgress)
+    console.log('watch mensajes total:', msgStatus.value.total)
+
     pushStatus.value = msgStatus.value
+    if (newProgress === msgStatus.value.total - 1) {
+        console.log('processFinished = TRUE')
+        appStore.set.processFinished(true)
+    }
 })
 watch(() => appStore.state.pass, (newPass) => {
     console.log('watch pass:', newPass)
