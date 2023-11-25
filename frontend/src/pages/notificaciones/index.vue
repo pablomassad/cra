@@ -1,18 +1,18 @@
 <template>
     <div class="backIntegralmente frame">
-        <q-pull-to-refresh @refresh="refresh" style="height: 100px;">
-            <div class="listFrame" v-if="appStore.state.notificaciones.length">
-                <div v-for="v in appStore.state.notificaciones" :key="v" class="noti">
-                    <div class="mensaje">
-                        <div class="fechahora">{{ moment(v.fhEmision).format('DD/MM/YYYY HH:mm') }}</div>
-                        <div class="msgText" v-html="v.Mensaje"></div>
-                    </div>
+        <!--<q-pull-to-refresh @refresh="refresh" style="height: 100px;">-->
+        <div class="listFrame" v-if="appStore.state.notificaciones.length">
+            <div v-for="v in appStore.state.notificaciones" :key="v" class="noti">
+                <div class="mensaje">
+                    <div class="fechahora">{{ moment(v.fhEmision).format('DD/MM/YYYY HH:mm') }}</div>
+                    <div class="msgText" v-html="v.Mensaje"></div>
                 </div>
             </div>
-            <div v-else class="noData">
-                Por el momento no hay notificaciones!
-            </div>
-        </q-pull-to-refresh>
+        </div>
+        <div v-else class="noData">
+            Por el momento no hay notificaciones!
+        </div>
+        <!--</q-pull-to-refresh>-->
     </div>
 </template>
 
@@ -31,6 +31,7 @@ const refresh = async (done) => {
     }, 1000)
 }
 const refreshNotifications = async () => {
+    console.log('refreshNotifications update fhLectura')
     await appStore.actions.getNotificacionesByUser()
     await appStore.actions.updateNotifications('fhLectura')
 }

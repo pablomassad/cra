@@ -4,11 +4,23 @@ import { main } from 'fwk-q-main'
 import fb from 'fwk-q-firebase'
 import { LocalStorage } from 'quasar'
 import { ENVIRONMENTS } from 'src/environments'
-// import { Plugins } from '@capacitor/core'
-// const { App } = Plugins
+import { LocalNotifications } from '@capacitor/local-notifications'
+import { Badge } from '@capawesome/capacitor-badge'
 import { App } from '@capacitor/app'
 
 fb.initFirebase(ENVIRONMENTS.firebase)
+
+App.addListener('appStateChange', async ({ isActive }) => {
+    if (isActive) {
+        console.log('Reasume ACTIVE app => clearNotifications')
+        if (main.state.isMobile) {
+            // await Badge.set({ count: 0 })
+            // await Badge.clear()
+            await LocalNotifications.removeAllDeliveredNotifications()
+            actions.getNotificacionesByUser()
+        }
+    }
+})
 
 const state = reactive({
     settings: undefined,
@@ -98,7 +110,7 @@ const actions = {
             ui.actions.notify('No hay nuevas notificaciones', 'info', { position: 'center' })
         }
         const msgArr = processMessages(data)
-        console.log(msgArr)
+        console.log('getNotificacionesByUser:', msgArr)
         set.notificaciones(msgArr)
         if (msgArr.length) {
             await actions.updateNotifications('fhRecepcion')
