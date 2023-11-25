@@ -75,6 +75,7 @@ const validateUser = async () => {
         if (!appStore.state.fcmOK) {
             await appStore.actions.subscribeToFCM()
         }
+        appStore.actions.clearNotifications()
         appStore.actions.getNotificacionesByUser()
     }
 }

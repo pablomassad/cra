@@ -13,12 +13,7 @@ fb.initFirebase(ENVIRONMENTS.firebase)
 App.addListener('appStateChange', async ({ isActive }) => {
     if (isActive) {
         console.log('Reasume ACTIVE app => clearNotifications')
-        if (main.state.isMobile) {
-            // await Badge.set({ count: 0 })
-            // await Badge.clear()
-            await LocalNotifications.removeAllDeliveredNotifications()
-            actions.getNotificacionesByUser()
-        }
+        actions.clearNotifications()
     }
 })
 
@@ -70,6 +65,14 @@ const actions = {
             actions.getNotificacionesByUser()
         })
         state.fcmOK = true
+    },
+    async clearNotifications () {
+        if (main.state.isMobile) {
+            // await Badge.set({ count: 0 })
+            // await Badge.clear()
+            await LocalNotifications.removeAllDeliveredNotifications()
+            actions.getNotificacionesByUser()
+        }
     },
     async getSettings () {
         const fe = await fb.getDocument('opciones', 'frontend')

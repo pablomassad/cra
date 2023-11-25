@@ -1,6 +1,6 @@
 export const ENVIRONMENTS = {
     versionCode: 1,
-    versionName: '1.01.07',
+    versionName: '1.01.08',
     productName: 'CRA',
     packageName: 'com.pp.cra',
     appName: 'CRA',
