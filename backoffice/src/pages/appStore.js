@@ -51,10 +51,14 @@ const actions = {
     },
     async subscribeToFCM () {
         console.log('store subscribeToFCM')
-        const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
-        await fbMsg.fmRegisterFCM(state.user, vapidKey, (evt) => {
-            ui.actions.notify(evt.notification.body, 'success')
-        })
+        const params = {
+            vapidKey: 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4',
+            uid: state.user,
+            cb: (evt) => {
+                ui.actions.notify(evt.notification.body, 'success')
+            }
+        }
+        await fbMsg.fmRegisterFCM(params)
         state.fcmOK = true
     },
     async getSettings () {

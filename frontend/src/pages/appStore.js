@@ -62,10 +62,14 @@ const set = {
 const actions = {
     async subscribeToFCM () {
         console.log('store subscribeToFCM')
-        const vapidKey = 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
-        await fbMsg.fmRegisterFCM(state.document, vapidKey, (evt) => {
-            actions.getNotificacionesByUser()
-        })
+        const params = {
+            vapidKey: 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4',
+            uid: state.document,
+            cb: (evt) => {
+                actions.getNotificacionesByUser()
+            }
+        }
+        await fbMsg.fmRegisterFCM(params)
         state.fcmOK = true
     },
     async clearNotifications () {
