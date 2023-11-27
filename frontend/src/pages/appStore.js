@@ -155,10 +155,10 @@ const actions = {
         }
     },
     async logout () {
-        if (main.state.isMobile) { await fb.unregisterFCM() }
+        if (main.state.isMobile) { await fbMsg.fmDeleteToken() }
+        fbMsg.fmRemoveAllListeners()
         await fb.deleteDocument('fcmTokens', state.document)
         set.document('')
-        // actions.exit()
     }
 }
 
