@@ -133,9 +133,8 @@ const actions = {
         return res
     },
     async logout () {
-        if (main.state.isMobile) { await fbMsg.fmDeleteToken() }
+        if (main.state.isMobile) { await fbMsg.fmDeleteToken(state.user) }
         fbMsg.fmRemoveAllListeners()
-        await fb.deleteDocument('fcmTokens', state.user)
         set.pass('')
     },
     async validateUser () {

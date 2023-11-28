@@ -72,11 +72,9 @@ const validateUser = async () => {
         await appStore.actions.getSettings()
         const data = await appStore.actions.getDataByUser()
         activeIndex.value = data[0].Patente
-        if (!appStore.state.fcmOK) {
-            await appStore.actions.subscribeToFCM()
-        }
-        appStore.actions.clearNotifications()
-        appStore.actions.getNotificacionesByUser()
+        await appStore.actions.subscribeToFCM()
+        await appStore.actions.clearNotifications()
+        await appStore.actions.getNotificacionesByUser()
     }
 }
 

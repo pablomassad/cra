@@ -54,7 +54,7 @@ onMounted(() => {
 })
 const searchUpdates = async () => {
     await appStore.actions.getSettings()
-    if (ENVIRONMENTS.versionName < appStore.state.settings.version || !main.state.isMobile) {
+    if ((ENVIRONMENTS.versionName < appStore.state.settings.version) && main.state.isMobile) {
         prompt.value = true
         dialogMessage.value = 'Hay una nueva version de la aplicación, desea instalarla?'
         onAcceptDialog.value = async () => {

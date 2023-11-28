@@ -11,6 +11,7 @@ export const ENVIRONMENTS = {
         storageBucket: 'pp-cra.appspot.com',
         messagingSenderId: '497129562754',
         appId: '1:497129562754:web:425442b84841d9ef1aca9b',
-        measurementId: 'G-XRK7SG9T0C'
+        measurementId: 'G-XRK7SG9T0C',
+        vapidKey: 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
     }
 }

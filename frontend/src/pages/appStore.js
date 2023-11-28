@@ -63,11 +63,8 @@ const actions = {
     async subscribeToFCM () {
         console.log('store subscribeToFCM')
         const params = {
-            vapidKey: 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4',
             uid: state.document,
-            cb: (evt) => {
-                actions.getNotificacionesByUser()
-            }
+            cb: (evt) => { actions.getNotificacionesByUser() }
         }
         await fbMsg.fmRegisterFCM(params)
         state.fcmOK = true
@@ -155,9 +152,8 @@ const actions = {
         }
     },
     async logout () {
-        if (main.state.isMobile) { await fbMsg.fmDeleteToken() }
+        if (main.state.isMobile) { await fbMsg.fmDeleteToken(state.document) }
         fbMsg.fmRemoveAllListeners()
-        await fb.deleteDocument('fcmTokens', state.document)
         set.document('')
     }
 }
