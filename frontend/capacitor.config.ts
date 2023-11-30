@@ -2,7 +2,7 @@ import {CapacitorConfig} from '@capacitor/cli'
 
 const config: CapacitorConfig = {
   appId: 'com.pp.cra',
-  appName: 'cra',
+  appName: 'CRA Seguros',
   webDir: 'dist/spa',
   bundledWebRuntime: false,
   server: {hostname: "localhost:8080", androidScheme: "http", cleartext: true},
