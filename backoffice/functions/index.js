@@ -236,7 +236,8 @@ async function sendPush (id, title, body) {
         token,
         notification: {
             title,
-            body
+            body,
+            image: 'https://pp-cra.web.app/images/craIcon.png'
         }
     }
     const response = await admin.messaging().send(payload)
