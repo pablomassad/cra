@@ -182,7 +182,7 @@ async function deleteCollection (col, batchSize) {
 
     // const query = collectionRef.orderBy('__name__').limit(batchSize)
     // return new Promise((resolve, reject) => {
-    //    deleteQueryBatch(db, query, resolve, total).catch(reject)
+    //    deleteQueryBatch(db, query, resolve, total, partial).catch(reject)
     // })
 }
 async function insertCollection (col, data) {
@@ -265,7 +265,7 @@ function evalUndefinedFields (doc) {
     }
     return flag
 }
-async function deleteQueryBatch (db, query, resolve, total) {
+async function deleteQueryBatch (db, query, resolve, total, partial) {
     const snapshot = await query.get()
     const batchSize = snapshot.size
     functions.logger.log('batchSize for delete: ', batchSize)
