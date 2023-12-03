@@ -1,7 +1,7 @@
 {
   "hosting": {
     "public": "dist/spa",
-    "site": "pp-cra-backoffice",
+    "site": "cra-backoffice",
     "ignore": [
       "firebase.json",
       "**/.*",

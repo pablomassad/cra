@@ -9,10 +9,10 @@ importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js')
 // your app's Firebase config object.
 // https://firebase.google.com/docs/web/setup#config-object
 firebase.initializeApp({
-    databaseURL: 'https:/f/pp-cra-35f70.web.app',
     apiKey: 'AIzaSyDfY-1dbX9wnrHwdqM8Yhrk4rr_OhLnBn4',
     authDomain: 'pp-cra-35f70.firebaseapp.com',
     projectId: 'pp-cra-35f70',
+    databaseURL: 'https:/f/pp-cra-35f70.web.app',
     storageBucket: 'pp-cra-35f70.appspot.com',
     messagingSenderId: '727597273699',
     appId: '1:727597273699:web:07c6cf711fa5eac8bd9e56',

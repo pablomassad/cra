@@ -9,14 +9,14 @@ importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js')
 // your app's Firebase config object.
 // https://firebase.google.com/docs/web/setup#config-object
 firebase.initializeApp({
-    databaseURL: 'https:/f/pp-cra-35f70.web.app',
-    apiKey: 'AIzaSyDfY-1dbX9wnrHwdqM8Yhrk4rr_OhLnBn4',
-    authDomain: 'pp-cra-35f70.firebaseapp.com',
-    projectId: 'pp-cra-35f70',
-    storageBucket: 'pp-cra-35f70.appspot.com',
-    messagingSenderId: '727597273699',
-    appId: '1:727597273699:web:07c6cf711fa5eac8bd9e56',
-    measurementId: 'G-HBRB9J07JW'
+    apiKey: 'AIzaSyAFDptydb7gENL28UOfRCd2Uygbb3bYzRc',
+    authDomain: 'pp-cra.firebaseapp.com',
+    projectId: 'pp-cra',
+    databaseURL: 'https://pp-cra.web.app',
+    storageBucket: 'pp-cra.appspot.com',
+    messagingSenderId: '497129562754',
+    appId: '1:497129562754:web:f6969b7eb95e3d311aca9b',
+    measurementId: 'G-2FYDB9WTHN'
 })
 
 // Retrieve an instance of Firebase Messaging so that it can handle background

@@ -161,6 +161,15 @@ function updateVersionPkg () {
         path.join(__dirname, `/deploy/${target}/firebase.json`),
         path.join(__dirname, '/firebase.json')
     )
+
+    /// /////////////////////////////////////////////////////////////////////////////////
+    // Actualizar serviceWorker
+    /// /////////////////////////////////////////////////////////////////////////////////
+    console.log(`Copiando => /deploy/${target}/firebase-messaging-sw.js`)
+    fs.copyFileSync(
+        path.join(__dirname, `/deploy/${target}/firebase-messaging-sw.js`),
+        path.join(__dirname, '/public/firebase-messaging-sw.js')
+    )
 }
 function initAndroid () {
     /// /////////////////////////////////////////////////////////////////////////////////

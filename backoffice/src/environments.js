@@ -5,13 +5,13 @@ export const ENVIRONMENTS = {
     packageName: 'com.pp.crabo',
     appName: 'crabo',
     firebase: {
-        apiKey: 'AIzaSyAFDptydb7gENL28UOfRCd2Uygbb3bYzRc',
-        authDomain: 'pp-cra.firebaseapp.com',
-        projectId: 'pp-cra',
-        storageBucket: 'pp-cra.appspot.com',
-        messagingSenderId: '497129562754',
-        appId: '1:497129562754:web:425442b84841d9ef1aca9b',
-        measurementId: 'G-2FYDB9WTHN',
-        vapidKey: 'BP6nPflTuZhSgdqiyDaPMLxYy3o2gvcMM_oUl1NFP-CkMIgnAiXfOKeOhrNbjhCUOKVNEosPR4U9j2t_NSLhjy4'
+        apiKey: 'AIzaSyDfY-1dbX9wnrHwdqM8Yhrk4rr_OhLnBn4',
+        authDomain: 'pp-cra-35f70.firebaseapp.com',
+        projectId: 'pp-cra-35f70',
+        storageBucket: 'pp-cra-35f70.appspot.com',
+        messagingSenderId: '727597273699',
+        appId: '1:727597273699:web:07c6cf711fa5eac8bd9e56',
+        measurementId: 'G-HBRB9J07JW',
+        vapidKey: 'BKQ3arA-h5V9E3c31ayUk8DBv0PmBt4UU6DluCk4PTgM15x2ATR9V_'
     }
 }
