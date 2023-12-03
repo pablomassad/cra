@@ -13,7 +13,12 @@ String.prototype.lpad = function (padString, length) {
 
 const apkName = 'cra'
 
-let opt = process.argv[2]
+let target = process.argv[2]
+// TARGET
+// pp
+// cra
+
+let opt = process.argv[3]
 // OPTIONS:
 // p => POINT / INIT
 // b => BUILD
@@ -23,19 +28,21 @@ let opt = process.argv[2]
 // fweb => BUILD WEB / DEPLOY WEB
 // full => FULL APK / WEB
 
-let mode = process.argv[3]
+let mode = process.argv[4]
 // Build Type
 // d
 // r
 
+const defTarget = 'pp'
+const targetArr = ['pp', 'cra']
+if (!target) target = defTarget
+
 const defOpt = 'full'
 const optArr = ['p', 'b', 's', 'd', 'fapk', 'fweb', 'full']
+if (!opt) opt = defOpt
 
 const defMode = 'd'
 const modeArr = ['d', 'r']
-
-if (!opt) opt = defOpt
-
 if (!mode) mode = defMode
 
 if (optArr.indexOf(opt) === -1) {
@@ -136,41 +143,59 @@ function updateVersionPkg () {
     fs.writeFileSync(path.join(__dirname, '/package.json'), JSON.stringify(pkgJson), err => {
         if (err === null) { console.log('Actualizacion package.json version') } else { console.log('Error actualizando package.json version: ', err) }
     })
+
+    /// /////////////////////////////////////////////////////////////////////////////////
+    // Actualizar environments.js
+    /// /////////////////////////////////////////////////////////////////////////////////
+    console.log(`Copiando => /deploy/${target}/environments.js`)
+    fs.copyFileSync(
+        path.join(__dirname, `/deploy/${target}/environments.js`),
+        path.join(__dirname, '/src/environments.js')
+    )
+
+    /// /////////////////////////////////////////////////////////////////////////////////
+    // Actualizar firebase.json
+    /// /////////////////////////////////////////////////////////////////////////////////
+    console.log(`Copiando => /deploy/${target}/firebase.json`)
+    fs.copyFileSync(
+        path.join(__dirname, `/deploy/${target}/firebase.json`),
+        path.join(__dirname, '/firebase.json')
+    )
 }
 function initAndroid () {
     /// /////////////////////////////////////////////////////////////////////////////////
     // Actualizar en android/app/src/main/AndroidManifext.xml
     /// /////////////////////////////////////////////////////////////////////////////////
-    console.log('Copiando => /deploy/AndroidManifest.xml')
+    console.log(`Copiando => /deploy/${target}/AndroidManifest.xml`)
     fs.copyFileSync(
-        path.join(__dirname, '/deploy/AndroidManifest.xml'),
+        path.join(__dirname, `/deploy/${target}/AndroidManifest.xml`),
         path.join(__dirname, '/android/app/src/main/AndroidManifest.xml')
     )
 
     /// /////////////////////////////////////////////////////////////////////////////////
     // Actualizar en android/variables.gradle
     /// /////////////////////////////////////////////////////////////////////////////////
-    console.log('Copiando => /deploy/variables.gradle')
+    console.log(`Copiando => /deploy/${target}/variables.gradle`)
     fs.copyFileSync(
-        path.join(__dirname, '/deploy/variables.gradle'),
+        path.join(__dirname, `/deploy/${target}/variables.gradle`),
         path.join(__dirname, '/android/variables.gradle')
     )
 
     /// /////////////////////////////////////////////////////////////////////////////////
     // Actualizar en google-services.json
     /// /////////////////////////////////////////////////////////////////////////////////
-    console.log('Copiando => /deploy/google-services.json')
+    console.log(`Copiando => /deploy/${target}/google-services.json`)
     fs.copyFileSync(
-        path.join(__dirname, '/deploy/google-services.json'),
+        path.join(__dirname, `/deploy/${target}/google-services.json`),
         path.join(__dirname, '/android/app/src/google-services.json')
     )
 
     /// /////////////////////////////////////////////////////////////////////////////////
     // Actualizar en android/strings.xml
     /// /////////////////////////////////////////////////////////////////////////////////
-    console.log('Copiando => /deploy/strings.xml')
+    console.log(`Copiando => /deploy/${target}/strings.xml`)
     fs.copyFileSync(
-        path.join(__dirname, '/deploy/strings.xml'),
+        path.join(__dirname, `/deploy/${target}/strings.xml`),
         path.join(__dirname, '/android/app/src/main/res/values/strings.xml')
     )
 
@@ -235,6 +260,7 @@ function buildApk () {
     /// /////////////////////////////////////////////////////////////////////////////
     // Generate DIST (quasar build)
     /// /////////////////////////////////////////////////////////////////////////////
+    console.log('Build project')
     console.log('................')
     buildWeb()
 
@@ -243,7 +269,7 @@ function buildApk () {
     /// /////////////////////////////////////////////////////////////////////////////
     console.log('Sync to android')
     console.log('................')
-    execSync('npx cap sync', {
+    execSync('npx cap sync android', {
         stdio: 'inherit'
     })
 

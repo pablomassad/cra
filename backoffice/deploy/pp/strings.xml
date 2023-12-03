@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Backoffice</string>
+    <string name="title_activity_main">crabo</string>
+    <string name="package_name">com.pp.crabo</string>
+    <string name="custom_url_scheme">com.pp.crabo</string>
+</resources>

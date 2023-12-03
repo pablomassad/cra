@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "727597273699",
+    "firebase_url": "https://pp-cra-35f70-default-rtdb.firebaseio.com",
+    "project_id": "pp-cra-35f70",
+    "storage_bucket": "pp-cra-35f70.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:727597273699:android:7dcc240829de3ed4bd9e56",
+        "android_client_info": {
+          "package_name": "com.pp.cra"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDewHn__hfR783iRmCjZHFGvybmOi31dZY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:727597273699:android:9b74d2a86e13a66cbd9e56",
+        "android_client_info": {
+          "package_name": "com.pp.crabo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDewHn__hfR783iRmCjZHFGvybmOi31dZY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
