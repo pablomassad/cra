@@ -112,7 +112,7 @@ function pointTo () {
     // Actualiza environments file
     /// /////////////////////////////////////////////////////////////////////////////
     console.log('==============================')
-    const bufferEnv = fs.readFileSync(path.join(__dirname, '/src/environments.js'))
+    const bufferEnv = fs.readFileSync(path.join(__dirname, `/deploy/${target}/environments.js`))
     let strEnv = bufferEnv.toString()
 
     const reg = /(versionName: ')(([0-9]{1}.[0-9]{1,2}.)([0-9]{2}))/gm
@@ -122,6 +122,13 @@ function pointTo () {
         console.log($2 + ' => ' + newVersionName$)
         const match = $1 + newVersionName$
         return match
+    })
+    fs.writeFileSync(path.join(__dirname, `/deploy/${target}/environments.js`), strEnv, err => {
+        if (err === null) {
+            console.log('Actualizacion environments.js deploy OK')
+        } else {
+            console.log('Error actualizando environments.js deploy: ', err)
+        }
     })
     fs.writeFileSync(path.join(__dirname, '/src/environments.js'), strEnv, err => {
         if (err === null) {
@@ -143,15 +150,6 @@ function updateVersionPkg () {
     fs.writeFileSync(path.join(__dirname, '/package.json'), JSON.stringify(pkgJson), err => {
         if (err === null) { console.log('Actualizacion package.json version') } else { console.log('Error actualizando package.json version: ', err) }
     })
-
-    /// /////////////////////////////////////////////////////////////////////////////////
-    // Actualizar environments.js
-    /// /////////////////////////////////////////////////////////////////////////////////
-    console.log(`Copiando => /deploy/${target}/environments.js`)
-    fs.copyFileSync(
-        path.join(__dirname, `/deploy/${target}/environments.js`),
-        path.join(__dirname, '/src/environments.js')
-    )
 
     /// /////////////////////////////////////////////////////////////////////////////////
     // Actualizar firebase.json

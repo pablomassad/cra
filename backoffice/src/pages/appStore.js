@@ -161,7 +161,7 @@ async function processFile (text) {
     const orderFieldsArr = []
     for (let i = 0; i < orderArr.length; i++) {
         const idx = getIndex(i, orderArr)
-        orderFieldsArr.push(fieldsArr[idx])
+        if (fieldsArr[idx]) { orderFieldsArr.push(fieldsArr[idx]) }
     }
     data.shift() // borra Orden de campos
     data.shift() // borra cabecera del data
